@@ -1,0 +1,1216 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vibe Coding 0→1 for Bioinformatics</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&family=JetBrains+Mono:wght@400;700&display=swap');
+
+  :root {
+    --bg-dark: #0a0a0f;
+    --bg-card: #12121a;
+    --bg-code: #1a1a2e;
+    --accent: #6c5ce7;
+    --accent2: #00cec9;
+    --accent3: #fd79a8;
+    --accent4: #fdcb6e;
+    --text: #e8e8f0;
+    --text-dim: #8888aa;
+    --gradient1: linear-gradient(135deg, #6c5ce7, #a855f7);
+    --gradient2: linear-gradient(135deg, #00cec9, #0984e3);
+    --gradient3: linear-gradient(135deg, #fd79a8, #e17055);
+    --gradient4: linear-gradient(135deg, #fdcb6e, #e17055);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Noto Sans KR', sans-serif;
+    background: var(--bg-dark);
+    color: var(--text);
+    overflow: hidden;
+    height: 100vh;
+  }
+
+  /* Slide container */
+  .slides-container {
+    width: 100vw;
+    height: 100vh;
+    position: relative;
+  }
+
+  .slide {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 60px 80px;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+  }
+
+  .slide.active {
+    display: flex;
+    opacity: 1;
+  }
+
+  /* Navigation */
+  .nav-bar {
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    height: 50px;
+    background: rgba(10,10,15,0.9);
+    border-top: 1px solid rgba(108,92,231,0.3);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 30px;
+    z-index: 100;
+    backdrop-filter: blur(10px);
+  }
+
+  .nav-bar button {
+    background: var(--gradient1);
+    border: none;
+    color: white;
+    padding: 8px 20px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-family: 'Noto Sans KR', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+  }
+
+  .nav-bar button:hover { transform: scale(1.05); }
+  .nav-bar button:disabled { opacity: 0.3; cursor: default; transform: none; }
+
+  .slide-counter {
+    color: var(--text-dim);
+    font-size: 14px;
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  /* Progress bar */
+  .progress-bar {
+    position: fixed;
+    top: 0; left: 0;
+    height: 3px;
+    background: var(--gradient1);
+    transition: width 0.3s ease;
+    z-index: 100;
+  }
+
+  /* Typography */
+  h1 {
+    font-size: 3.2em;
+    font-weight: 900;
+    line-height: 1.2;
+    margin-bottom: 20px;
+    letter-spacing: -1px;
+  }
+
+  h2 {
+    font-size: 2.4em;
+    font-weight: 700;
+    margin-bottom: 30px;
+    line-height: 1.3;
+  }
+
+  h3 {
+    font-size: 1.6em;
+    font-weight: 500;
+    margin-bottom: 20px;
+    color: var(--accent2);
+  }
+
+  p, li {
+    font-size: 1.25em;
+    line-height: 1.8;
+    color: var(--text);
+  }
+
+  .subtitle {
+    font-size: 1.4em;
+    color: var(--text-dim);
+    font-weight: 300;
+    margin-bottom: 40px;
+  }
+
+  .highlight { color: var(--accent); font-weight: 700; }
+  .highlight2 { color: var(--accent2); font-weight: 700; }
+  .highlight3 { color: var(--accent3); font-weight: 700; }
+  .highlight4 { color: var(--accent4); font-weight: 700; }
+
+  .gradient-text {
+    background: var(--gradient1);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .gradient-text2 {
+    background: var(--gradient2);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* Cards */
+  .card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 24px;
+    width: 100%;
+    max-width: 1200px;
+  }
+
+  .card {
+    background: var(--bg-card);
+    border: 1px solid rgba(108,92,231,0.2);
+    border-radius: 16px;
+    padding: 30px;
+    transition: transform 0.3s, border-color 0.3s;
+  }
+
+  .card:hover {
+    transform: translateY(-4px);
+    border-color: var(--accent);
+  }
+
+  .card-icon {
+    font-size: 2.5em;
+    margin-bottom: 15px;
+  }
+
+  .card h3 { font-size: 1.3em; margin-bottom: 10px; }
+  .card p { font-size: 1em; color: var(--text-dim); line-height: 1.6; }
+
+  /* Code blocks */
+  .code-block {
+    background: var(--bg-code);
+    border: 1px solid rgba(108,92,231,0.2);
+    border-radius: 12px;
+    padding: 24px 30px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.95em;
+    line-height: 1.7;
+    overflow-x: auto;
+    max-width: 1100px;
+    width: 100%;
+    white-space: pre;
+    color: #c8c8e0;
+  }
+
+  .code-block .comment { color: #666680; }
+  .code-block .keyword { color: #c792ea; }
+  .code-block .string { color: #c3e88d; }
+  .code-block .function { color: #82aaff; }
+  .code-block .number { color: #f78c6c; }
+  .code-block .arrow { color: var(--accent2); font-weight: 700; }
+
+  /* Tables */
+  .table-wrap {
+    width: 100%;
+    max-width: 1100px;
+    overflow-x: auto;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 1em;
+  }
+
+  th {
+    background: rgba(108,92,231,0.15);
+    color: var(--accent);
+    padding: 14px 20px;
+    text-align: left;
+    font-weight: 700;
+    border-bottom: 2px solid var(--accent);
+    white-space: nowrap;
+  }
+
+  td {
+    padding: 12px 20px;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    color: var(--text);
+    font-size: 0.95em;
+  }
+
+  tr:hover td { background: rgba(108,92,231,0.05); }
+
+  /* Pipeline diagram */
+  .pipeline {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    flex-wrap: wrap;
+    justify-content: center;
+    max-width: 1200px;
+  }
+
+  .pipeline-step {
+    background: var(--bg-card);
+    border: 2px solid var(--accent);
+    border-radius: 12px;
+    padding: 16px 24px;
+    text-align: center;
+    min-width: 160px;
+  }
+
+  .pipeline-step .step-name {
+    font-weight: 700;
+    font-size: 1.1em;
+    color: var(--accent2);
+  }
+
+  .pipeline-step .step-tool {
+    font-size: 0.85em;
+    color: var(--text-dim);
+    margin-top: 4px;
+  }
+
+  .pipeline-arrow {
+    font-size: 2em;
+    color: var(--accent);
+    padding: 0 8px;
+  }
+
+  /* Quote block */
+  .quote-block {
+    border-left: 4px solid var(--accent);
+    padding: 20px 30px;
+    background: rgba(108,92,231,0.08);
+    border-radius: 0 12px 12px 0;
+    max-width: 900px;
+    margin: 20px 0;
+  }
+
+  .quote-block p {
+    font-size: 1.2em;
+    font-style: italic;
+    color: var(--text);
+  }
+
+  .quote-block .author {
+    font-style: normal;
+    color: var(--text-dim);
+    margin-top: 10px;
+    font-size: 1em;
+  }
+
+  /* Stats row */
+  .stats-row {
+    display: flex;
+    gap: 40px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin: 30px 0;
+  }
+
+  .stat-item {
+    text-align: center;
+  }
+
+  .stat-number {
+    font-size: 3em;
+    font-weight: 900;
+    line-height: 1;
+  }
+
+  .stat-label {
+    font-size: 0.95em;
+    color: var(--text-dim);
+    margin-top: 8px;
+  }
+
+  /* Tag pills */
+  .tags { display: flex; gap: 10px; flex-wrap: wrap; margin: 15px 0; }
+  .tag {
+    padding: 6px 16px;
+    border-radius: 20px;
+    font-size: 0.85em;
+    font-weight: 500;
+  }
+  .tag-purple { background: rgba(108,92,231,0.2); color: var(--accent); border: 1px solid rgba(108,92,231,0.3); }
+  .tag-teal { background: rgba(0,206,201,0.2); color: var(--accent2); border: 1px solid rgba(0,206,201,0.3); }
+  .tag-pink { background: rgba(253,121,168,0.2); color: var(--accent3); border: 1px solid rgba(253,121,168,0.3); }
+  .tag-yellow { background: rgba(253,203,110,0.2); color: var(--accent4); border: 1px solid rgba(253,203,110,0.3); }
+
+  /* Two column layout */
+  .two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+    width: 100%;
+    max-width: 1200px;
+    align-items: start;
+  }
+
+  /* Bullet list */
+  ul.clean-list {
+    list-style: none;
+    padding: 0;
+  }
+
+  ul.clean-list li {
+    padding: 8px 0;
+    padding-left: 28px;
+    position: relative;
+    font-size: 1.15em;
+  }
+
+  ul.clean-list li::before {
+    content: '>';
+    position: absolute;
+    left: 0;
+    color: var(--accent);
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 700;
+  }
+
+  /* Section label */
+  .section-label {
+    font-size: 0.85em;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    color: var(--accent);
+    margin-bottom: 10px;
+    font-weight: 500;
+  }
+
+  /* Slide-specific styles */
+  .slide-title {
+    background: radial-gradient(ellipse at center, rgba(108,92,231,0.12) 0%, transparent 70%);
+  }
+
+  .slide-section {
+    border-top: 3px solid;
+    border-image: var(--gradient1) 1;
+  }
+
+  /* Comparison block */
+  .vs-block {
+    display: flex;
+    align-items: center;
+    gap: 30px;
+    max-width: 1000px;
+  }
+
+  .vs-side {
+    flex: 1;
+    padding: 24px;
+    border-radius: 12px;
+    background: var(--bg-card);
+  }
+
+  .vs-badge {
+    font-size: 2.5em;
+    font-weight: 900;
+    color: var(--text-dim);
+  }
+
+  /* Animated glow */
+  @keyframes glow {
+    0%, 100% { box-shadow: 0 0 20px rgba(108,92,231,0.3); }
+    50% { box-shadow: 0 0 40px rgba(108,92,231,0.5); }
+  }
+
+  .glow { animation: glow 3s infinite; }
+
+  /* Responsive */
+  @media (max-width: 900px) {
+    .slide { padding: 30px 40px; }
+    h1 { font-size: 2.2em; }
+    h2 { font-size: 1.8em; }
+    .two-col { grid-template-columns: 1fr; }
+    .pipeline { flex-direction: column; }
+    .pipeline-arrow { transform: rotate(90deg); }
+  }
+</style>
+</head>
+<body>
+
+<div class="progress-bar" id="progressBar"></div>
+
+<div class="slides-container" id="slidesContainer">
+
+<!-- ==================== LECTURE 1 ==================== -->
+
+<!-- Slide 1: Title -->
+<div class="slide slide-title active" id="slide-1">
+  <div class="section-label">Lecture 1 of 2</div>
+  <h1><span class="gradient-text">Vibe Coding</span><br>0 → 1</h1>
+  <p class="subtitle">생물정보학을 위한 AI 코딩의 새로운 패러다임</p>
+  <div class="tags">
+    <span class="tag tag-purple">Bioinformatics</span>
+    <span class="tag tag-teal">AI-Assisted Coding</span>
+    <span class="tag tag-pink">Drug Discovery</span>
+    <span class="tag tag-yellow">2026</span>
+  </div>
+  <p style="margin-top:40px; color: var(--text-dim); font-size:1em;">
+    For Korean Bioinformatics Students
+  </p>
+</div>
+
+<!-- Slide 2: The Question -->
+<div class="slide" id="slide-2">
+  <h2>코딩이 두려운 적 있나요?</h2>
+  <div class="quote-block" style="margin-top:20px;">
+    <p>"분석하고 싶은 아이디어는 있는데,<br>코딩 실력이 부족해서 포기한 경험이 있나요?"</p>
+  </div>
+  <div style="margin-top:40px; max-width:800px;">
+    <ul class="clean-list">
+      <li>RNA-seq 분석을 하고 싶은데 R/Python이 어려운 학생</li>
+      <li>논문의 파이프라인을 재현하고 싶은데 환경 설정에서 막힌 연구자</li>
+      <li>AIDD 도구들을 연결하고 싶은데 스크립팅이 안 되는 약학도</li>
+    </ul>
+  </div>
+  <p style="margin-top:30px; font-size:1.5em; font-weight:700;">
+    <span class="gradient-text">Vibe Coding이 이 문제를 해결합니다.</span>
+  </p>
+</div>
+
+<!-- Slide 3: What is Vibe Coding -->
+<div class="slide" id="slide-3">
+  <div class="section-label">Definition</div>
+  <h2>Vibe Coding이란?</h2>
+  <div class="quote-block">
+    <p>"Fully give in to the vibes, embrace exponentials,<br>and forget that the code even exists."</p>
+    <p class="author">— Andrej Karpathy, February 2025</p>
+  </div>
+  <div style="margin-top:30px; max-width:900px;">
+    <p style="font-size:1.3em; text-align:center;">
+      <span class="highlight">자연어</span>로 의도를 설명하면 → <span class="highlight2">AI</span>가 코드를 생성
+    </p>
+  </div>
+  <div class="stats-row" style="margin-top:40px;">
+    <div class="stat-item">
+      <div class="stat-number gradient-text">2025</div>
+      <div class="stat-label">Collins Dictionary<br>올해의 단어</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-number gradient-text2">수백만</div>
+      <div class="stat-label">2026년 현재<br>Vibe Coder 수</div>
+    </div>
+  </div>
+</div>
+
+<!-- Slide 4: Traditional vs Vibe Coding -->
+<div class="slide" id="slide-4">
+  <div class="section-label">Comparison</div>
+  <h2>전통적 코딩 vs Vibe Coding</h2>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr><th>구분</th><th>전통적 코딩</th><th>Vibe Coding</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>입력</strong></td><td>프로그래밍 언어</td><td>자연어 (한국어/영어)</td></tr>
+        <tr><td><strong>핵심 스킬</strong></td><td>문법, 알고리즘</td><td>의도 표현, 검증 능력</td></tr>
+        <tr><td><strong>개발자 역할</strong></td><td>코드 작성자 (Writer)</td><td><span class="highlight2">코드 감독자 (Reviewer)</span></td></tr>
+        <tr><td><strong>학습 곡선</strong></td><td>높음 (수개월~수년)</td><td><span class="highlight2">낮음 (수일~수주)</span></td></tr>
+        <tr><td><strong>속도</strong></td><td>느림</td><td><span class="highlight2">10~100x 빠름</span></td></tr>
+        <tr><td><strong>한계</strong></td><td>개발자 실력 의존</td><td>AI 모델 능력 의존</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Slide 5: The Spectrum -->
+<div class="slide" id="slide-5">
+  <div class="section-label">Spectrum</div>
+  <h2>Vibe Coding은 <span class="gradient-text">스펙트럼</span>이다</h2>
+  <div class="pipeline" style="margin-top:20px;">
+    <div class="pipeline-step" style="border-color:#666;">
+      <div class="step-name">Level 1</div>
+      <div class="step-tool">코드 자동완성</div>
+      <div style="font-size:0.75em; color:var(--text-dim);">Copilot Tab</div>
+    </div>
+    <div class="pipeline-arrow">→</div>
+    <div class="pipeline-step" style="border-color:#888;">
+      <div class="step-name">Level 2</div>
+      <div class="step-tool">의도 기반 제안</div>
+      <div style="font-size:0.75em; color:var(--text-dim);">Cursor Tab</div>
+    </div>
+    <div class="pipeline-arrow">→</div>
+    <div class="pipeline-step glow" style="border-color:var(--accent);">
+      <div class="step-name" style="color:var(--accent);">Level 3</div>
+      <div class="step-tool">대화형 코딩</div>
+      <div style="font-size:0.75em; color:var(--accent);">Chat + Edit</div>
+    </div>
+    <div class="pipeline-arrow">→</div>
+    <div class="pipeline-step glow" style="border-color:var(--accent3);">
+      <div class="step-name" style="color:var(--accent3);">Level 4</div>
+      <div class="step-tool">에이전트 코딩</div>
+      <div style="font-size:0.75em; color:var(--accent3);">Claude Code</div>
+    </div>
+    <div class="pipeline-arrow">→</div>
+    <div class="pipeline-step" style="border-color:#444; opacity:0.5;">
+      <div class="step-name" style="color:#666;">Level 5</div>
+      <div class="step-tool">완전 자율</div>
+      <div style="font-size:0.75em; color:#444;">미래</div>
+    </div>
+  </div>
+  <p style="margin-top:30px; font-size:1.1em; color:var(--text-dim);">
+    Level 3~4 = <span class="highlight">Vibe Coding 영역</span> — 오늘 우리가 배울 것
+  </p>
+</div>
+
+<!-- Slide 6: Tool Ecosystem -->
+<div class="slide" id="slide-6">
+  <div class="section-label">Tools</div>
+  <h2>2026년 Vibe Coding 도구 생태계</h2>
+  <div class="card-grid" style="grid-template-columns: repeat(3, 1fr);">
+    <div class="card">
+      <div class="card-icon">&#x1F5A5;</div>
+      <h3>AI IDE</h3>
+      <p><strong>Cursor</strong> — VS Code 포크, 최고의 코드 이해<br>
+         <strong>Windsurf</strong> — 자율적 멀티스텝<br>
+         <strong>GitHub Copilot</strong> — $10/월, 접근성</p>
+      <div class="tags" style="margin-top:12px;">
+        <span class="tag tag-purple">코딩 경험자용</span>
+      </div>
+    </div>
+    <div class="card" style="border-color:var(--accent2);">
+      <div class="card-icon">&#x1F4BB;</div>
+      <h3>Terminal Agent</h3>
+      <p><strong>Claude Code</strong> — 전체 코드베이스 이해<br>
+         <strong>OpenAI Codex</strong> — CLI 에이전트<br>
+         복잡한 파이프라인에 강함</p>
+      <div class="tags" style="margin-top:12px;">
+        <span class="tag tag-teal">전문가 / 연구자용</span>
+      </div>
+    </div>
+    <div class="card" style="border-color:var(--accent3);">
+      <div class="card-icon">&#x1F680;</div>
+      <h3>No-Code Builder</h3>
+      <p><strong>Bolt.new</strong> — 최고 속도 프로토타이핑<br>
+         <strong>Lovable</strong> — 세련된 UI<br>
+         <strong>Replit Agent</strong> — 브라우저 개발</p>
+      <div class="tags" style="margin-top:12px;">
+        <span class="tag tag-pink">비개발자용</span>
+      </div>
+    </div>
+  </div>
+  <p style="margin-top:20px; font-size:1.05em;">
+    생물정보학 추천: <span class="highlight">Cursor</span> + <span class="highlight2">Claude Code</span>
+  </p>
+</div>
+
+<!-- Slide 7: 4 Principles -->
+<div class="slide" id="slide-7">
+  <div class="section-label">Core Principles</div>
+  <h2>Vibe Coding <span class="gradient-text">4가지 핵심 원칙</span></h2>
+  <div class="card-grid" style="grid-template-columns: 1fr 1fr;">
+    <div class="card">
+      <h3><span class="highlight">1.</span> Intent over Syntax</h3>
+      <p>문법보다 <strong>의도</strong>를 전달하라</p>
+      <div class="code-block" style="margin-top:12px; font-size:0.8em; padding:12px;">
+<span class="comment">// Bad</span>
+"for loop으로 FASTA 파싱해줘"
+
+<span class="comment">// Good</span>
+"GC content &gt; 60% 서열만 추출해줘"</div>
+    </div>
+    <div class="card">
+      <h3><span class="highlight2">2.</span> Small Steps</h3>
+      <p><strong>작은 단위</strong>로 반복하라</p>
+      <div class="code-block" style="margin-top:12px; font-size:0.8em; padding:12px;">
+<span class="comment">// Bad</span>
+"전체 파이프라인 만들어줘"
+
+<span class="comment">// Good</span>
+"Step 1: PDB 파싱 → Step 2: ..."</div>
+    </div>
+    <div class="card">
+      <h3><span class="highlight3">3.</span> Context is King</h3>
+      <p><strong>맥락</strong>을 풍부하게 제공하라</p>
+      <div class="code-block" style="margin-top:12px; font-size:0.8em; padding:12px;">
+<span class="comment">// 데이터 유형, 형식, 크기,</span>
+<span class="comment">// 원하는 출력, 사용할 라이브러리</span>
+<span class="comment">// 모두 프롬프트에 포함</span></div>
+    </div>
+    <div class="card">
+      <h3><span class="highlight4">4.</span> You = Reviewer</h3>
+      <p>당신이 <strong>검증자</strong>다</p>
+      <div class="code-block" style="margin-top:12px; font-size:0.8em; padding:12px;">
+<span class="comment">// AI가 생성 → 당신이 검증</span>
+<span class="comment">// 특히 생물학적 타당성!</span>
+<span class="comment">// EGFR score > TP53 맞는지?</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- Slide 8: Prompt Engineering -->
+<div class="slide" id="slide-8">
+  <div class="section-label">Prompting</div>
+  <h2>좋은 프롬프트 vs 나쁜 프롬프트</h2>
+  <div class="two-col">
+    <div>
+      <h3 style="color:var(--accent3);">Bad Prompt</h3>
+      <div class="code-block" style="font-size:0.9em; border-color:rgba(253,121,168,0.3);">
+"유전자 분석해줘"
+
+"도킹 돌려줘"
+
+"그래프 그려줘"</div>
+      <p style="margin-top:15px; color:var(--accent3); font-size:1em;">
+        &times; 모호함, 맥락 없음, AI가 추측해야 함
+      </p>
+    </div>
+    <div>
+      <h3 style="color:var(--accent2);">Good Prompt</h3>
+      <div class="code-block" style="font-size:0.85em; border-color:rgba(0,206,201,0.3);">
+"이 CSV의 Gene Symbol 컬럼에서
+유전자 목록을 읽어서
+Enrichr API로 GO enrichment
+분석 후 상위 20개를 barplot으로.
+p-value &lt; 0.05 기준.
+pandas + matplotlib 사용."</div>
+      <p style="margin-top:15px; color:var(--accent2); font-size:1em;">
+        &#x2713; 구체적, 맥락 풍부, 도구 지정
+      </p>
+    </div>
+  </div>
+</div>
+
+<!-- Slide 9: Prompt Template -->
+<div class="slide" id="slide-9">
+  <div class="section-label">Template</div>
+  <h2>프롬프트 <span class="gradient-text">템플릿</span></h2>
+  <div class="code-block" style="font-size:1.05em;">
+<span class="keyword">[역할]</span>   나는 생물정보학 대학원생이야.
+
+<span class="keyword">[맥락]</span>   RNA-seq 데이터를 분석하고 있어.
+        DEG 리스트가 1,200개 유전자.
+        HepG2 vs 정상 간세포 비교 실험이야.
+
+<span class="keyword">[목표]</span>   GO enrichment analysis를 하고 싶어.
+
+<span class="keyword">[구체적]</span> - enrichR API 사용
+        - GO_Biological_Process_2023 DB
+        - 상위 20개 pathway barplot
+        - p-value &lt; 0.05
+
+<span class="keyword">[출력]</span>   DataFrame + PNG (300 DPI)
+
+<span class="keyword">[제약]</span>   pandas, matplotlib, requests만 사용</div>
+  <p style="margin-top:15px; color:var(--text-dim);">
+    한국어 프롬프트 OK! 단, 기술 용어는 영어 혼용 시 정확도 UP
+  </p>
+</div>
+
+<!-- Slide 10: Limitations -->
+<div class="slide" id="slide-10">
+  <div class="section-label">Caution</div>
+  <h2>주의해야 할 <span class="highlight3">4가지 함정</span></h2>
+  <div class="card-grid" style="grid-template-columns: 1fr 1fr;">
+    <div class="card" style="border-color:rgba(253,121,168,0.3);">
+      <h3>Hallucination</h3>
+      <p>존재하지 않는 라이브러리/함수 생성<br>
+         <strong>→ import가 실제로 작동하는지 확인</strong></p>
+    </div>
+    <div class="card" style="border-color:rgba(253,121,168,0.3);">
+      <h3>Security</h3>
+      <p>환자 데이터, 유전체 데이터 노출 위험<br>
+         <strong>→ 개인정보보호법, HIPAA 준수</strong></p>
+    </div>
+    <div class="card" style="border-color:rgba(253,121,168,0.3);">
+      <h3>Reproducibility</h3>
+      <p>같은 프롬프트 ≠ 같은 결과<br>
+         <strong>→ requirements.txt + seed 고정</strong></p>
+    </div>
+    <div class="card" style="border-color:rgba(253,121,168,0.3);">
+      <h3>Over-reliance</h3>
+      <p>코드를 이해 못하면 디버깅 불가<br>
+         <strong>→ 생물정보학 기초 지식 여전히 필수</strong></p>
+    </div>
+  </div>
+  <div class="quote-block" style="margin-top:20px;">
+    <p>"Not all AI-assisted programming is vibe coding"</p>
+    <p class="author">— Simon Willison | 생물정보학에서는 <span class="highlight2">AI-Assisted Coding</span> 권장 (검증 필수)</p>
+  </div>
+</div>
+
+<!-- ==================== LECTURE 2 ==================== -->
+
+<!-- Slide 11: Lecture 2 Title -->
+<div class="slide slide-title" id="slide-11">
+  <div class="section-label">Lecture 2 of 2</div>
+  <h1><span class="gradient-text2">Vibe Coding 실전</span></h1>
+  <p class="subtitle">REINVENT4 + AutoDock Vina 파이프라인<br>실제 사례로 배우는 AI 약물 설계</p>
+  <div class="tags">
+    <span class="tag tag-purple">REINVENT4</span>
+    <span class="tag tag-teal">AutoDock Vina</span>
+    <span class="tag tag-pink">Boltz-2</span>
+    <span class="tag tag-yellow">Case Study</span>
+  </div>
+</div>
+
+<!-- Slide 12: The Real Pipeline -->
+<div class="slide" id="slide-12">
+  <div class="section-label">Real Case Study</div>
+  <h2>실제 AIDD 파이프라인: <span class="gradient-text">전체 구조</span></h2>
+  <div class="pipeline" style="margin-top:10px;">
+    <div class="pipeline-step" style="border-color:var(--accent);">
+      <div class="step-name">REINVENT4</div>
+      <div class="step-tool">분자 생성</div>
+    </div>
+    <div class="pipeline-arrow">→</div>
+    <div class="pipeline-step" style="border-color:var(--accent2);">
+      <div class="step-name">RDKit</div>
+      <div class="step-tool">성질 필터링</div>
+    </div>
+    <div class="pipeline-arrow">→</div>
+    <div class="pipeline-step" style="border-color:var(--accent3);">
+      <div class="step-name">AutoDock Vina</div>
+      <div class="step-tool">분자 도킹</div>
+    </div>
+    <div class="pipeline-arrow">→</div>
+    <div class="pipeline-step" style="border-color:var(--accent4);">
+      <div class="step-name">Boltz-2</div>
+      <div class="step-tool">친화력 예측</div>
+    </div>
+    <div class="pipeline-arrow">→</div>
+    <div class="pipeline-step" style="border-color:var(--accent2);">
+      <div class="step-name">PyMOL</div>
+      <div class="step-tool">시각화</div>
+    </div>
+  </div>
+  <div class="stats-row" style="margin-top:40px;">
+    <div class="stat-item">
+      <div class="stat-number" style="color:var(--accent);">72</div>
+      <div class="stat-label">평가된 분자 수</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-number" style="color:var(--accent2);">~1h</div>
+      <div class="stat-label">총 계산 시간</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-number" style="color:var(--accent3);">$0</div>
+      <div class="stat-label">소프트웨어 비용</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-number" style="color:var(--accent4);">1x</div>
+      <div class="stat-label">RTX 5080 GPU</div>
+    </div>
+  </div>
+</div>
+
+<!-- Slide 13: REINVENT4 Deep Dive -->
+<div class="slide" id="slide-13">
+  <div class="section-label">Step 1: Molecular Generation</div>
+  <h2>REINVENT4: <span class="gradient-text">AI 분자 생성기</span></h2>
+  <div class="two-col">
+    <div>
+      <h3>REINVENT4란?</h3>
+      <ul class="clean-list">
+        <li>AstraZeneca 개발, Apache 2.0 오픈소스</li>
+        <li>RNN/Transformer 기반 de novo 분자 설계</li>
+        <li>강화학습으로 다중 목표 최적화</li>
+        <li><strong>DockStream</strong>으로 AutoDock Vina 연동</li>
+      </ul>
+      <div class="tags" style="margin-top:15px;">
+        <span class="tag tag-purple">Reinvent</span>
+        <span class="tag tag-teal">LibInvent</span>
+        <span class="tag tag-pink">LinkInvent</span>
+        <span class="tag tag-yellow">Mol2Mol</span>
+      </div>
+    </div>
+    <div>
+      <h3>생성 결과 통계</h3>
+      <div class="table-wrap">
+        <table>
+          <tr><td>생성 분자 수</td><td><strong>50개</strong></td></tr>
+          <tr><td>평균 분자량</td><td>310 &plusmn; 25 Da</td></tr>
+          <tr><td>평균 QED</td><td>0.70 &plusmn; 0.06</td></tr>
+          <tr><td>평균 LogP</td><td>2.9 &plusmn; 0.7</td></tr>
+          <tr><td>Lipinski 통과율</td><td><span class="highlight2">100%</span></td></tr>
+          <tr><td>REINVENT 점수</td><td>0.79 – 0.84</td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Slide 14: How Vibe Coding Built This -->
+<div class="slide" id="slide-14">
+  <div class="section-label">Vibe Coding in Action</div>
+  <h2>이 파이프라인을 <span class="gradient-text">Vibe Coding</span>으로 만든 방법</h2>
+  <div class="code-block" style="font-size:0.95em;">
+<span class="comment"># Claude Code에 입력한 실제 프롬프트</span>
+
+<span class="string">"REINVENT4로 생성한 50개 SMILES 파일이 있어.
+이 분자들을 AutoDock Vina로 도킹하는 자동화 스크립트를 만들어줘.
+
+구체적으로:
+1. RDKit으로 SMILES → 3D 구조 변환 (ETKDG 방법)
+2. Meeko로 PDBQT 형식 변환
+3. AutoDock Vina 실행 (exhaustiveness=16)
+4. 결과를 CSV로 정리 (분자명, Vina score, 최적 포즈)
+5. 상위 10개의 결합 구조를 SDF로 저장
+
+receptor.pdbqt는 이미 준비되어 있어.
+box center: [16.3, 28.1, 31.4], size: [24, 24, 24]"</span></div>
+  <p style="margin-top:20px; font-size:1.15em;">
+    <span class="highlight2">→ Claude Code가 ~200줄의 완전한 파이프라인 스크립트 생성</span>
+  </p>
+</div>
+
+<!-- Slide 15: AutoDock Vina Results -->
+<div class="slide" id="slide-15">
+  <div class="section-label">Step 2: Molecular Docking</div>
+  <h2>AutoDock Vina: <span class="gradient-text2">도킹 결과</span></h2>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr><th>화합물</th><th>Vina Score (kcal/mol)</th><th>출처</th><th>비고</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Rhosin (참조)</td><td><strong>-9.74</strong></td><td>문헌 알려진 화합물</td><td>기준선</td></tr>
+        <tr><td>REINVENT4 최고</td><td>-9.00</td><td>AI (강화학습)</td><td style="color:var(--accent2);">참조 대비 92%</td></tr>
+        <tr><td>REINVENT4 #2</td><td>-8.69</td><td>AI (강화학습)</td><td></td></tr>
+        <tr style="background:rgba(108,92,231,0.1);"><td><strong>공유결합 설계 최고</strong></td><td><strong>-10.62</strong></td><td>AI + 약화학</td><td style="color:var(--accent3);">참조 초과!</td></tr>
+        <tr><td>공유결합 설계 #2</td><td>-8.70</td><td>AI + 약화학</td><td>피리딘 + 아크릴아미드</td></tr>
+        <tr><td>DiffSBDD 최고</td><td>-7.98</td><td>AI (확산모델)</td><td>무편향 탐색</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="quote-block" style="margin-top:20px;">
+    <p>AI가 설계한 공유결합 억제제가 <span class="highlight3">문헌 화합물보다 더 높은 도킹 점수</span>를 달성</p>
+  </div>
+</div>
+
+<!-- Slide 16: Boltz-2 Validation -->
+<div class="slide" id="slide-16">
+  <div class="section-label">Step 3: AI Affinity Prediction</div>
+  <h2>Boltz-2: <span class="gradient-text">이중 검증</span></h2>
+  <div class="two-col">
+    <div>
+      <h3>Boltz-2 결과 (Top 5 설계)</h3>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>설계</th><th>Affinity</th><th>Vina</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>클로로아세타미드</td><td style="color:var(--accent2);"><strong>0.27</strong></td><td>-8.31</td></tr>
+            <tr><td>아크릴아미드+피리딘</td><td style="color:var(--accent2);"><strong>0.29</strong></td><td>-8.70</td></tr>
+            <tr><td>프로파르길아미드</td><td>0.41</td><td>-8.61</td></tr>
+            <tr><td>&alpha;-시아노아크릴아미드</td><td>0.51</td><td><strong>-10.62</strong></td></tr>
+            <tr><td>비닐술폰아미드</td><td>0.71</td><td>-8.43</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div>
+      <h3>핵심 발견</h3>
+      <ul class="clean-list">
+        <li><span class="highlight2">10개 공유결합 설계</span>가 원래 최고 비공유결합 후보보다 우수</li>
+        <li>최고 설계는 원래 대비 <span class="highlight3">~3배 향상</span></li>
+        <li>Vina와 Boltz-2의 순위가 <span class="highlight">교차 검증</span>에서 일치</li>
+        <li>두 가지 완전히 다른 방법이 같은 결론 → <strong>신뢰도 UP</strong></li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- Slide 17: How Vibe Coding Connected Tools -->
+<div class="slide" id="slide-17">
+  <div class="section-label">Vibe Coding Magic</div>
+  <h2>Vibe Coding으로 <span class="gradient-text">도구 연결</span>한 방법</h2>
+  <div class="code-block" style="font-size:0.9em;">
+<span class="comment"># 프롬프트 1: REINVENT4 → Vina 연결</span>
+<span class="string">"REINVENT4가 생성한 SMILES CSV를 읽어서
+ 각 분자를 Vina로 도킹하고 결과를 정리하는 파이프라인 만들어줘"</span>
+
+<span class="comment"># 프롬프트 2: Vina → Boltz-2 연결</span>
+<span class="string">"도킹 결과 상위 20개를 Boltz-2 YAML 입력으로 변환해줘.
+ 단백질 서열은 receptor.fasta에서 읽고,
+ 리간드 SMILES는 도킹 결과 CSV에서 가져와줘"</span>
+
+<span class="comment"># 프롬프트 3: 통합 분석</span>
+<span class="string">"Vina score, Boltz-2 affinity, QED, MW를
+ 하나의 DataFrame으로 합치고
+ radar chart + heatmap으로 시각화해줘"</span>
+
+<span class="comment"># 프롬프트 4: 디버깅</span>
+<span class="string">"Meeko에서 'Cannot kekulize mol' 에러가 나.
+ 방향족 질소가 있는 SMILES에서 발생하는 것 같아. 고쳐줘"</span></div>
+</div>
+
+<!-- Slide 18: DiffSBDD Comparison -->
+<div class="slide" id="slide-18">
+  <div class="section-label">Method Comparison</div>
+  <h2>3가지 AI 접근법 <span class="gradient-text">비교</span></h2>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr><th>차원</th><th>REINVENT4</th><th>DiffSBDD</th><th>실험실 화합물</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>접근 방식</strong></td><td>강화학습 (1D SMILES)</td><td>확산모델 (3D 좌표)</td><td>합성 + 실험</td></tr>
+        <tr><td><strong>입력 필요</strong></td><td>종자 분자 필요</td><td><span class="highlight2">구조만 필요</span></td><td>N/A</td></tr>
+        <tr><td><strong>골격 다양성</strong></td><td>중간 (종자 영향)</td><td><span class="highlight2">매우 높음</span></td><td>단일</td></tr>
+        <tr><td><strong>Vina 최고 점수</strong></td><td>-9.00</td><td>-7.98</td><td>N/A</td></tr>
+        <tr><td><strong>Boltz-2 최고</strong></td><td><span class="highlight2">0.915</span></td><td>1.007</td><td>0.994</td></tr>
+        <tr><td><strong>평균 MW</strong></td><td>310 Da</td><td><span class="highlight2">264 Da</span></td><td>368 Da</td></tr>
+        <tr><td><strong>속도</strong></td><td>~1시간</td><td><span class="highlight2">~15초/100개</span></td><td>수개월</td></tr>
+        <tr><td><strong>최적 용도</strong></td><td>Lead Optimization</td><td>Hit Finding</td><td>최종 검증</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="quote-block" style="margin-top:15px;">
+    <p>REINVENT4와 DiffSBDD는 <span class="highlight">대체가 아니라 보완</span> 관계.<br>
+       DiffSBDD로 신규 골격 발견 → REINVENT4로 다중목표 최적화</p>
+  </div>
+</div>
+
+<!-- Slide 19: Complete Vibe Coding Workflow -->
+<div class="slide" id="slide-19">
+  <div class="section-label">Workflow</div>
+  <h2>완전한 Vibe Coding <span class="gradient-text">워크플로우</span></h2>
+  <div style="max-width:900px;">
+    <div class="code-block" style="font-size:1em; text-align:center; line-height:2.2;">
+<span class="keyword">1. PLAN</span>    <span class="comment">"무엇을 만들 것인가?" 자연어로 정리</span>
+      <span class="arrow">↓</span>
+<span class="keyword">2. PROMPT</span>  <span class="comment">명확한 의도 + 풍부한 맥락 + 구체적 요구사항</span>
+      <span class="arrow">↓</span>
+<span class="keyword">3. GENERATE</span> <span class="comment">AI가 코드 생성</span>
+      <span class="arrow">↓</span>
+<span class="keyword">4. REVIEW</span>  <span class="comment">코드 맞는가? + 결과가 생물학적으로 타당한가?</span> <span class="highlight3">★ 가장 중요</span>
+      <span class="arrow">↓</span>
+<span class="keyword">5. ITERATE</span> <span class="comment">수정 요청 → 3번으로 돌아감</span>
+      <span class="arrow">↓</span>
+<span class="keyword">6. TEST</span>   <span class="comment">자동화된 테스트 + 수동 검증</span>
+      <span class="arrow">↓</span>
+<span class="keyword">7. DOCUMENT</span> <span class="comment">README, 프롬프트 기록, 재현성 확보</span></div>
+  </div>
+</div>
+
+<!-- Slide 20: Key Numbers from Real Case -->
+<div class="slide" id="slide-20">
+  <div class="section-label">Impact</div>
+  <h2>실제 사례의 <span class="gradient-text">핵심 숫자</span></h2>
+  <div class="stats-row">
+    <div class="stat-item">
+      <div class="stat-number gradient-text">50+</div>
+      <div class="stat-label">REINVENT4<br>생성 분자 수</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-number gradient-text2">15분</div>
+      <div class="stat-label">53개 분자<br>Boltz-2 평가 시간</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-number" style="color:var(--accent3);">3x</div>
+      <div class="stat-label">공유결합 설계의<br>친화력 향상</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-number" style="color:var(--accent4);">-10.62</div>
+      <div class="stat-label">최고 Vina Score<br>(kcal/mol)</div>
+    </div>
+  </div>
+  <div style="margin-top:30px; max-width:800px;">
+    <div class="card" style="border-color:var(--accent2);">
+      <p style="text-align:center; font-size:1.2em;">
+        전통적 방법: <span class="highlight3">수개월 + 수십억 원</span><br>
+        Vibe Coding + AI 도구: <span class="highlight2">~1시간 + RTX 5080 한 장</span><br><br>
+        <strong>모든 도구가 오픈소스. 모든 연구실에서 재현 가능.</strong>
+      </p>
+    </div>
+  </div>
+</div>
+
+<!-- Slide 21: Pro Tips -->
+<div class="slide" id="slide-21">
+  <div class="section-label">Pro Tips</div>
+  <h2>실전 <span class="gradient-text">꿀팁</span></h2>
+  <div class="card-grid" style="grid-template-columns: 1fr 1fr;">
+    <div class="card">
+      <h3>CLAUDE.md 활용</h3>
+      <div class="code-block" style="font-size:0.8em; padding:12px;">
+<span class="comment"># 프로젝트 루트에 생성</span>
+<span class="comment"># Claude Code가 자동으로 읽음</span>
+
+## 프로젝트: AIDD Pipeline
+## Python 3.10+, BioPython
+## Vina box: [16.3, 28.1, 31.4]</div>
+    </div>
+    <div class="card">
+      <h3>에러 → AI에게 직접 전달</h3>
+      <div class="code-block" style="font-size:0.8em; padding:12px;">
+<span class="string">"이 에러가 발생했어:
+KeyError: 'primaryAccession'
+UniProt API 응답 형식이 바뀐
+것 같아. 수정해줘."</span></div>
+    </div>
+    <div class="card">
+      <h3>Git 통합</h3>
+      <div class="code-block" style="font-size:0.8em; padding:12px;">
+<span class="comment"># Claude Code에서:</span>
+"변경사항을 의미 있는
+ 메시지로 커밋해줘"
+
+<span class="comment"># 자동으로 git add + commit</span></div>
+    </div>
+    <div class="card">
+      <h3>한국어 프롬프트 팁</h3>
+      <div class="code-block" style="font-size:0.8em; padding:12px;">
+<span class="comment">// 한국어 설명 + 영어 기술용어</span>
+"pandas DataFrame으로 CSV를
+읽어서 <span class="function">log2FC</span> 기준으로
+정렬하고 <span class="function">volcano plot</span> 그려줘"</div>
+    </div>
+  </div>
+</div>
+
+<!-- Slide 22: Your Value -->
+<div class="slide" id="slide-22">
+  <div class="section-label">Key Message</div>
+  <h2>여러분의 <span class="gradient-text">진짜 가치</span></h2>
+  <div style="max-width:800px;">
+    <div class="code-block" style="font-size:1.15em; text-align:center; line-height:2.5;">
+  <span class="highlight">도메인 지식</span> (Drug Discovery 이해)     <span class="comment">← 여러분</span>
++ <span class="highlight2">의도 표현</span> (무엇을 분석할지 설명)      <span class="comment">← 여러분</span>
++ <span class="highlight3">코드 생성</span>                             <span class="comment">← AI</span>
++ <span class="highlight4">결과 검증</span> (생물학적 타당성)            <span class="comment">← 여러분</span>
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+= <span class="gradient-text" style="font-size:1.3em;">유효한 결과</span></div>
+  </div>
+  <div class="quote-block" style="margin-top:30px;">
+    <p>AI는 약물화학자를 대체하지 않는다.<br>
+       하지만 <span class="highlight2">AI를 쓰는 약물화학자</span>가 쓰지 않는 약물화학자를 대체한다.</p>
+  </div>
+</div>
+
+<!-- Slide 23: Homework -->
+<div class="slide" id="slide-23">
+  <div class="section-label">Homework</div>
+  <h2>과제: <span class="gradient-text">나만의 도구 만들기</span></h2>
+  <div class="card-grid" style="grid-template-columns: 1fr 1fr 1fr;">
+    <div class="card">
+      <h3 style="color:var(--accent);">Option A</h3>
+      <p><strong>Sequence Analysis Tool</strong><br>
+         FASTA 파싱 → GC% → MSA → 계통수</p>
+    </div>
+    <div class="card">
+      <h3 style="color:var(--accent2);">Option B</h3>
+      <p><strong>PDB Structure Analyzer</strong><br>
+         구조 파싱 → 2차구조 → B-factor → 결합부위</p>
+    </div>
+    <div class="card">
+      <h3 style="color:var(--accent3);">Option C</h3>
+      <p><strong>Gene Expression Dashboard</strong><br>
+         RNA-seq → QC → PCA → Volcano → Heatmap</p>
+    </div>
+  </div>
+  <div style="margin-top:25px; max-width:800px;">
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>평가 항목</th><th>비중</th></tr></thead>
+        <tbody>
+          <tr><td>프롬프트 품질 (명확성, 구체성)</td><td><span class="highlight">30%</span></td></tr>
+          <tr><td>코드 검증 (AI 오류 발견/수정)</td><td><span class="highlight2">30%</span></td></tr>
+          <tr><td>생물학적 타당성</td><td><span class="highlight3">20%</span></td></tr>
+          <tr><td>문서화 (README, 프롬프트 기록)</td><td><span class="highlight4">20%</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- Slide 24: Closing -->
+<div class="slide slide-title" id="slide-24">
+  <h1><span class="gradient-text">Start Vibing.</span></h1>
+  <p class="subtitle">코딩을 두려워하지 마세요.<br>
+     여러분의 생물학적 통찰이 가장 큰 무기입니다.</p>
+  <div style="margin-top:40px; max-width:700px;">
+    <ul class="clean-list" style="text-align:left;">
+      <li><strong>Cursor</strong> — cursor.sh</li>
+      <li><strong>Claude Code</strong> — docs.anthropic.com/claude-code</li>
+      <li><strong>REINVENT4</strong> — github.com/MolecularAI/REINVENT4</li>
+      <li><strong>AutoDock Vina</strong> — autodock-vina.readthedocs.io</li>
+      <li><strong>Boltz-2</strong> — github.com/jwohlwend/boltz</li>
+    </ul>
+  </div>
+  <p style="margin-top:40px; color:var(--text-dim);">
+    Questions? Let's vibe code together.
+  </p>
+</div>
+
+</div><!-- end slides-container -->
+
+<!-- Navigation -->
+<div class="nav-bar">
+  <button id="prevBtn" onclick="changeSlide(-1)" disabled>&larr; Prev</button>
+  <span class="slide-counter" id="slideCounter">1 / 24</span>
+  <button id="nextBtn" onclick="changeSlide(1)">Next &rarr;</button>
+</div>
+
+<script>
+  let currentSlide = 1;
+  const totalSlides = 24;
+
+  function changeSlide(direction) {
+    const newSlide = currentSlide + direction;
+    if (newSlide < 1 || newSlide > totalSlides) return;
+
+    document.getElementById(`slide-${currentSlide}`).classList.remove('active');
+    currentSlide = newSlide;
+    document.getElementById(`slide-${currentSlide}`).classList.add('active');
+
+    document.getElementById('slideCounter').textContent = `${currentSlide} / ${totalSlides}`;
+    document.getElementById('prevBtn').disabled = currentSlide === 1;
+    document.getElementById('nextBtn').disabled = currentSlide === totalSlides;
+    document.getElementById('progressBar').style.width = `${(currentSlide / totalSlides) * 100}%`;
+  }
+
+  // Keyboard navigation
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'Enter') {
+      e.preventDefault();
+      changeSlide(1);
+    } else if (e.key === 'ArrowLeft' || e.key === 'Backspace') {
+      e.preventDefault();
+      changeSlide(-1);
+    } else if (e.key === 'Home') {
+      e.preventDefault();
+      document.getElementById(`slide-${currentSlide}`).classList.remove('active');
+      currentSlide = 1;
+      document.getElementById(`slide-${currentSlide}`).classList.add('active');
+      document.getElementById('slideCounter').textContent = `${currentSlide} / ${totalSlides}`;
+      document.getElementById('prevBtn').disabled = true;
+      document.getElementById('nextBtn').disabled = false;
+      document.getElementById('progressBar').style.width = `${(1 / totalSlides) * 100}%`;
+    } else if (e.key === 'End') {
+      e.preventDefault();
+      document.getElementById(`slide-${currentSlide}`).classList.remove('active');
+      currentSlide = totalSlides;
+      document.getElementById(`slide-${currentSlide}`).classList.add('active');
+      document.getElementById('slideCounter').textContent = `${currentSlide} / ${totalSlides}`;
+      document.getElementById('prevBtn').disabled = false;
+      document.getElementById('nextBtn').disabled = true;
+      document.getElementById('progressBar').style.width = '100%';
+    }
+  });
+
+  // Touch support
+  let touchStartX = 0;
+  document.addEventListener('touchstart', (e) => { touchStartX = e.touches[0].clientX; });
+  document.addEventListener('touchend', (e) => {
+    const diff = touchStartX - e.changedTouches[0].clientX;
+    if (Math.abs(diff) > 50) changeSlide(diff > 0 ? 1 : -1);
+  });
+
+  // Initialize progress bar
+  document.getElementById('progressBar').style.width = `${(1 / totalSlides) * 100}%`;
+</script>
+
+</body>
+</html>

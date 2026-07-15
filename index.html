@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vibe Coding for AIDD — Lecture Series</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&family=JetBrains+Mono:wght@400;700&family=Inter:wght@300;400;600;700;900&display=swap');
+
+  :root {
+    --bg: #06060e;
+    --bg-card: #10101c;
+    --accent: #7c6cf7;
+    --accent2: #00e5c0;
+    --accent3: #ff6b9d;
+    --accent4: #ffc857;
+    --accent5: #4da6ff;
+    --text: #eaeaf4;
+    --dim: #7878a0;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Noto Sans KR', 'Inter', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 60px 20px;
+  }
+
+  .hero {
+    text-align: center;
+    max-width: 900px;
+    margin-bottom: 60px;
+  }
+
+  .hero-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.85em;
+    text-transform: uppercase;
+    letter-spacing: 4px;
+    color: var(--accent);
+    margin-bottom: 20px;
+  }
+
+  .hero h1 {
+    font-size: 3.5em;
+    font-weight: 900;
+    line-height: 1.15;
+    letter-spacing: -2px;
+    margin-bottom: 20px;
+    background: linear-gradient(135deg, #7c6cf7 0%, #00e5c0 50%, #ff6b9d 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .hero p {
+    font-size: 1.25em;
+    color: var(--dim);
+    line-height: 1.7;
+    max-width: 700px;
+    margin: 0 auto;
+  }
+
+  .tags {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-top: 25px;
+  }
+
+  .tag {
+    padding: 6px 16px;
+    border-radius: 20px;
+    font-size: 0.82em;
+    font-weight: 500;
+  }
+
+  .tag-purple { background: rgba(124,108,247,0.18); color: var(--accent); border: 1px solid rgba(124,108,247,0.3); }
+  .tag-teal { background: rgba(0,229,192,0.15); color: var(--accent2); border: 1px solid rgba(0,229,192,0.3); }
+  .tag-pink { background: rgba(255,107,157,0.15); color: var(--accent3); border: 1px solid rgba(255,107,157,0.3); }
+  .tag-yellow { background: rgba(255,200,87,0.15); color: var(--accent4); border: 1px solid rgba(255,200,87,0.3); }
+
+  .lectures-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+    gap: 28px;
+    max-width: 1100px;
+    width: 100%;
+  }
+
+  .lecture-card {
+    background: var(--bg-card);
+    border: 1px solid rgba(124,108,247,0.15);
+    border-radius: 20px;
+    padding: 36px;
+    transition: transform 0.3s, border-color 0.3s, box-shadow 0.3s;
+    text-decoration: none;
+    color: inherit;
+    display: block;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .lecture-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 12px 40px rgba(124,108,247,0.15);
+  }
+
+  .lecture-card.l12:hover { border-color: var(--accent); }
+  .lecture-card.l4:hover { border-color: var(--accent4); }
+
+  .card-number {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.78em;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: 14px;
+  }
+
+  .lecture-card.l12 .card-number { color: var(--accent); }
+  .lecture-card.l4 .card-number { color: var(--accent4); }
+
+  .lecture-card h2 {
+    font-size: 1.7em;
+    font-weight: 800;
+    margin-bottom: 14px;
+    line-height: 1.25;
+  }
+
+  .lecture-card.l12 h2 { color: var(--accent); }
+  .lecture-card.l4 h2 { color: var(--accent4); }
+
+  .lecture-card p {
+    font-size: 1em;
+    color: var(--dim);
+    line-height: 1.7;
+    margin-bottom: 18px;
+  }
+
+  .card-topics {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .card-topic {
+    font-size: 0.78em;
+    padding: 4px 12px;
+    border-radius: 12px;
+    background: rgba(255,255,255,0.04);
+    color: var(--dim);
+    border: 1px solid rgba(255,255,255,0.06);
+  }
+
+  .card-meta {
+    margin-top: 20px;
+    padding-top: 16px;
+    border-top: 1px solid rgba(255,255,255,0.06);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.85em;
+    color: var(--dim);
+  }
+
+  .card-cta {
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .lecture-card.l12 .card-cta { color: var(--accent); }
+  .lecture-card.l4 .card-cta { color: var(--accent4); }
+
+  .footer {
+    margin-top: 80px;
+    text-align: center;
+    color: var(--dim);
+    font-size: 0.9em;
+    line-height: 1.8;
+    max-width: 700px;
+  }
+
+  .footer a {
+    color: var(--accent2);
+    text-decoration: none;
+  }
+
+  .footer a:hover { text-decoration: underline; }
+
+  @keyframes glowPulse {
+    0%, 100% { opacity: 0.05; }
+    50% { opacity: 0.12; }
+  }
+
+  .bg-glow {
+    position: fixed;
+    top: -200px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 800px;
+    height: 800px;
+    background: radial-gradient(circle, rgba(124,108,247,0.08) 0%, transparent 70%);
+    animation: glowPulse 6s infinite;
+    pointer-events: none;
+    z-index: -1;
+  }
+
+  @media (max-width: 700px) {
+    .hero h1 { font-size: 2.2em; }
+    .lectures-grid { grid-template-columns: 1fr; }
+    body { padding: 30px 16px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="bg-glow"></div>
+
+<div class="hero">
+  <div class="hero-label">AIDD SYStem Lab</div>
+  <h1>Vibe Coding<br>for AIDD</h1>
+  <p>
+    생물정보학 학생을 위한 AI 코딩 강의 시리즈.<br>
+    자연어로 의도를 전달하고, AI가 코드를 생성하는 새로운 패러다임.
+  </p>
+  <div class="tags">
+    <span class="tag tag-purple">Bioinformatics</span>
+    <span class="tag tag-teal">Drug Discovery</span>
+    <span class="tag tag-pink">AI-Assisted Coding</span>
+    <span class="tag tag-yellow">Open Source</span>
+  </div>
+</div>
+
+<div class="lectures-grid">
+
+  <!-- Lecture 1 & 2 -->
+  <a href="lecture1_2.html" class="lecture-card l12">
+    <div class="card-number">Lectures 1 & 2</div>
+    <h2>Vibe Coding 0 &rarr; 1</h2>
+    <p>
+      Vibe Coding의 개념, 4가지 핵심 원칙, 도구 생태계부터<br>
+      REINVENT4 + AutoDock Vina 실제 파이프라인 사례까지.
+    </p>
+    <div class="card-topics">
+      <span class="card-topic">Karpathy 정의</span>
+      <span class="card-topic">4가지 원칙</span>
+      <span class="card-topic">프롬프트 엔지니어링</span>
+      <span class="card-topic">REINVENT4</span>
+      <span class="card-topic">AutoDock Vina</span>
+      <span class="card-topic">Boltz-2</span>
+      <span class="card-topic">실전 사례</span>
+    </div>
+    <div class="card-meta">
+      <span>24 slides</span>
+      <span class="card-cta">발표 보기 &rarr;</span>
+    </div>
+  </a>
+
+  <!-- Lecture 4: Final -->
+  <a href="Lecture4_Final_Presentation.html" class="lecture-card l4">
+    <div class="card-number">Lecture 4 — Final</div>
+    <h2>The Complete AIDD Vibe Coder</h2>
+    <p>
+      전체 통합, Claude Science, CovLib 파이프라인,<br>
+      고급 워크플로우, 미래 비전, 커리어 전략.
+    </p>
+    <div class="card-topics">
+      <span class="card-topic">Claude Science</span>
+      <span class="card-topic">CovLib</span>
+      <span class="card-topic">고급 프롬프팅</span>
+      <span class="card-topic">디버깅 패턴</span>
+      <span class="card-topic">재현성</span>
+      <span class="card-topic">커리어</span>
+      <span class="card-topic">미래 비전</span>
+    </div>
+    <div class="card-meta">
+      <span>26 slides</span>
+      <span class="card-cta">발표 보기 &rarr;</span>
+    </div>
+  </a>
+
+</div>
+
+<div class="footer">
+  <p>
+    AIDD SYStem Lab &mdash; July 2026<br>
+    모든 도구는 오픈소스. 소프트웨어 비용 $0.<br>
+    <a href="https://github.com/MolecularAI/REINVENT4">REINVENT4</a> &middot;
+    <a href="https://github.com/jwohlwend/boltz">Boltz-2</a> &middot;
+    <a href="https://docs.anthropic.com/en/docs/claude-code">Claude Code</a> &middot;
+    <a href="https://cursor.sh">Cursor</a>
+  </p>
+</div>
+
+</body>
+</html>
