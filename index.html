@@ -89,9 +89,9 @@
 
   .lectures-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
     gap: 28px;
-    max-width: 1100px;
+    max-width: 1200px;
     width: 100%;
   }
 
@@ -114,6 +114,7 @@
   }
 
   .lecture-card.l12:hover { border-color: var(--accent); }
+  .lecture-card.l3:hover { border-color: var(--accent3); }
   .lecture-card.l4:hover { border-color: var(--accent4); }
 
   .card-number {
@@ -125,6 +126,7 @@
   }
 
   .lecture-card.l12 .card-number { color: var(--accent); }
+  .lecture-card.l3 .card-number { color: var(--accent3); }
   .lecture-card.l4 .card-number { color: var(--accent4); }
 
   .lecture-card h2 {
@@ -135,6 +137,7 @@
   }
 
   .lecture-card.l12 h2 { color: var(--accent); }
+  .lecture-card.l3 h2 { color: var(--accent3); }
   .lecture-card.l4 h2 { color: var(--accent4); }
 
   .lecture-card p {
@@ -178,6 +181,7 @@
   }
 
   .lecture-card.l12 .card-cta { color: var(--accent); }
+  .lecture-card.l3 .card-cta { color: var(--accent3); }
   .lecture-card.l4 .card-cta { color: var(--accent4); }
 
   .footer {
@@ -261,6 +265,28 @@
     </div>
     <div class="card-meta">
       <span>24 slides</span>
+      <span class="card-cta">발표 보기 &rarr;</span>
+    </div>
+  </a>
+
+  <!-- CovLib: Lecture 3 -->
+  <a href="covlib.html" class="lecture-card l3">
+    <div class="card-number">Lecture 3 — CovLib</div>
+    <h2>CovLib 바이브 코딩 여정</h2>
+    <p>
+      공유결합 억제제 설계 파이프라인 구축기.<br>
+      Cys/Ser 타겟 워헤드 라이브러리 & 자동 도킹.
+    </p>
+    <div class="card-topics">
+      <span class="card-topic">공유결합 억제제</span>
+      <span class="card-topic">워헤드 설계</span>
+      <span class="card-topic">AutoDock Vina</span>
+      <span class="card-topic">Boltz-2</span>
+      <span class="card-topic">RDKit</span>
+      <span class="card-topic">파이프라인 자동화</span>
+    </div>
+    <div class="card-meta">
+      <span>Full slide deck</span>
       <span class="card-cta">발표 보기 &rarr;</span>
     </div>
   </a>

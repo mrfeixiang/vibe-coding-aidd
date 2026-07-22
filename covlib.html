@@ -1,0 +1,869 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8" />
+    <title>CovLib 바이브 코딩 여정 - 공유 발효 억제제 설계 파이프라인</title>
+    <meta name="hz:slide-selector" content=".slide" />
+    <meta name="hz:canvas-width" content="1920" />
+    <meta name="hz:canvas-height" content="1080" />
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap');
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: #1a1a2e;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 40px;
+            padding: 40px;
+        }
+
+        .slide {
+            position: relative;
+            width: 1920px;
+            height: 1080px;
+            overflow: hidden;
+            font-family: 'Noto Sans KR', 'Inter', sans-serif;
+        }
+
+        /* ===== COLOR PALETTE ===== */
+        :root {
+            --deep-navy: #0d1b2a;
+            --dark-blue: #1b2838;
+            --teal: #00b4d8;
+            --teal-dark: #0077b6;
+            --accent-green: #06d6a0;
+            --accent-orange: #f77f00;
+            --accent-red: #ef476f;
+            --accent-purple: #7209b7;
+            --white: #ffffff;
+            --light-gray: #e0e0e0;
+            --mid-gray: #a0a0a0;
+        }
+    </style>
+</head>
+<body>
+
+<!-- ============================================================ -->
+<!-- SLIDE 1: TITLE -->
+<!-- ============================================================ -->
+<div class="slide" data-canvas-width="1920" data-canvas-height="1080" style="background: linear-gradient(135deg, #0d1b2a 0%, #1b2838 40%, #0a2342 100%);">
+
+    <!-- Decorative DNA helix pattern -->
+    <svg style="position:absolute; top:0; right:0; width:600px; height:1080px; opacity:0.08;" viewBox="0 0 600 1080">
+        <path d="M300,0 Q450,135 300,270 Q150,405 300,540 Q450,675 300,810 Q150,945 300,1080" stroke="#00b4d8" stroke-width="3" fill="none"/>
+        <path d="M300,0 Q150,135 300,270 Q450,405 300,540 Q150,675 300,810 Q450,945 300,1080" stroke="#06d6a0" stroke-width="3" fill="none"/>
+        <line x1="200" y1="135" x2="400" y2="135" stroke="#00b4d8" stroke-width="1.5" opacity="0.5"/>
+        <line x1="200" y1="270" x2="400" y2="270" stroke="#06d6a0" stroke-width="1.5" opacity="0.5"/>
+        <line x1="200" y1="405" x2="400" y2="405" stroke="#00b4d8" stroke-width="1.5" opacity="0.5"/>
+        <line x1="200" y1="540" x2="400" y2="540" stroke="#06d6a0" stroke-width="1.5" opacity="0.5"/>
+        <line x1="200" y1="675" x2="400" y2="675" stroke="#00b4d8" stroke-width="1.5" opacity="0.5"/>
+        <line x1="200" y1="810" x2="400" y2="810" stroke="#06d6a0" stroke-width="1.5" opacity="0.5"/>
+        <line x1="200" y1="945" x2="400" y2="945" stroke="#00b4d8" stroke-width="1.5" opacity="0.5"/>
+    </svg>
+
+    <!-- Molecule dots -->
+    <svg style="position:absolute; bottom:80px; left:100px; opacity:0.12;" width="400" height="200" viewBox="0 0 400 200">
+        <circle cx="50" cy="100" r="8" fill="#00b4d8"/><circle cx="120" cy="60" r="6" fill="#06d6a0"/>
+        <circle cx="180" cy="130" r="10" fill="#ef476f"/><circle cx="260" cy="80" r="7" fill="#f77f00"/>
+        <circle cx="330" cy="140" r="9" fill="#7209b7"/><circle cx="370" cy="50" r="5" fill="#00b4d8"/>
+        <line x1="50" y1="100" x2="120" y2="60" stroke="#ffffff" stroke-width="1"/>
+        <line x1="120" y1="60" x2="180" y2="130" stroke="#ffffff" stroke-width="1"/>
+        <line x1="180" y1="130" x2="260" y2="80" stroke="#ffffff" stroke-width="1"/>
+        <line x1="260" y1="80" x2="330" y2="140" stroke="#ffffff" stroke-width="1"/>
+        <line x1="330" y1="140" x2="370" y2="50" stroke="#ffffff" stroke-width="1"/>
+    </svg>
+
+    <!-- Top tag -->
+    <div style="position:absolute; top:80px; left:120px; background:rgba(0,180,216,0.15); border:1px solid rgba(0,180,216,0.4); border-radius:30px; padding:10px 28px;">
+        <span style="font-family:'JetBrains Mono',monospace; font-size:18px; color:#00b4d8; letter-spacing:2px;">VIBE CODING JOURNEY — AI-DRIVEN DRUG DESIGN</span>
+    </div>
+
+    <!-- Main title -->
+    <div style="position:absolute; top:220px; left:120px; width:1200px;">
+        <h1 style="font-family:'Noto Sans KR','Inter',sans-serif; font-weight:900; font-size:82px; color:#ffffff; line-height:1.15; letter-spacing:-1px;">
+            CovLib 파이프라인<br/>
+            <span style="color:#00b4d8;">바이브 코딩</span> 여정
+        </h1>
+    </div>
+
+    <!-- Subtitle -->
+    <div style="position:absolute; top:500px; left:120px; width:1100px;">
+        <p style="font-family:'Noto Sans KR',sans-serif; font-weight:400; font-size:32px; color:#a0a0a0; line-height:1.6;">
+            Cys/Ser 공유결합 억제제 설계를 위한<br/>
+            통합 컴퓨팅 워크플로우 구축기
+        </p>
+    </div>
+
+    <!-- Divider line -->
+    <div style="position:absolute; top:640px; left:120px; width:200px; height:4px; background:linear-gradient(90deg, #00b4d8, #06d6a0); border-radius:2px;"></div>
+
+    <!-- Bottom info -->
+    <div style="position:absolute; top:680px; left:120px;">
+        <p style="font-family:'Noto Sans KR',sans-serif; font-weight:500; font-size:22px; color:#e0e0e0;">
+            Kin-Cov 논문 기반 · Zhou et al., J. Med. Chem. 2023
+        </p>
+        <p style="font-family:'JetBrains Mono',monospace; font-size:16px; color:#a0a0a0; margin-top:12px;">
+            Claude Code × AI-Driven Drug Design System
+        </p>
+    </div>
+
+    <!-- Version badge -->
+    <div style="position:absolute; bottom:60px; right:120px; background:rgba(6,214,160,0.12); border:1px solid rgba(6,214,160,0.3); border-radius:8px; padding:12px 24px;">
+        <span style="font-family:'JetBrains Mono',monospace; font-size:16px; color:#06d6a0;">v1.0.0 · 2026.07</span>
+    </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SLIDE 2: WHAT IS VIBE CODING -->
+<!-- ============================================================ -->
+<div class="slide" data-canvas-width="1920" data-canvas-height="1080" style="background: linear-gradient(160deg, #0d1b2a 0%, #162032 100%);">
+
+    <!-- Slide number -->
+    <div style="position:absolute; top:50px; right:80px; font-family:'JetBrains Mono',monospace; font-size:16px; color:#00b4d8; opacity:0.6;">02 / 10</div>
+
+    <!-- Section label -->
+    <div style="position:absolute; top:80px; left:120px;">
+        <span style="font-family:'JetBrains Mono',monospace; font-size:14px; color:#00b4d8; letter-spacing:3px; text-transform:uppercase;">배경 · Background</span>
+    </div>
+
+    <div style="position:absolute; top:150px; left:120px; width:800px;">
+        <h2 style="font-family:'Noto Sans KR',sans-serif; font-weight:900; font-size:56px; color:#ffffff; line-height:1.2;">
+            바이브 코딩이란?
+        </h2>
+        <p style="font-family:'Noto Sans KR',sans-serif; font-weight:300; font-size:24px; color:#a0a0a0; margin-top:20px; line-height:1.7;">
+            AI에게 의도를 설명하면 코드가 생성되는<br/>새로운 소프트웨어 개발 패러다임
+        </p>
+    </div>
+
+    <!-- Quote box -->
+    <div style="position:absolute; top:380px; left:120px; width:750px; background:rgba(0,180,216,0.06); border-left:4px solid #00b4d8; border-radius:0 12px 12px 0; padding:30px 35px;">
+        <p style="font-family:'Noto Sans KR',sans-serif; font-weight:400; font-size:22px; color:#e0e0e0; line-height:1.7; font-style:italic;">
+            "자연어로 아이디어를 전달하고,<br/>
+            AI가 전체 파이프라인을 구축하는 과정"
+        </p>
+        <p style="font-family:'JetBrains Mono',monospace; font-size:15px; color:#00b4d8; margin-top:15px;">— Andrej Karpathy, 2025</p>
+    </div>
+
+    <!-- Key points -->
+    <div style="position:absolute; top:580px; left:120px; display:flex; gap:30px;">
+        <div style="width:230px; background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08); border-radius:12px; padding:25px;">
+            <div style="font-size:32px; margin-bottom:10px;">💬</div>
+            <p style="font-family:'Noto Sans KR',sans-serif; font-weight:700; font-size:18px; color:#ffffff;">자연어 입력</p>
+            <p style="font-family:'Noto Sans KR',sans-serif; font-weight:300; font-size:14px; color:#a0a0a0; margin-top:8px;">논문과 아이디어를 설명</p>
+        </div>
+        <div style="width:230px; background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08); border-radius:12px; padding:25px;">
+            <div style="font-size:32px; margin-bottom:10px;">🤖</div>
+            <p style="font-family:'Noto Sans KR',sans-serif; font-weight:700; font-size:18px; color:#ffffff;">AI 코드 생성</p>
+            <p style="font-family:'Noto Sans KR',sans-serif; font-weight:300; font-size:14px; color:#a0a0a0; margin-top:8px;">Claude Code가 구현</p>
+        </div>
+        <div style="width:230px; background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08); border-radius:12px; padding:25px;">
+            <div style="font-size:32px; margin-bottom:10px;">🔬</div>
+            <p style="font-family:'Noto Sans KR',sans-serif; font-weight:700; font-size:18px; color:#ffffff;">과학적 검증</p>
+            <p style="font-family:'Noto Sans KR',sans-serif; font-weight:300; font-size:14px; color:#a0a0a0; margin-top:8px;">실행 및 결과 확인</p>
+        </div>
+    </div>
+
+    <!-- Right side - code snippet visual -->
+    <div style="position:absolute; top:140px; right:80px; width:720px; background:#0a1628; border:1px solid rgba(0,180,216,0.15); border-radius:16px; padding:35px; overflow:hidden;">
+        <div style="display:flex; gap:8px; margin-bottom:20px;">
+            <div style="width:12px; height:12px; border-radius:50%; background:#ef476f;"></div>
+            <div style="width:12px; height:12px; border-radius:50%; background:#f77f00;"></div>
+            <div style="width:12px; height:12px; border-radius:50%; background:#06d6a0;"></div>
+            <span style="font-family:'JetBrains Mono',monospace; font-size:13px; color:#a0a0a0; margin-left:12px;">사용자 프롬프트</span>
+        </div>
+        <pre style="font-family:'JetBrains Mono',monospace; font-size:15px; line-height:1.7; color:#e0e0e0; white-space:pre-wrap; word-break:break-all;"><span style="color:#a0a0a0;">User:</span>
+<span style="color:#06d6a0;">"Kin-Cov 논문 기반으로</span>
+<span style="color:#06d6a0;"> Cys/Ser 공유결합 억제제</span>
+<span style="color:#06d6a0;"> 설계 파이프라인을 만들어줘.</span>
+<span style="color:#06d6a0;"> Enamine 데이터베이스도 연동해줘"</span>
+
+<span style="color:#a0a0a0;">Claude Code:</span>
+<span style="color:#00b4d8;">→ 7개 모듈 자동 생성</span>
+<span style="color:#00b4d8;">→ 12개 데이터베이스 연동</span>
+<span style="color:#00b4d8;">→ 47개 워헤드 라이브러리</span>
+<span style="color:#00b4d8;">→ 전체 파이프라인 검증 완료</span></pre>
+    </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SLIDE 3: THE PROBLEM & REFERENCE PAPER -->
+<!-- ============================================================ -->
+<div class="slide" data-canvas-width="1920" data-canvas-height="1080" style="background: linear-gradient(160deg, #0d1b2a 0%, #162032 100%);">
+    <div style="position:absolute; top:50px; right:80px; font-family:'JetBrains Mono',monospace; font-size:16px; color:#00b4d8; opacity:0.6;">03 / 10</div>
+    <div style="position:absolute; top:80px; left:120px;">
+        <span style="font-family:'JetBrains Mono',monospace; font-size:14px; color:#00b4d8; letter-spacing:3px;">참고 논문 · Reference Paper</span>
+    </div>
+
+    <div style="position:absolute; top:150px; left:120px; width:850px;">
+        <h2 style="font-family:'Noto Sans KR',sans-serif; font-weight:900; font-size:48px; color:#ffffff; line-height:1.25;">
+            Kin-Cov:<br/>공유결합 키나제 억제제의<br/>합리적 설계
+        </h2>
+    </div>
+
+    <!-- Paper citation -->
+    <div style="position:absolute; top:380px; left:120px; width:800px; background:rgba(0,180,216,0.05); border:1px solid rgba(0,180,216,0.15); border-radius:12px; padding:25px 30px;">
+        <p style="font-family:'Inter',sans-serif; font-weight:600; font-size:17px; color:#00b4d8;">Zhou et al., J. Med. Chem. 2023, 66, 7405–7420</p>
+        <p style="font-family:'Noto Sans KR',sans-serif; font-weight:300; font-size:15px; color:#a0a0a0; margin-top:8px;">"Rational Design of Covalent Kinase Inhibitors by an Integrated Computational Workflow (Kin-Cov)"</p>
+    </div>
+
+    <!-- Key results from paper -->
+    <div style="position:absolute; top:520px; left:120px; width:800px;">
+        <p style="font-family:'Noto Sans KR',sans-serif; font-weight:700; font-size:20px; color:#ffffff; margin-bottom:20px;">논문 주요 성과</p>
+        <div style="display:flex; flex-direction:column; gap:14px;">
+            <div style="display:flex; align-items:center; gap:15px;">
+                <div style="min-width:8px; height:8px; border-radius:50%; background:#06d6a0;"></div>
+                <p style="font-family:'Noto Sans KR',sans-serif; font-weight:400; font-size:18px; color:#e0e0e0;">최초의 선택적 ZAK 키나제 공유결합 억제제 발견</p>
+            </div>
+            <div style="display:flex; align-items:center; gap:15px;">
+                <div style="min-width:8px; height:8px; border-radius:50%; background:#06d6a0;"></div>
+                <p style="font-family:'Noto Sans KR',sans-serif; font-weight:400; font-size:18px; color:#e0e0e0;">IC₅₀ = 9.1 nM (화합물 7), 11.5 nM (화합물 8)</p>
+            </div>
+            <div style="display:flex; align-items:center; gap:15px;">
+                <div style="min-width:8px; height:8px; border-radius:50%; background:#06d6a0;"></div>
+                <p style="font-family:'Noto Sans KR',sans-serif; font-weight:400; font-size:18px; color:#e0e0e0;">378개 키나제 대상 KINOMEscan 선택성 확인</p>
+            </div>
+            <div style="display:flex; align-items:center; gap:15px;">
+                <div style="min-width:8px; height:8px; border-radius:50%; background:#06d6a0;"></div>
+                <p style="font-family:'Noto Sans KR',sans-serif; font-weight:400; font-size:18px; color:#e0e0e0;">X-ray 결정구조로 공유결합 결합 모드 검증</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Right side - Workflow diagram -->
+    <div style="position:absolute; top:140px; right:80px; width:680px;">
+        <p style="font-family:'Noto Sans KR',sans-serif; font-weight:700; font-size:20px; color:#ffffff; margin-bottom:25px;">Kin-Cov 워크플로우 (5단계)</p>
+
+        <div style="display:flex; flex-direction:column; gap:12px;">
+            <div style="display:flex; align-items:center; gap:15px;">
+                <div style="min-width:48px; height:48px; border-radius:10px; background:linear-gradient(135deg, #0077b6, #00b4d8); display:flex; align-items:center; justify-content:center; font-family:'Inter',sans-serif; font-weight:800; font-size:20px; color:#ffffff;">1</div>
+                <div>
+                    <p style="font-family:'Noto Sans KR',sans-serif; font-weight:700; font-size:18px; color:#ffffff;">반응성 분석 (CpHMD)</p>
+                    <p style="font-family:'Noto Sans KR',sans-serif; font-weight:300; font-size:14px; color:#a0a0a0;">Cysteine pKa 계산 → 반응성 순위 결정</p>
+                </div>
+            </div>
+            <div style="margin-left:23px; width:2px; height:12px; background:rgba(0,180,216,0.3);"></div>
+
+            <div style="display:flex; align-items:center; gap:15px;">
+                <div style="min-width:48px; height:48px; border-radius:10px; background:linear-gradient(135deg, #0077b6, #00b4d8); display:flex; align-items:center; justify-content:center; font-family:'Inter',sans-serif; font-weight:800; font-size:20px; color:#ffffff;">2</div>
+                <div>
+                    <p style="font-family:'Noto Sans KR',sans-serif; font-weight:700; font-size:18px; color:#ffffff;">접근성 분석 (REST2)</p>
+                    <p style="font-family:'Noto Sans KR',sans-serif; font-weight:300; font-size:14px; color:#a0a0a0;">Enhanced sampling으로 구조적 접근성 평가</p>
+                </div>
+            </div>
+            <div style="margin-left:23px; width:2px; height:12px; background:rgba(0,180,216,0.3);"></div>
+
+            <div style="display:flex; align-items:center; gap:15px;">
+                <div style="min-width:48px; height:48px; border-radius:10px; background:linear-gradient(135deg, #06d6a0, #00b4d8); display:flex; align-items:center; justify-content:center; font-family:'Inter',sans-serif; font-weight:800; font-size:20px; color:#ffffff;">3</div>
+                <div>
+                    <p style="font-family:'Noto Sans KR',sans-serif; font-weight:700; font-size:18px; color:#ffffff;">EWF 라이브러리</p>
+                    <p style="font-family:'Noto Sans KR',sans-serif; font-weight:300; font-size:14px; color:#a0a0a0;">전자친화적 워헤드 프래그먼트 수집</p>
+                </div>
+            </div>
+            <div style="margin-left:23px; width:2px; height:12px; background:rgba(6,214,160,0.3);"></div>
+
+            <div style="display:flex; align-items:center; gap:15px;">
+                <div style="min-width:48px; height:48px; border-radius:10px; background:linear-gradient(135deg, #f77f00, #ef476f); display:flex; align-items:center; justify-content:center; font-family:'Inter',sans-serif; font-weight:800; font-size:20px; color:#ffffff;">4</div>
+                <div>
+                    <p style="font-family:'Noto Sans KR',sans-serif; font-weight:700; font-size:18px; color:#ffffff;">후보 생성 (d_est 필터링)</p>
+                    <p style="font-family:'Noto Sans KR',sans-serif; font-weight:300; font-size:14px; color:#a0a0a0;">d_est = d_site − L_EWF 기반 길이 맞춤</p>
+                </div>
+            </div>
+            <div style="margin-left:23px; width:2px; height:12px; background:rgba(247,127,0,0.3);"></div>
+
+            <div style="display:flex; align-items:center; gap:15px;">
+                <div style="min-width:48px; height:48px; border-radius:10px; background:linear-gradient(135deg, #7209b7, #ef476f); display:flex; align-items:center; justify-content:center; font-family:'Inter',sans-serif; font-weight:800; font-size:20px; color:#ffffff;">5</div>
+                <div>
+                    <p style="font-family:'Noto Sans KR',sans-serif; font-weight:700; font-size:18px; color:#ffffff;">공유결합 도킹</p>
+                    <p style="font-family:'Noto Sans KR',sans-serif; font-weight:300; font-size:14px; color:#a0a0a0;">AutoDock/Vina로 결합 모드 예측 및 순위</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SLIDE 4: DATABASES INTEGRATED -->
+<!-- ============================================================ -->
+<div class="slide" data-canvas-width="1920" data-canvas-height="1080" style="background: linear-gradient(160deg, #0d1b2a 0%, #162032 100%);">
+    <div style="position:absolute; top:50px; right:80px; font-family:'JetBrains Mono',monospace; font-size:16px; color:#00b4d8; opacity:0.6;">04 / 10</div>
+    <div style="position:absolute; top:80px; left:120px;">
+        <span style="font-family:'JetBrains Mono',monospace; font-size:14px; color:#06d6a0; letter-spacing:3px;">데이터베이스 · Databases</span>
+    </div>
+
+    <div style="position:absolute; top:140px; left:120px; width:1000px;">
+        <h2 style="font-family:'Noto Sans KR',sans-serif; font-weight:900; font-size:52px; color:#ffffff;">
+            <span style="color:#06d6a0;">47,000+</span> 화합물 통합
+        </h2>
+        <p style="font-family:'Noto Sans KR',sans-serif; font-weight:300; font-size:22px; color:#a0a0a0; margin-top:12px;">자동 다운로드 스크립트로 7개 데이터베이스 원클릭 연동</p>
+    </div>
+
+    <!-- Database cards - Top row -->
+    <div style="position:absolute; top:290px; left:120px; display:flex; gap:20px; flex-wrap:wrap; width:1700px;">
+
+        <div style="width:390px; background:rgba(0,180,216,0.06); border:1px solid rgba(0,180,216,0.2); border-radius:14px; padding:28px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+                <span style="font-family:'Inter',sans-serif; font-weight:800; font-size:20px; color:#00b4d8;">Enamine</span>
+                <span style="font-family:'JetBrains Mono',monospace; font-size:14px; color:#06d6a0; background:rgba(6,214,160,0.12); padding:4px 10px; border-radius:6px;">~36,000</span>
+            </div>
+            <div style="display:flex; flex-direction:column; gap:6px;">
+                <p style="font-family:'Noto Sans KR',sans-serif; font-size:14px; color:#e0e0e0;">CYS-3200 · Cysteine 특이적 (6종 워헤드)</p>
+                <p style="font-family:'Noto Sans KR',sans-serif; font-size:14px; color:#e0e0e0;">SER-1600 · Serine 특이적 (5종 워헤드)</p>
+                <p style="font-family:'Noto Sans KR',sans-serif; font-size:14px; color:#e0e0e0;">CFL-8480 · 일반 공유결합 프래그먼트</p>
+                <p style="font-family:'Noto Sans KR',sans-serif; font-size:14px; color:#a0a0a0;">+ CSL, CSHL, LYS, ECPL, CMF, CSPL 등</p>
+            </div>
+        </div>
+
+        <div style="width:390px; background:rgba(6,214,160,0.06); border:1px solid rgba(6,214,160,0.2); border-radius:14px; padding:28px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+                <span style="font-family:'Inter',sans-serif; font-weight:800; font-size:20px; color:#06d6a0;">CovalentInDB 2.0</span>
+                <span style="font-family:'JetBrains Mono',monospace; font-size:14px; color:#06d6a0; background:rgba(6,214,160,0.12); padding:4px 10px; border-radius:6px;">8,303</span>
+            </div>
+            <div style="display:flex; flex-direction:column; gap:6px;">
+                <p style="font-family:'Noto Sans KR',sans-serif; font-size:14px; color:#e0e0e0;">368개 타겟 단백질</p>
+                <p style="font-family:'Noto Sans KR',sans-serif; font-size:14px; color:#e0e0e0;">3,445개 공결정 구조</p>
+                <p style="font-family:'Noto Sans KR',sans-serif; font-size:14px; color:#e0e0e0;">워헤드 타입별 분류</p>
+                <p style="font-family:'Noto Sans KR',sans-serif; font-size:14px; color:#a0a0a0;">자동 스크래핑 스크립트 포함</p>
+            </div>
+        </div>
+
+        <div style="width:390px; background:rgba(247,127,0,0.06); border:1px solid rgba(247,127,0,0.2); border-radius:14px; padding:28px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+                <span style="font-family:'Inter',sans-serif; font-weight:800; font-size:20px; color:#f77f00;">CovBinderInPDB</span>
+                <span style="font-family:'JetBrains Mono',monospace; font-size:14px; color:#f77f00; background:rgba(247,127,0,0.12); padding:4px 10px; border-radius:6px;">7,375</span>
+            </div>
+            <div style="display:flex; flex-direction:column; gap:6px;">
+                <p style="font-family:'Noto Sans KR',sans-serif; font-size:14px; color:#e0e0e0;">2,189개 고유 바인더</p>
+                <p style="font-family:'Noto Sans KR',sans-serif; font-size:14px; color:#e0e0e0;">9종 아미노산 타겟 (Cys, Ser, Lys...)</p>
+                <p style="font-family:'Noto Sans KR',sans-serif; font-size:14px; color:#e0e0e0;">구조 기반 공유결합 바인더</p>
+                <p style="font-family:'Noto Sans KR',sans-serif; font-size:14px; color:#a0a0a0;">SMILES 포함 다운로드</p>
+            </div>
+        </div>
+
+        <div style="width:390px; background:rgba(114,9,183,0.06); border:1px solid rgba(114,9,183,0.2); border-radius:14px; padding:28px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+                <span style="font-family:'Inter',sans-serif; font-weight:800; font-size:20px; color:#7209b7;">SyntaLinker</span>
+                <span style="font-family:'JetBrains Mono',monospace; font-size:14px; color:#7209b7; background:rgba(114,9,183,0.12); padding:4px 10px; border-radius:6px;">AI</span>
+            </div>
+            <div style="display:flex; flex-direction:column; gap:6px;">
+                <p style="font-family:'Noto Sans KR',sans-serif; font-size:14px; color:#e0e0e0;">딥러닝 프래그먼트 링커 생성</p>
+                <p style="font-family:'Noto Sans KR',sans-serif; font-size:14px; color:#e0e0e0;">Conditional Transformer 기반</p>
+                <p style="font-family:'Noto Sans KR',sans-serif; font-size:14px; color:#e0e0e0;">GitHub 자동 클론</p>
+            </div>
+        </div>
+
+        <div style="width:390px; background:rgba(239,71,111,0.06); border:1px solid rgba(239,71,111,0.2); border-radius:14px; padding:28px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+                <span style="font-family:'Inter',sans-serif; font-weight:800; font-size:20px; color:#ef476f;">내장 워헤드 SMILES</span>
+                <span style="font-family:'JetBrains Mono',monospace; font-size:14px; color:#ef476f; background:rgba(239,71,111,0.12); padding:4px 10px; border-radius:6px;">47</span>
+            </div>
+            <div style="display:flex; flex-direction:column; gap:6px;">
+                <p style="font-family:'Noto Sans KR',sans-serif; font-size:14px; color:#e0e0e0;">24개 Cysteine 반응성 워헤드</p>
+                <p style="font-family:'Noto Sans KR',sans-serif; font-size:14px; color:#e0e0e0;">19개 Serine 반응성 워헤드</p>
+                <p style="font-family:'Noto Sans KR',sans-serif; font-size:14px; color:#e0e0e0;">4개 이중(Cys+Ser) 반응성</p>
+            </div>
+        </div>
+
+        <div style="width:390px; background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.1); border-radius:14px; padding:28px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+                <span style="font-family:'Inter',sans-serif; font-weight:800; font-size:20px; color:#a0a0a0;">KinCov EWF + Life Chemicals</span>
+                <span style="font-family:'JetBrains Mono',monospace; font-size:14px; color:#a0a0a0; background:rgba(255,255,255,0.06); padding:4px 10px; border-radius:6px;">7,100+</span>
+            </div>
+            <div style="display:flex; flex-direction:column; gap:6px;">
+                <p style="font-family:'Noto Sans KR',sans-serif; font-size:14px; color:#e0e0e0;">KinCov EWF: 1,028종 (키나제 지역별)</p>
+                <p style="font-family:'Noto Sans KR',sans-serif; font-size:14px; color:#e0e0e0;">Life Chemicals: 6,100개 프래그먼트</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SLIDE 5: PIPELINE ARCHITECTURE -->
+<!-- ============================================================ -->
+<div class="slide" data-canvas-width="1920" data-canvas-height="1080" style="background: linear-gradient(160deg, #0d1b2a 0%, #162032 100%);">
+    <div style="position:absolute; top:50px; right:80px; font-family:'JetBrains Mono',monospace; font-size:16px; color:#00b4d8; opacity:0.6;">05 / 10</div>
+    <div style="position:absolute; top:80px; left:120px;">
+        <span style="font-family:'JetBrains Mono',monospace; font-size:14px; color:#f77f00; letter-spacing:3px;">아키텍처 · Architecture</span>
+    </div>
+
+    <div style="position:absolute; top:140px; left:120px; width:1700px;">
+        <h2 style="font-family:'Noto Sans KR',sans-serif; font-weight:900; font-size:52px; color:#ffffff;">
+            CovLib 파이프라인 구조
+        </h2>
+    </div>
+
+    <!-- Flow diagram -->
+    <div style="position:absolute; top:260px; left:80px; width:1760px; display:flex; align-items:center; justify-content:center; gap:8px;">
+        <!-- Step 1 -->
+        <div style="width:280px; background:linear-gradient(180deg, rgba(0,119,182,0.15), rgba(0,119,182,0.05)); border:2px solid rgba(0,119,182,0.4); border-radius:16px; padding:24px; text-align:center;">
+            <div style="width:50px; height:50px; border-radius:12px; background:#0077b6; display:flex; align-items:center; justify-content:center; margin:0 auto 12px; font-family:'Inter',sans-serif; font-weight:900; font-size:22px; color:#fff;">1</div>
+            <p style="font-family:'Noto Sans KR',sans-serif; font-weight:700; font-size:18px; color:#00b4d8;">반응성 분석</p>
+            <p style="font-family:'JetBrains Mono',monospace; font-size:13px; color:#a0a0a0; margin-top:6px;">reactivity.py</p>
+            <p style="font-family:'Noto Sans KR',sans-serif; font-size:13px; color:#e0e0e0; margin-top:8px;">CpHMD / PROPKA3<br/>pKa 계산</p>
+        </div>
+        <div style="font-size:28px; color:#00b4d8;">→</div>
+        <!-- Step 2 -->
+        <div style="width:280px; background:linear-gradient(180deg, rgba(0,180,216,0.15), rgba(0,180,216,0.05)); border:2px solid rgba(0,180,216,0.4); border-radius:16px; padding:24px; text-align:center;">
+            <div style="width:50px; height:50px; border-radius:12px; background:#00b4d8; display:flex; align-items:center; justify-content:center; margin:0 auto 12px; font-family:'Inter',sans-serif; font-weight:900; font-size:22px; color:#fff;">2</div>
+            <p style="font-family:'Noto Sans KR',sans-serif; font-weight:700; font-size:18px; color:#00b4d8;">접근성 분석</p>
+            <p style="font-family:'JetBrains Mono',monospace; font-size:13px; color:#a0a0a0; margin-top:6px;">accessibility.py</p>
+            <p style="font-family:'Noto Sans KR',sans-serif; font-size:13px; color:#e0e0e0; margin-top:8px;">REST2 / MD<br/>d_site 측정</p>
+        </div>
+        <div style="font-size:28px; color:#06d6a0;">→</div>
+        <!-- Step 3 -->
+        <div style="width:280px; background:linear-gradient(180deg, rgba(6,214,160,0.15), rgba(6,214,160,0.05)); border:2px solid rgba(6,214,160,0.4); border-radius:16px; padding:24px; text-align:center;">
+            <div style="width:50px; height:50px; border-radius:12px; background:#06d6a0; display:flex; align-items:center; justify-content:center; margin:0 auto 12px; font-family:'Inter',sans-serif; font-weight:900; font-size:22px; color:#0d1b2a;">3</div>
+            <p style="font-family:'Noto Sans KR',sans-serif; font-weight:700; font-size:18px; color:#06d6a0;">EWF 라이브러리</p>
+            <p style="font-family:'JetBrains Mono',monospace; font-size:13px; color:#a0a0a0; margin-top:6px;">ewf_library.py</p>
+            <p style="font-family:'Noto Sans KR',sans-serif; font-size:13px; color:#e0e0e0; margin-top:8px;">워헤드 수집<br/>SMARTS 분류</p>
+        </div>
+        <div style="font-size:28px; color:#f77f00;">→</div>
+        <!-- Step 4 -->
+        <div style="width:280px; background:linear-gradient(180deg, rgba(247,127,0,0.15), rgba(247,127,0,0.05)); border:2px solid rgba(247,127,0,0.4); border-radius:16px; padding:24px; text-align:center;">
+            <div style="width:50px; height:50px; border-radius:12px; background:#f77f00; display:flex; align-items:center; justify-content:center; margin:0 auto 12px; font-family:'Inter',sans-serif; font-weight:900; font-size:22px; color:#fff;">4</div>
+            <p style="font-family:'Noto Sans KR',sans-serif; font-weight:700; font-size:18px; color:#f77f00;">후보 생성</p>
+            <p style="font-family:'JetBrains Mono',monospace; font-size:13px; color:#a0a0a0; margin-top:6px;">candidate_gen.py</p>
+            <p style="font-family:'Noto Sans KR',sans-serif; font-size:13px; color:#e0e0e0; margin-top:8px;">d_est 필터링<br/>약물 유사성 검증</p>
+        </div>
+        <div style="font-size:28px; color:#ef476f;">→</div>
+        <!-- Step 5 -->
+        <div style="width:280px; background:linear-gradient(180deg, rgba(239,71,111,0.15), rgba(239,71,111,0.05)); border:2px solid rgba(239,71,111,0.4); border-radius:16px; padding:24px; text-align:center;">
+            <div style="width:50px; height:50px; border-radius:12px; background:#ef476f; display:flex; align-items:center; justify-content:center; margin:0 auto 12px; font-family:'Inter',sans-serif; font-weight:900; font-size:22px; color:#fff;">5</div>
+            <p style="font-family:'Noto Sans KR',sans-serif; font-weight:700; font-size:18px; color:#ef476f;">공유결합 도킹</p>
+            <p style="font-family:'JetBrains Mono',monospace; font-size:13px; color:#a0a0a0; margin-top:6px;">covalent_dock.py</p>
+            <p style="font-family:'Noto Sans KR',sans-serif; font-size:13px; color:#e0e0e0; margin-top:8px;">Vina / AutoDock<br/>결합 에너지 계산</p>
+        </div>
+    </div>
+
+    <!-- Module files list -->
+    <div style="position:absolute; top:600px; left:120px; width:1700px;">
+        <p style="font-family:'Noto Sans KR',sans-serif; font-weight:700; font-size:20px; color:#ffffff; margin-bottom:20px;">생성된 코드 구조</p>
+        <div style="display:flex; gap:25px;">
+            <div style="flex:1; background:#0a1628; border:1px solid rgba(0,180,216,0.12); border-radius:12px; padding:20px;">
+                <p style="font-family:'JetBrains Mono',monospace; font-size:14px; color:#00b4d8; margin-bottom:10px;">modules/</p>
+                <pre style="font-family:'JetBrains Mono',monospace; font-size:13px; color:#e0e0e0; line-height:1.6;">├── pipeline.py        <span style="color:#a0a0a0;"># 메인 오케스트레이터</span>
+├── reactivity.py      <span style="color:#a0a0a0;"># CpHMD/pKa 분석</span>
+├── accessibility.py   <span style="color:#a0a0a0;"># REST2/MD 분석</span>
+├── ewf_library.py     <span style="color:#a0a0a0;"># EWF 라이브러리</span>
+├── candidate_gen.py   <span style="color:#a0a0a0;"># 후보 생성</span>
+└── covalent_dock.py   <span style="color:#a0a0a0;"># 공유결합 도킹</span></pre>
+            </div>
+            <div style="flex:1; background:#0a1628; border:1px solid rgba(6,214,160,0.12); border-radius:12px; padding:20px;">
+                <p style="font-family:'JetBrains Mono',monospace; font-size:14px; color:#06d6a0; margin-bottom:10px;">scripts/</p>
+                <pre style="font-family:'JetBrains Mono',monospace; font-size:13px; color:#e0e0e0; line-height:1.6;">├── download_databases.py  <span style="color:#a0a0a0;"># DB 다운로더</span>
+├── run_example.py         <span style="color:#a0a0a0;"># ZAK 예제</span>
+├── cphmd_run/             <span style="color:#a0a0a0;"># AMBER 스크립트</span>
+└── rest2_run/             <span style="color:#a0a0a0;"># GROMACS 스크립트</span></pre>
+            </div>
+            <div style="flex:1; background:#0a1628; border:1px solid rgba(247,127,0,0.12); border-radius:12px; padding:20px;">
+                <p style="font-family:'JetBrains Mono',monospace; font-size:14px; color:#f77f00; margin-bottom:10px;">config/</p>
+                <pre style="font-family:'JetBrains Mono',monospace; font-size:13px; color:#e0e0e0; line-height:1.6;">└── pipeline_config.yaml
+    <span style="color:#a0a0a0;">  # 타겟 설정</span>
+    <span style="color:#a0a0a0;">  # DB 경로</span>
+    <span style="color:#a0a0a0;">  # 시뮬레이션 파라미터</span>
+    <span style="color:#a0a0a0;">  # 도킹 설정</span>
+    <span style="color:#a0a0a0;">  # ADMET 필터</span></pre>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SLIDE 6: WARHEAD CHEMISTRY -->
+<!-- ============================================================ -->
+<div class="slide" data-canvas-width="1920" data-canvas-height="1080" style="background: linear-gradient(160deg, #0d1b2a 0%, #162032 100%);">
+    <div style="position:absolute; top:50px; right:80px; font-family:'JetBrains Mono',monospace; font-size:16px; color:#00b4d8; opacity:0.6;">06 / 10</div>
+    <div style="position:absolute; top:80px; left:120px;">
+        <span style="font-family:'JetBrains Mono',monospace; font-size:14px; color:#ef476f; letter-spacing:3px;">화학 · Warhead Chemistry</span>
+    </div>
+
+    <div style="position:absolute; top:140px; left:120px; width:1000px;">
+        <h2 style="font-family:'Noto Sans KR',sans-serif; font-weight:900; font-size:52px; color:#ffffff;">
+            Cys / Ser 반응성 워헤드
+        </h2>
+    </div>
+
+    <!-- Cysteine warheads -->
+    <div style="position:absolute; top:260px; left:120px; width:800px;">
+        <div style="display:flex; align-items:center; gap:12px; margin-bottom:20px;">
+            <div style="width:14px; height:14px; border-radius:3px; background:#00b4d8;"></div>
+            <p style="font-family:'Noto Sans KR',sans-serif; font-weight:700; font-size:24px; color:#00b4d8;">Cysteine 타겟 워헤드 (24종)</p>
+        </div>
+        <div style="display:flex; flex-wrap:wrap; gap:10px;">
+            <span style="font-family:'JetBrains Mono',monospace; font-size:14px; color:#e0e0e0; background:rgba(0,180,216,0.1); border:1px solid rgba(0,180,216,0.25); border-radius:8px; padding:8px 14px;">아크릴아마이드</span>
+            <span style="font-family:'JetBrains Mono',monospace; font-size:14px; color:#e0e0e0; background:rgba(0,180,216,0.1); border:1px solid rgba(0,180,216,0.25); border-radius:8px; padding:8px 14px;">클로로아세트아마이드</span>
+            <span style="font-family:'JetBrains Mono',monospace; font-size:14px; color:#e0e0e0; background:rgba(0,180,216,0.1); border:1px solid rgba(0,180,216,0.25); border-radius:8px; padding:8px 14px;">프로피올아마이드</span>
+            <span style="font-family:'JetBrains Mono',monospace; font-size:14px; color:#e0e0e0; background:rgba(0,180,216,0.1); border:1px solid rgba(0,180,216,0.25); border-radius:8px; padding:8px 14px;">비닐 설폰아마이드</span>
+            <span style="font-family:'JetBrains Mono',monospace; font-size:14px; color:#e0e0e0; background:rgba(0,180,216,0.1); border:1px solid rgba(0,180,216,0.25); border-radius:8px; padding:8px 14px;">시아노아크릴아마이드</span>
+            <span style="font-family:'JetBrains Mono',monospace; font-size:14px; color:#e0e0e0; background:rgba(0,180,216,0.1); border:1px solid rgba(0,180,216,0.25); border-radius:8px; padding:8px 14px;">말레이미드</span>
+            <span style="font-family:'JetBrains Mono',monospace; font-size:14px; color:#e0e0e0; background:rgba(0,180,216,0.1); border:1px solid rgba(0,180,216,0.25); border-radius:8px; padding:8px 14px;">부틴아마이드</span>
+            <span style="font-family:'JetBrains Mono',monospace; font-size:14px; color:#e0e0e0; background:rgba(0,180,216,0.1); border:1px solid rgba(0,180,216,0.25); border-radius:8px; padding:8px 14px;">할로아세트아마이드</span>
+        </div>
+    </div>
+
+    <!-- Serine warheads -->
+    <div style="position:absolute; top:510px; left:120px; width:800px;">
+        <div style="display:flex; align-items:center; gap:12px; margin-bottom:20px;">
+            <div style="width:14px; height:14px; border-radius:3px; background:#06d6a0;"></div>
+            <p style="font-family:'Noto Sans KR',sans-serif; font-weight:700; font-size:24px; color:#06d6a0;">Serine 타겟 워헤드 (19종)</p>
+        </div>
+        <div style="display:flex; flex-wrap:wrap; gap:10px;">
+            <span style="font-family:'JetBrains Mono',monospace; font-size:14px; color:#e0e0e0; background:rgba(6,214,160,0.1); border:1px solid rgba(6,214,160,0.25); border-radius:8px; padding:8px 14px;">설포닐 플루오라이드</span>
+            <span style="font-family:'JetBrains Mono',monospace; font-size:14px; color:#e0e0e0; background:rgba(6,214,160,0.1); border:1px solid rgba(6,214,160,0.25); border-radius:8px; padding:8px 14px;">에폭사이드</span>
+            <span style="font-family:'JetBrains Mono',monospace; font-size:14px; color:#e0e0e0; background:rgba(6,214,160,0.1); border:1px solid rgba(6,214,160,0.25); border-radius:8px; padding:8px 14px;">베타-락탐</span>
+            <span style="font-family:'JetBrains Mono',monospace; font-size:14px; color:#e0e0e0; background:rgba(6,214,160,0.1); border:1px solid rgba(6,214,160,0.25); border-radius:8px; padding:8px 14px;">보론산</span>
+            <span style="font-family:'JetBrains Mono',monospace; font-size:14px; color:#e0e0e0; background:rgba(6,214,160,0.1); border:1px solid rgba(6,214,160,0.25); border-radius:8px; padding:8px 14px;">알데하이드</span>
+            <span style="font-family:'JetBrains Mono',monospace; font-size:14px; color:#e0e0e0; background:rgba(6,214,160,0.1); border:1px solid rgba(6,214,160,0.25); border-radius:8px; padding:8px 14px;">니트릴</span>
+            <span style="font-family:'JetBrains Mono',monospace; font-size:14px; color:#e0e0e0; background:rgba(6,214,160,0.1); border:1px solid rgba(6,214,160,0.25); border-radius:8px; padding:8px 14px;">활성 에스터</span>
+            <span style="font-family:'JetBrains Mono',monospace; font-size:14px; color:#e0e0e0; background:rgba(6,214,160,0.1); border:1px solid rgba(6,214,160,0.25); border-radius:8px; padding:8px 14px;">포스포닐 플루오라이드</span>
+        </div>
+    </div>
+
+    <!-- Right side: SMARTS detection -->
+    <div style="position:absolute; top:260px; right:80px; width:680px; background:#0a1628; border:1px solid rgba(239,71,111,0.15); border-radius:16px; padding:30px;">
+        <p style="font-family:'Noto Sans KR',sans-serif; font-weight:700; font-size:20px; color:#ef476f; margin-bottom:18px;">자동 워헤드 인식 (SMARTS)</p>
+        <pre style="font-family:'JetBrains Mono',monospace; font-size:14px; color:#e0e0e0; line-height:2;">
+<span style="color:#a0a0a0;"># Cysteine 반응성</span>
+<span style="color:#00b4d8;">아크릴아마이드:</span>  [CH2]=[CH]-[C](=O)-[N]
+<span style="color:#00b4d8;">클로로아세트:</span>    [Cl]-[CH2]-[C](=O)-[N]
+<span style="color:#00b4d8;">비닐설폰:</span>       [CH2]=[CH]-[S](=O)(=O)
+
+<span style="color:#a0a0a0;"># Serine 반응성</span>
+<span style="color:#06d6a0;">설포닐 F:</span>      [S](=O)(=O)-[F]
+<span style="color:#06d6a0;">에폭사이드:</span>      [C]1-[O]-[C]1
+<span style="color:#06d6a0;">보론산:</span>         [B](-[OH])-[OH]</pre>
+    </div>
+
+    <!-- Key equation -->
+    <div style="position:absolute; bottom:80px; left:120px; width:1680px; background:rgba(247,127,0,0.06); border:1px solid rgba(247,127,0,0.2); border-radius:14px; padding:24px 35px; display:flex; align-items:center; gap:40px;">
+        <div>
+            <p style="font-family:'Noto Sans KR',sans-serif; font-weight:700; font-size:20px; color:#f77f00;">핵심 공식</p>
+        </div>
+        <div style="font-family:'JetBrains Mono',monospace; font-size:26px; color:#ffffff;">
+            d<sub>est</sub> = d<sub>site</sub> − L<sub>EWF</sub>
+        </div>
+        <div style="height:40px; width:1px; background:rgba(247,127,0,0.3);"></div>
+        <p style="font-family:'Noto Sans KR',sans-serif; font-size:16px; color:#a0a0a0;">
+            d_est가 0에 가까울수록 최적 · 임계값: −5Å &lt; d_est &lt; 5Å (완화) / −3Å &lt; d_est &lt; 3Å (엄격)
+        </p>
+    </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SLIDE 7: ZAK KINASE VALIDATION -->
+<!-- ============================================================ -->
+<div class="slide" data-canvas-width="1920" data-canvas-height="1080" style="background: linear-gradient(160deg, #0d1b2a 0%, #162032 100%);">
+    <div style="position:absolute; top:50px; right:80px; font-family:'JetBrains Mono',monospace; font-size:16px; color:#00b4d8; opacity:0.6;">07 / 10</div>
+    <div style="position:absolute; top:80px; left:120px;">
+        <span style="font-family:'JetBrains Mono',monospace; font-size:14px; color:#06d6a0; letter-spacing:3px;">검증 · Validation</span>
+    </div>
+
+    <div style="position:absolute; top:140px; left:120px; width:1200px;">
+        <h2 style="font-family:'Noto Sans KR',sans-serif; font-weight:900; font-size:52px; color:#ffffff;">
+            ZAK 키나제 검증 결과
+        </h2>
+        <p style="font-family:'Noto Sans KR',sans-serif; font-weight:300; font-size:22px; color:#a0a0a0; margin-top:10px;">PDB: 6JUT · Cys22 (P-loop), Cys150 (xDFG)</p>
+    </div>
+
+    <!-- Results cards -->
+    <div style="position:absolute; top:300px; left:120px; display:flex; gap:25px;">
+
+        <!-- Reactivity results -->
+        <div style="width:400px; background:rgba(0,180,216,0.06); border:1px solid rgba(0,180,216,0.2); border-radius:14px; padding:30px;">
+            <p style="font-family:'Noto Sans KR',sans-serif; font-weight:700; font-size:22px; color:#00b4d8; margin-bottom:18px;">Step 1: 반응성 분석</p>
+            <div style="background:#0a1628; border-radius:10px; padding:18px; margin-bottom:15px;">
+                <table style="width:100%; font-family:'JetBrains Mono',monospace; font-size:15px; color:#e0e0e0; border-collapse:collapse;">
+                    <tr style="color:#a0a0a0; border-bottom:1px solid rgba(255,255,255,0.1);">
+                        <td style="padding:6px 0;">잔기</td><td>pKa</td><td>점수</td><td>등급</td>
+                    </tr>
+                    <tr><td style="padding:6px 0; color:#06d6a0;">CYS22</td><td>8.4</td><td>6.6</td><td style="color:#06d6a0;">활성</td></tr>
+                    <tr><td style="padding:6px 0; color:#06d6a0;">CYS150</td><td>8.4</td><td>6.6</td><td style="color:#06d6a0;">활성</td></tr>
+                </table>
+            </div>
+            <p style="font-family:'Noto Sans KR',sans-serif; font-size:14px; color:#a0a0a0;">두 잔기 모두 타겟 가능 (moderate 반응성)</p>
+        </div>
+
+        <!-- Accessibility results -->
+        <div style="width:400px; background:rgba(6,214,160,0.06); border:1px solid rgba(6,214,160,0.2); border-radius:14px; padding:30px;">
+            <p style="font-family:'Noto Sans KR',sans-serif; font-weight:700; font-size:22px; color:#06d6a0; margin-bottom:18px;">Step 2: 접근성 분석</p>
+            <div style="background:#0a1628; border-radius:10px; padding:18px; margin-bottom:15px;">
+                <table style="width:100%; font-family:'JetBrains Mono',monospace; font-size:15px; color:#e0e0e0; border-collapse:collapse;">
+                    <tr style="color:#a0a0a0; border-bottom:1px solid rgba(255,255,255,0.1);">
+                        <td style="padding:6px 0;">잔기</td><td>d_site</td><td>반응 원자</td>
+                    </tr>
+                    <tr><td style="padding:6px 0;">CYS22</td><td style="color:#f77f00;">4.1 Å</td><td>SG (티올)</td></tr>
+                    <tr><td style="padding:6px 0;">CYS150</td><td style="color:#f77f00;">3.6 Å</td><td>SG (티올)</td></tr>
+                </table>
+            </div>
+            <p style="font-family:'Noto Sans KR',sans-serif; font-size:14px; color:#a0a0a0;">결정 구조 기반 정적 분석 수행</p>
+        </div>
+
+        <!-- Candidate results -->
+        <div style="width:400px; background:rgba(239,71,111,0.06); border:1px solid rgba(239,71,111,0.2); border-radius:14px; padding:30px;">
+            <p style="font-family:'Noto Sans KR',sans-serif; font-weight:700; font-size:22px; color:#ef476f; margin-bottom:18px;">Step 4: 후보 생성 결과</p>
+            <div style="background:#0a1628; border-radius:10px; padding:18px; margin-bottom:15px;">
+                <div style="display:flex; flex-direction:column; gap:10px; font-family:'JetBrains Mono',monospace; font-size:14px; color:#e0e0e0;">
+                    <div style="display:flex; justify-content:space-between;"><span>EWF 통과:</span><span style="color:#06d6a0;">23개</span></div>
+                    <div style="display:flex; justify-content:space-between;"><span>후보 생성:</span><span style="color:#06d6a0;">207개</span></div>
+                    <div style="display:flex; justify-content:space-between;"><span>필터 통과:</span><span style="color:#06d6a0;">207개</span></div>
+                    <div style="display:flex; justify-content:space-between;"><span>고유 후보:</span><span style="color:#f77f00; font-weight:700;">5개</span></div>
+                </div>
+            </div>
+            <p style="font-family:'Noto Sans KR',sans-serif; font-size:14px; color:#a0a0a0;">아크릴아마이드, 클로로아세트아마이드 등</p>
+        </div>
+    </div>
+
+    <!-- Top candidates -->
+    <div style="position:absolute; top:740px; left:120px; width:1680px; background:#0a1628; border:1px solid rgba(0,180,216,0.12); border-radius:14px; padding:25px 30px;">
+        <p style="font-family:'Noto Sans KR',sans-serif; font-weight:700; font-size:18px; color:#ffffff; margin-bottom:15px;">생성된 Top 후보 화합물</p>
+        <table style="width:100%; font-family:'JetBrains Mono',monospace; font-size:14px; color:#e0e0e0; border-collapse:collapse;">
+            <tr style="color:#a0a0a0; border-bottom:1px solid rgba(255,255,255,0.1);">
+                <td style="padding:8px 0; width:5%;">#</td><td style="width:10%;">Score</td><td style="width:10%;">d_est</td><td style="width:8%;">MW</td><td style="width:25%;">워헤드</td><td>부착 방식</td>
+            </tr>
+            <tr style="border-bottom:1px solid rgba(255,255,255,0.05);">
+                <td style="padding:8px 0; color:#f77f00;">1</td><td style="color:#06d6a0;">10.8</td><td>0.5Å</td><td>588</td><td>피페라진 N-아실화</td><td>piperazine_N_acyl</td>
+            </tr>
+            <tr style="border-bottom:1px solid rgba(255,255,255,0.05);">
+                <td style="padding:8px 0; color:#f77f00;">2</td><td style="color:#06d6a0;">10.6</td><td>0.5Å</td><td>678</td><td>클로로아세트아마이드</td><td>amine_C(=O)CCCl</td>
+            </tr>
+            <tr>
+                <td style="padding:8px 0; color:#f77f00;">3</td><td style="color:#06d6a0;">10.6</td><td>0.5Å</td><td>642</td><td>아크릴아마이드</td><td>amine_C(=O)C=C</td>
+            </tr>
+        </table>
+    </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SLIDE 8: TOOLS ECOSYSTEM -->
+<!-- ============================================================ -->
+<div class="slide" data-canvas-width="1920" data-canvas-height="1080" style="background: linear-gradient(160deg, #0d1b2a 0%, #162032 100%);">
+    <div style="position:absolute; top:50px; right:80px; font-family:'JetBrains Mono',monospace; font-size:16px; color:#00b4d8; opacity:0.6;">08 / 10</div>
+    <div style="position:absolute; top:80px; left:120px;">
+        <span style="font-family:'JetBrains Mono',monospace; font-size:14px; color:#7209b7; letter-spacing:3px;">도구 생태계 · Tools</span>
+    </div>
+
+    <div style="position:absolute; top:140px; left:120px; width:1200px;">
+        <h2 style="font-family:'Noto Sans KR',sans-serif; font-weight:900; font-size:52px; color:#ffffff;">
+            연동된 도구 및 라이브러리
+        </h2>
+    </div>
+
+    <!-- Tools grid -->
+    <div style="position:absolute; top:280px; left:120px; display:flex; gap:25px; flex-wrap:wrap; width:1700px;">
+        <!-- Available tools -->
+        <div style="width:380px; background:rgba(6,214,160,0.06); border:1px solid rgba(6,214,160,0.2); border-radius:14px; padding:25px;">
+            <p style="font-family:'Noto Sans KR',sans-serif; font-weight:700; font-size:20px; color:#06d6a0; margin-bottom:15px;">사용 가능 도구</p>
+            <div style="display:flex; flex-direction:column; gap:10px;">
+                <div style="display:flex; align-items:center; gap:10px;"><span style="color:#06d6a0; font-size:16px;">●</span><span style="font-family:'JetBrains Mono',monospace; font-size:15px; color:#e0e0e0;">GROMACS</span><span style="font-family:'Noto Sans KR',sans-serif; font-size:13px; color:#a0a0a0;">— MD 시뮬레이션</span></div>
+                <div style="display:flex; align-items:center; gap:10px;"><span style="color:#06d6a0; font-size:16px;">●</span><span style="font-family:'JetBrains Mono',monospace; font-size:15px; color:#e0e0e0;">AutoDock Vina</span><span style="font-family:'Noto Sans KR',sans-serif; font-size:13px; color:#a0a0a0;">— 도킹</span></div>
+                <div style="display:flex; align-items:center; gap:10px;"><span style="color:#06d6a0; font-size:16px;">●</span><span style="font-family:'JetBrains Mono',monospace; font-size:15px; color:#e0e0e0;">Open Babel</span><span style="font-family:'Noto Sans KR',sans-serif; font-size:13px; color:#a0a0a0;">— 분자 변환</span></div>
+                <div style="display:flex; align-items:center; gap:10px;"><span style="color:#06d6a0; font-size:16px;">●</span><span style="font-family:'JetBrains Mono',monospace; font-size:15px; color:#e0e0e0;">PyMOL</span><span style="font-family:'Noto Sans KR',sans-serif; font-size:13px; color:#a0a0a0;">— 시각화</span></div>
+                <div style="display:flex; align-items:center; gap:10px;"><span style="color:#06d6a0; font-size:16px;">●</span><span style="font-family:'JetBrains Mono',monospace; font-size:15px; color:#e0e0e0;">PROPKA3</span><span style="font-family:'Noto Sans KR',sans-serif; font-size:13px; color:#a0a0a0;">— pKa 예측</span></div>
+            </div>
+        </div>
+
+        <!-- Python libraries -->
+        <div style="width:380px; background:rgba(0,180,216,0.06); border:1px solid rgba(0,180,216,0.2); border-radius:14px; padding:25px;">
+            <p style="font-family:'Noto Sans KR',sans-serif; font-weight:700; font-size:20px; color:#00b4d8; margin-bottom:15px;">Python 라이브러리</p>
+            <div style="display:flex; flex-direction:column; gap:10px;">
+                <div style="display:flex; align-items:center; gap:10px;"><span style="color:#00b4d8; font-size:16px;">●</span><span style="font-family:'JetBrains Mono',monospace; font-size:15px; color:#e0e0e0;">RDKit</span><span style="font-family:'Noto Sans KR',sans-serif; font-size:13px; color:#a0a0a0;">— 화학정보학</span></div>
+                <div style="display:flex; align-items:center; gap:10px;"><span style="color:#00b4d8; font-size:16px;">●</span><span style="font-family:'JetBrains Mono',monospace; font-size:15px; color:#e0e0e0;">MDAnalysis</span><span style="font-family:'Noto Sans KR',sans-serif; font-size:13px; color:#a0a0a0;">— 궤적 분석</span></div>
+                <div style="display:flex; align-items:center; gap:10px;"><span style="color:#00b4d8; font-size:16px;">●</span><span style="font-family:'JetBrains Mono',monospace; font-size:15px; color:#e0e0e0;">BioPython</span><span style="font-family:'Noto Sans KR',sans-serif; font-size:13px; color:#a0a0a0;">— PDB 처리</span></div>
+                <div style="display:flex; align-items:center; gap:10px;"><span style="color:#00b4d8; font-size:16px;">●</span><span style="font-family:'JetBrains Mono',monospace; font-size:15px; color:#e0e0e0;">ProDy</span><span style="font-family:'Noto Sans KR',sans-serif; font-size:13px; color:#a0a0a0;">— 단백질 동역학</span></div>
+                <div style="display:flex; align-items:center; gap:10px;"><span style="color:#00b4d8; font-size:16px;">●</span><span style="font-family:'JetBrains Mono',monospace; font-size:15px; color:#e0e0e0;">NumPy/SciPy</span><span style="font-family:'Noto Sans KR',sans-serif; font-size:13px; color:#a0a0a0;">— 수치 계산</span></div>
+            </div>
+        </div>
+
+        <!-- AI/ML tools -->
+        <div style="width:380px; background:rgba(114,9,183,0.06); border:1px solid rgba(114,9,183,0.2); border-radius:14px; padding:25px;">
+            <p style="font-family:'Noto Sans KR',sans-serif; font-weight:700; font-size:20px; color:#7209b7; margin-bottom:15px;">AI / 딥러닝</p>
+            <div style="display:flex; flex-direction:column; gap:10px;">
+                <div style="display:flex; align-items:center; gap:10px;"><span style="color:#7209b7; font-size:16px;">●</span><span style="font-family:'JetBrains Mono',monospace; font-size:15px; color:#e0e0e0;">Claude Code</span><span style="font-family:'Noto Sans KR',sans-serif; font-size:13px; color:#a0a0a0;">— 코드 생성</span></div>
+                <div style="display:flex; align-items:center; gap:10px;"><span style="color:#7209b7; font-size:16px;">●</span><span style="font-family:'JetBrains Mono',monospace; font-size:15px; color:#e0e0e0;">SyntaLinker</span><span style="font-family:'Noto Sans KR',sans-serif; font-size:13px; color:#a0a0a0;">— 프래그먼트 링커</span></div>
+                <div style="display:flex; align-items:center; gap:10px;"><span style="color:#7209b7; font-size:16px;">●</span><span style="font-family:'JetBrains Mono',monospace; font-size:15px; color:#e0e0e0;">SMARTS 패턴</span><span style="font-family:'Noto Sans KR',sans-serif; font-size:13px; color:#a0a0a0;">— 자동 워헤드 인식</span></div>
+            </div>
+        </div>
+
+        <!-- Simulation scripts -->
+        <div style="width:380px; background:rgba(247,127,0,0.06); border:1px solid rgba(247,127,0,0.2); border-radius:14px; padding:25px;">
+            <p style="font-family:'Noto Sans KR',sans-serif; font-weight:700; font-size:20px; color:#f77f00; margin-bottom:15px;">자동 생성 스크립트</p>
+            <div style="display:flex; flex-direction:column; gap:10px;">
+                <div style="display:flex; align-items:center; gap:10px;"><span style="color:#f77f00; font-size:16px;">●</span><span style="font-family:'Noto Sans KR',sans-serif; font-size:15px; color:#e0e0e0;">CpHMD AMBER 스크립트 (pH 6-18)</span></div>
+                <div style="display:flex; align-items:center; gap:10px;"><span style="color:#f77f00; font-size:16px;">●</span><span style="font-family:'Noto Sans KR',sans-serif; font-size:15px; color:#e0e0e0;">REST2 GROMACS 스크립트 (8 레플리카)</span></div>
+                <div style="display:flex; align-items:center; gap:10px;"><span style="color:#f77f00; font-size:16px;">●</span><span style="font-family:'Noto Sans KR',sans-serif; font-size:15px; color:#e0e0e0;">MDP 파라미터 파일 자동 생성</span></div>
+                <div style="display:flex; align-items:center; gap:10px;"><span style="color:#f77f00; font-size:16px;">●</span><span style="font-family:'Noto Sans KR',sans-serif; font-size:15px; color:#e0e0e0;">도킹 입력 파일 자동 생성</span></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SLIDE 9: KEY LEARNINGS -->
+<!-- ============================================================ -->
+<div class="slide" data-canvas-width="1920" data-canvas-height="1080" style="background: linear-gradient(160deg, #0d1b2a 0%, #162032 100%);">
+    <div style="position:absolute; top:50px; right:80px; font-family:'JetBrains Mono',monospace; font-size:16px; color:#00b4d8; opacity:0.6;">09 / 10</div>
+    <div style="position:absolute; top:80px; left:120px;">
+        <span style="font-family:'JetBrains Mono',monospace; font-size:14px; color:#f77f00; letter-spacing:3px;">인사이트 · Insights</span>
+    </div>
+
+    <div style="position:absolute; top:140px; left:120px; width:1200px;">
+        <h2 style="font-family:'Noto Sans KR',sans-serif; font-weight:900; font-size:52px; color:#ffffff;">
+            바이브 코딩 핵심 교훈
+        </h2>
+    </div>
+
+    <!-- Insight cards -->
+    <div style="position:absolute; top:290px; left:120px; display:flex; gap:30px; width:1700px;">
+
+        <div style="flex:1; background:linear-gradient(180deg, rgba(0,180,216,0.08), rgba(0,180,216,0.02)); border:1px solid rgba(0,180,216,0.2); border-radius:16px; padding:35px;">
+            <div style="font-size:44px; margin-bottom:15px;">📄</div>
+            <p style="font-family:'Noto Sans KR',sans-serif; font-weight:700; font-size:22px; color:#00b4d8; margin-bottom:12px;">논문이 곧 프롬프트</p>
+            <p style="font-family:'Noto Sans KR',sans-serif; font-weight:300; font-size:17px; color:#e0e0e0; line-height:1.7;">
+                논문 PDF를 AI에게 제공하면<br/>
+                워크플로우 전체를 이해하고<br/>
+                구현 가능한 코드로 변환합니다.<br/>
+                <span style="color:#a0a0a0;">핵심: 명확한 방법론이 있는 논문</span>
+            </p>
+        </div>
+
+        <div style="flex:1; background:linear-gradient(180deg, rgba(6,214,160,0.08), rgba(6,214,160,0.02)); border:1px solid rgba(6,214,160,0.2); border-radius:16px; padding:35px;">
+            <div style="font-size:44px; margin-bottom:15px;">🔄</div>
+            <p style="font-family:'Noto Sans KR',sans-serif; font-weight:700; font-size:22px; color:#06d6a0; margin-bottom:12px;">반복적 디버깅</p>
+            <p style="font-family:'Noto Sans KR',sans-serif; font-weight:300; font-size:17px; color:#e0e0e0; line-height:1.7;">
+                첫 생성 코드는 완벽하지 않습니다.<br/>
+                오류 메시지를 보고 자동으로<br/>
+                수정하는 과정이 핵심입니다.<br/>
+                <span style="color:#a0a0a0;">3회 이터레이션으로 검증 완료</span>
+            </p>
+        </div>
+
+        <div style="flex:1; background:linear-gradient(180deg, rgba(247,127,0,0.08), rgba(247,127,0,0.02)); border:1px solid rgba(247,127,0,0.2); border-radius:16px; padding:35px;">
+            <div style="font-size:44px; margin-bottom:15px;">🧪</div>
+            <p style="font-family:'Noto Sans KR',sans-serif; font-weight:700; font-size:22px; color:#f77f00; margin-bottom:12px;">도메인 지식 = 품질</p>
+            <p style="font-family:'Noto Sans KR',sans-serif; font-weight:300; font-size:17px; color:#e0e0e0; line-height:1.7;">
+                AI는 코드를 생성하지만<br/>
+                과학적 타당성 판단은<br/>
+                연구자의 몫입니다.<br/>
+                <span style="color:#a0a0a0;">SMARTS 패턴, pKa 해석 등</span>
+            </p>
+        </div>
+
+        <div style="flex:1; background:linear-gradient(180deg, rgba(239,71,111,0.08), rgba(239,71,111,0.02)); border:1px solid rgba(239,71,111,0.2); border-radius:16px; padding:35px;">
+            <div style="font-size:44px; margin-bottom:15px;">⚡</div>
+            <p style="font-family:'Noto Sans KR',sans-serif; font-weight:700; font-size:22px; color:#ef476f; margin-bottom:12px;">속도 혁명</p>
+            <p style="font-family:'Noto Sans KR',sans-serif; font-weight:300; font-size:17px; color:#e0e0e0; line-height:1.7;">
+                수주~수개월 걸리는 파이프라인을<br/>
+                수 시간 만에 프로토타입<br/>
+                구축 가능합니다.<br/>
+                <span style="color:#a0a0a0;">6개 모듈 + 12 DB 연동</span>
+            </p>
+        </div>
+    </div>
+
+    <!-- Stats bar -->
+    <div style="position:absolute; bottom:100px; left:120px; display:flex; gap:80px;">
+        <div>
+            <p style="font-family:'Inter',sans-serif; font-weight:900; font-size:52px; color:#00b4d8;">~2,500</p>
+            <p style="font-family:'Noto Sans KR',sans-serif; font-weight:400; font-size:16px; color:#a0a0a0;">생성된 코드 라인</p>
+        </div>
+        <div>
+            <p style="font-family:'Inter',sans-serif; font-weight:900; font-size:52px; color:#06d6a0;">7</p>
+            <p style="font-family:'Noto Sans KR',sans-serif; font-weight:400; font-size:16px; color:#a0a0a0;">핵심 태스크</p>
+        </div>
+        <div>
+            <p style="font-family:'Inter',sans-serif; font-weight:900; font-size:52px; color:#f77f00;">12</p>
+            <p style="font-family:'Noto Sans KR',sans-serif; font-weight:400; font-size:16px; color:#a0a0a0;">데이터베이스 소스</p>
+        </div>
+        <div>
+            <p style="font-family:'Inter',sans-serif; font-weight:900; font-size:52px; color:#ef476f;">47</p>
+            <p style="font-family:'Noto Sans KR',sans-serif; font-weight:400; font-size:16px; color:#a0a0a0;">내장 워헤드 SMILES</p>
+        </div>
+        <div>
+            <p style="font-family:'Inter',sans-serif; font-weight:900; font-size:52px; color:#7209b7;">3</p>
+            <p style="font-family:'Noto Sans KR',sans-serif; font-weight:400; font-size:16px; color:#a0a0a0;">디버깅 이터레이션</p>
+        </div>
+    </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SLIDE 10: NEXT STEPS & CLOSING -->
+<!-- ============================================================ -->
+<div class="slide" data-canvas-width="1920" data-canvas-height="1080" style="background: linear-gradient(135deg, #0d1b2a 0%, #1b2838 40%, #0a2342 100%);">
+    <div style="position:absolute; top:50px; right:80px; font-family:'JetBrains Mono',monospace; font-size:16px; color:#00b4d8; opacity:0.6;">10 / 10</div>
+
+    <!-- Decorative -->
+    <svg style="position:absolute; bottom:0; right:0; width:500px; height:500px; opacity:0.06;" viewBox="0 0 500 500">
+        <circle cx="250" cy="250" r="200" stroke="#00b4d8" stroke-width="2" fill="none"/>
+        <circle cx="250" cy="250" r="150" stroke="#06d6a0" stroke-width="1.5" fill="none"/>
+        <circle cx="250" cy="250" r="100" stroke="#f77f00" stroke-width="1" fill="none"/>
+        <circle cx="250" cy="250" r="50" stroke="#ef476f" stroke-width="0.8" fill="none"/>
+    </svg>
+
+    <div style="position:absolute; top:120px; left:120px; width:900px;">
+        <h2 style="font-family:'Noto Sans KR',sans-serif; font-weight:900; font-size:56px; color:#ffffff; line-height:1.2;">
+            다음 단계 &<br/><span style="color:#06d6a0;">향후 계획</span>
+        </h2>
+    </div>
+
+    <!-- Next steps -->
+    <div style="position:absolute; top:330px; left:120px; width:800px; display:flex; flex-direction:column; gap:18px;">
+        <div style="display:flex; align-items:center; gap:18px; background:rgba(0,180,216,0.06); border:1px solid rgba(0,180,216,0.15); border-radius:12px; padding:20px 25px;">
+            <div style="min-width:36px; height:36px; border-radius:8px; background:#0077b6; display:flex; align-items:center; justify-content:center; font-family:'Inter',sans-serif; font-weight:800; font-size:16px; color:#fff;">1</div>
+            <div>
+                <p style="font-family:'Noto Sans KR',sans-serif; font-weight:700; font-size:19px; color:#ffffff;">Enamine SDF 다운로드 및 라이브러리 확장</p>
+                <p style="font-family:'Noto Sans KR',sans-serif; font-weight:300; font-size:14px; color:#a0a0a0;">CYS-3200 + SER-1600 → 47,000+ 화합물 전체 통합</p>
+            </div>
+        </div>
+
+        <div style="display:flex; align-items:center; gap:18px; background:rgba(6,214,160,0.06); border:1px solid rgba(6,214,160,0.15); border-radius:12px; padding:20px 25px;">
+            <div style="min-width:36px; height:36px; border-radius:8px; background:#06d6a0; display:flex; align-items:center; justify-content:center; font-family:'Inter',sans-serif; font-weight:800; font-size:16px; color:#0d1b2a;">2</div>
+            <div>
+                <p style="font-family:'Noto Sans KR',sans-serif; font-weight:700; font-size:19px; color:#ffffff;">HPC 클러스터에서 REST2 / CpHMD 실행</p>
+                <p style="font-family:'Noto Sans KR',sans-serif; font-weight:300; font-size:14px; color:#a0a0a0;">자동 생성된 GROMACS/AMBER 스크립트 활용</p>
+            </div>
+        </div>
+
+        <div style="display:flex; align-items:center; gap:18px; background:rgba(247,127,0,0.06); border:1px solid rgba(247,127,0,0.15); border-radius:12px; padding:20px 25px;">
+            <div style="min-width:36px; height:36px; border-radius:8px; background:#f77f00; display:flex; align-items:center; justify-content:center; font-family:'Inter',sans-serif; font-weight:800; font-size:16px; color:#fff;">3</div>
+            <div>
+                <p style="font-family:'Noto Sans KR',sans-serif; font-weight:700; font-size:19px; color:#ffffff;">실제 Cys/Ser 타겟에 파이프라인 적용</p>
+                <p style="font-family:'Noto Sans KR',sans-serif; font-weight:300; font-size:14px; color:#a0a0a0;">프로젝트별 타겟 단백질 입력 → 후보 물질 생성 → 합성</p>
+            </div>
+        </div>
+
+        <div style="display:flex; align-items:center; gap:18px; background:rgba(114,9,183,0.06); border:1px solid rgba(114,9,183,0.15); border-radius:12px; padding:20px 25px;">
+            <div style="min-width:36px; height:36px; border-radius:8px; background:#7209b7; display:flex; align-items:center; justify-content:center; font-family:'Inter',sans-serif; font-weight:800; font-size:16px; color:#fff;">4</div>
+            <div>
+                <p style="font-family:'Noto Sans KR',sans-serif; font-weight:700; font-size:19px; color:#ffffff;">SyntaLinker 딥러닝 모델 통합</p>
+                <p style="font-family:'Noto Sans KR',sans-serif; font-weight:300; font-size:14px; color:#a0a0a0;">AI 기반 프래그먼트 링커 자동 생성 기능 추가</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Closing message -->
+    <div style="position:absolute; top:350px; right:100px; width:650px; text-align:center;">
+        <div style="background:rgba(0,180,216,0.05); border:1px solid rgba(0,180,216,0.15); border-radius:20px; padding:50px 40px;">
+            <p style="font-family:'Noto Sans KR',sans-serif; font-weight:900; font-size:30px; color:#ffffff; line-height:1.5;">
+                바이브 코딩으로<br/>
+                <span style="color:#00b4d8;">약물 발견</span>을 가속화
+            </p>
+            <div style="width:80px; height:3px; background:linear-gradient(90deg, #00b4d8, #06d6a0); border-radius:2px; margin:25px auto;"></div>
+            <p style="font-family:'Noto Sans KR',sans-serif; font-weight:300; font-size:18px; color:#a0a0a0; line-height:1.7;">
+                AI와 연구자의 협업이<br/>
+                공유결합 억제제 설계의<br/>
+                새로운 패러다임을 열다
+            </p>
+        </div>
+
+        <div style="margin-top:30px;">
+            <p style="font-family:'JetBrains Mono',monospace; font-size:16px; color:#00b4d8;">CovLib v1.0.0</p>
+            <p style="font-family:'JetBrains Mono',monospace; font-size:14px; color:#a0a0a0; margin-top:6px;">Claude Code × AIDD System</p>
+            <p style="font-family:'Noto Sans KR',sans-serif; font-weight:300; font-size:15px; color:#a0a0a0; margin-top:10px;">감사합니다</p>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
