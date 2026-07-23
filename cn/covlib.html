@@ -1,0 +1,869 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <title>CovLib Vibe Coding 之旅 - 共价抑制剂设计流水线</title>
+    <meta name="hz:slide-selector" content=".slide" />
+    <meta name="hz:canvas-width" content="1920" />
+    <meta name="hz:canvas-height" content="1080" />
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700;900&family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap');
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: #1a1a2e;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 40px;
+            padding: 40px;
+        }
+
+        .slide {
+            position: relative;
+            width: 1920px;
+            height: 1080px;
+            overflow: hidden;
+            font-family: 'Noto Sans SC', 'Inter', sans-serif;
+        }
+
+        /* ===== COLOR PALETTE ===== */
+        :root {
+            --deep-navy: #0d1b2a;
+            --dark-blue: #1b2838;
+            --teal: #00b4d8;
+            --teal-dark: #0077b6;
+            --accent-green: #06d6a0;
+            --accent-orange: #f77f00;
+            --accent-red: #ef476f;
+            --accent-purple: #7209b7;
+            --white: #ffffff;
+            --light-gray: #e0e0e0;
+            --mid-gray: #a0a0a0;
+        }
+    </style>
+</head>
+<body>
+
+<!-- ============================================================ -->
+<!-- SLIDE 1: TITLE -->
+<!-- ============================================================ -->
+<div class="slide" data-canvas-width="1920" data-canvas-height="1080" style="background: linear-gradient(135deg, #0d1b2a 0%, #1b2838 40%, #0a2342 100%);">
+
+    <!-- Decorative DNA helix pattern -->
+    <svg style="position:absolute; top:0; right:0; width:600px; height:1080px; opacity:0.08;" viewBox="0 0 600 1080">
+        <path d="M300,0 Q450,135 300,270 Q150,405 300,540 Q450,675 300,810 Q150,945 300,1080" stroke="#00b4d8" stroke-width="3" fill="none"/>
+        <path d="M300,0 Q150,135 300,270 Q450,405 300,540 Q150,675 300,810 Q450,945 300,1080" stroke="#06d6a0" stroke-width="3" fill="none"/>
+        <line x1="200" y1="135" x2="400" y2="135" stroke="#00b4d8" stroke-width="1.5" opacity="0.5"/>
+        <line x1="200" y1="270" x2="400" y2="270" stroke="#06d6a0" stroke-width="1.5" opacity="0.5"/>
+        <line x1="200" y1="405" x2="400" y2="405" stroke="#00b4d8" stroke-width="1.5" opacity="0.5"/>
+        <line x1="200" y1="540" x2="400" y2="540" stroke="#06d6a0" stroke-width="1.5" opacity="0.5"/>
+        <line x1="200" y1="675" x2="400" y2="675" stroke="#00b4d8" stroke-width="1.5" opacity="0.5"/>
+        <line x1="200" y1="810" x2="400" y2="810" stroke="#06d6a0" stroke-width="1.5" opacity="0.5"/>
+        <line x1="200" y1="945" x2="400" y2="945" stroke="#00b4d8" stroke-width="1.5" opacity="0.5"/>
+    </svg>
+
+    <!-- Molecule dots -->
+    <svg style="position:absolute; bottom:80px; left:100px; opacity:0.12;" width="400" height="200" viewBox="0 0 400 200">
+        <circle cx="50" cy="100" r="8" fill="#00b4d8"/><circle cx="120" cy="60" r="6" fill="#06d6a0"/>
+        <circle cx="180" cy="130" r="10" fill="#ef476f"/><circle cx="260" cy="80" r="7" fill="#f77f00"/>
+        <circle cx="330" cy="140" r="9" fill="#7209b7"/><circle cx="370" cy="50" r="5" fill="#00b4d8"/>
+        <line x1="50" y1="100" x2="120" y2="60" stroke="#ffffff" stroke-width="1"/>
+        <line x1="120" y1="60" x2="180" y2="130" stroke="#ffffff" stroke-width="1"/>
+        <line x1="180" y1="130" x2="260" y2="80" stroke="#ffffff" stroke-width="1"/>
+        <line x1="260" y1="80" x2="330" y2="140" stroke="#ffffff" stroke-width="1"/>
+        <line x1="330" y1="140" x2="370" y2="50" stroke="#ffffff" stroke-width="1"/>
+    </svg>
+
+    <!-- Top tag -->
+    <div style="position:absolute; top:80px; left:120px; background:rgba(0,180,216,0.15); border:1px solid rgba(0,180,216,0.4); border-radius:30px; padding:10px 28px;">
+        <span style="font-family:'JetBrains Mono',monospace; font-size:18px; color:#00b4d8; letter-spacing:2px;">VIBE CODING JOURNEY — AI-DRIVEN DRUG DESIGN</span>
+    </div>
+
+    <!-- Main title -->
+    <div style="position:absolute; top:220px; left:120px; width:1200px;">
+        <h1 style="font-family:'Noto Sans SC','Inter',sans-serif; font-weight:900; font-size:82px; color:#ffffff; line-height:1.15; letter-spacing:-1px;">
+            CovLib 流水线<br/>
+            <span style="color:#00b4d8;">Vibe Coding</span> 之旅
+        </h1>
+    </div>
+
+    <!-- Subtitle -->
+    <div style="position:absolute; top:500px; left:120px; width:1100px;">
+        <p style="font-family:'Noto Sans SC',sans-serif; font-weight:400; font-size:32px; color:#a0a0a0; line-height:1.6;">
+            面向 Cys/Ser 共价抑制剂设计的<br/>
+            集成计算工作流构建器
+        </p>
+    </div>
+
+    <!-- Divider line -->
+    <div style="position:absolute; top:640px; left:120px; width:200px; height:4px; background:linear-gradient(90deg, #00b4d8, #06d6a0); border-radius:2px;"></div>
+
+    <!-- Bottom info -->
+    <div style="position:absolute; top:680px; left:120px;">
+        <p style="font-family:'Noto Sans SC',sans-serif; font-weight:500; font-size:22px; color:#e0e0e0;">
+            基于 Kin-Cov 论文 · Zhou et al., J. Med. Chem. 2023
+        </p>
+        <p style="font-family:'JetBrains Mono',monospace; font-size:16px; color:#a0a0a0; margin-top:12px;">
+            Claude Code × AI-Driven Drug Design System
+        </p>
+    </div>
+
+    <!-- Version badge -->
+    <div style="position:absolute; bottom:60px; right:120px; background:rgba(6,214,160,0.12); border:1px solid rgba(6,214,160,0.3); border-radius:8px; padding:12px 24px;">
+        <span style="font-family:'JetBrains Mono',monospace; font-size:16px; color:#06d6a0;">v1.0.0 · 2026.07</span>
+    </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SLIDE 2: WHAT IS VIBE CODING -->
+<!-- ============================================================ -->
+<div class="slide" data-canvas-width="1920" data-canvas-height="1080" style="background: linear-gradient(160deg, #0d1b2a 0%, #162032 100%);">
+
+    <!-- Slide number -->
+    <div style="position:absolute; top:50px; right:80px; font-family:'JetBrains Mono',monospace; font-size:16px; color:#00b4d8; opacity:0.6;">02 / 10</div>
+
+    <!-- Section label -->
+    <div style="position:absolute; top:80px; left:120px;">
+        <span style="font-family:'JetBrains Mono',monospace; font-size:14px; color:#00b4d8; letter-spacing:3px; text-transform:uppercase;">背景 · Background</span>
+    </div>
+
+    <div style="position:absolute; top:150px; left:120px; width:800px;">
+        <h2 style="font-family:'Noto Sans SC',sans-serif; font-weight:900; font-size:56px; color:#ffffff; line-height:1.2;">
+            什么是 Vibe Coding？
+        </h2>
+        <p style="font-family:'Noto Sans SC',sans-serif; font-weight:300; font-size:24px; color:#a0a0a0; margin-top:20px; line-height:1.7;">
+            向 AI 描述意图即可自动生成代码的<br/>全新软件开发范式
+        </p>
+    </div>
+
+    <!-- Quote box -->
+    <div style="position:absolute; top:380px; left:120px; width:750px; background:rgba(0,180,216,0.06); border-left:4px solid #00b4d8; border-radius:0 12px 12px 0; padding:30px 35px;">
+        <p style="font-family:'Noto Sans SC',sans-serif; font-weight:400; font-size:22px; color:#e0e0e0; line-height:1.7; font-style:italic;">
+            "用自然语言传达想法，<br/>
+            由 AI 构建整个流水线的过程"
+        </p>
+        <p style="font-family:'JetBrains Mono',monospace; font-size:15px; color:#00b4d8; margin-top:15px;">— Andrej Karpathy, 2025</p>
+    </div>
+
+    <!-- Key points -->
+    <div style="position:absolute; top:580px; left:120px; display:flex; gap:30px;">
+        <div style="width:230px; background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08); border-radius:12px; padding:25px;">
+            <div style="font-size:32px; margin-bottom:10px;">💬</div>
+            <p style="font-family:'Noto Sans SC',sans-serif; font-weight:700; font-size:18px; color:#ffffff;">自然语言输入</p>
+            <p style="font-family:'Noto Sans SC',sans-serif; font-weight:300; font-size:14px; color:#a0a0a0; margin-top:8px;">描述论文和想法</p>
+        </div>
+        <div style="width:230px; background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08); border-radius:12px; padding:25px;">
+            <div style="font-size:32px; margin-bottom:10px;">🤖</div>
+            <p style="font-family:'Noto Sans SC',sans-serif; font-weight:700; font-size:18px; color:#ffffff;">AI 代码生成</p>
+            <p style="font-family:'Noto Sans SC',sans-serif; font-weight:300; font-size:14px; color:#a0a0a0; margin-top:8px;">由 Claude Code 实现</p>
+        </div>
+        <div style="width:230px; background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08); border-radius:12px; padding:25px;">
+            <div style="font-size:32px; margin-bottom:10px;">🔬</div>
+            <p style="font-family:'Noto Sans SC',sans-serif; font-weight:700; font-size:18px; color:#ffffff;">科学验证</p>
+            <p style="font-family:'Noto Sans SC',sans-serif; font-weight:300; font-size:14px; color:#a0a0a0; margin-top:8px;">执行并确认结果</p>
+        </div>
+    </div>
+
+    <!-- Right side - code snippet visual -->
+    <div style="position:absolute; top:140px; right:80px; width:720px; background:#0a1628; border:1px solid rgba(0,180,216,0.15); border-radius:16px; padding:35px; overflow:hidden;">
+        <div style="display:flex; gap:8px; margin-bottom:20px;">
+            <div style="width:12px; height:12px; border-radius:50%; background:#ef476f;"></div>
+            <div style="width:12px; height:12px; border-radius:50%; background:#f77f00;"></div>
+            <div style="width:12px; height:12px; border-radius:50%; background:#06d6a0;"></div>
+            <span style="font-family:'JetBrains Mono',monospace; font-size:13px; color:#a0a0a0; margin-left:12px;">用户提示词</span>
+        </div>
+        <pre style="font-family:'JetBrains Mono',monospace; font-size:15px; line-height:1.7; color:#e0e0e0; white-space:pre-wrap; word-break:break-all;"><span style="color:#a0a0a0;">User:</span>
+<span style="color:#06d6a0;">"基于 Kin-Cov 论文</span>
+<span style="color:#06d6a0;"> 创建 Cys/Ser 共价抑制剂</span>
+<span style="color:#06d6a0;"> 设计流水线。</span>
+<span style="color:#06d6a0;"> 同时集成 Enamine 数据库"</span>
+
+<span style="color:#a0a0a0;">Claude Code:</span>
+<span style="color:#00b4d8;">→ 自动生成 7 个模块</span>
+<span style="color:#00b4d8;">→ 集成 12 个数据库</span>
+<span style="color:#00b4d8;">→ 47 种弹头(warhead)库</span>
+<span style="color:#00b4d8;">→ 完成全流水线验证</span></pre>
+    </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SLIDE 3: THE PROBLEM & REFERENCE PAPER -->
+<!-- ============================================================ -->
+<div class="slide" data-canvas-width="1920" data-canvas-height="1080" style="background: linear-gradient(160deg, #0d1b2a 0%, #162032 100%);">
+    <div style="position:absolute; top:50px; right:80px; font-family:'JetBrains Mono',monospace; font-size:16px; color:#00b4d8; opacity:0.6;">03 / 10</div>
+    <div style="position:absolute; top:80px; left:120px;">
+        <span style="font-family:'JetBrains Mono',monospace; font-size:14px; color:#00b4d8; letter-spacing:3px;">参考论文 · Reference Paper</span>
+    </div>
+
+    <div style="position:absolute; top:150px; left:120px; width:850px;">
+        <h2 style="font-family:'Noto Sans SC',sans-serif; font-weight:900; font-size:48px; color:#ffffff; line-height:1.25;">
+            Kin-Cov:<br/>共价激酶抑制剂的<br/>合理设计
+        </h2>
+    </div>
+
+    <!-- Paper citation -->
+    <div style="position:absolute; top:380px; left:120px; width:800px; background:rgba(0,180,216,0.05); border:1px solid rgba(0,180,216,0.15); border-radius:12px; padding:25px 30px;">
+        <p style="font-family:'Inter',sans-serif; font-weight:600; font-size:17px; color:#00b4d8;">Zhou et al., J. Med. Chem. 2023, 66, 7405–7420</p>
+        <p style="font-family:'Noto Sans SC',sans-serif; font-weight:300; font-size:15px; color:#a0a0a0; margin-top:8px;">"Rational Design of Covalent Kinase Inhibitors by an Integrated Computational Workflow (Kin-Cov)"</p>
+    </div>
+
+    <!-- Key results from paper -->
+    <div style="position:absolute; top:520px; left:120px; width:800px;">
+        <p style="font-family:'Noto Sans SC',sans-serif; font-weight:700; font-size:20px; color:#ffffff; margin-bottom:20px;">论文主要成果</p>
+        <div style="display:flex; flex-direction:column; gap:14px;">
+            <div style="display:flex; align-items:center; gap:15px;">
+                <div style="min-width:8px; height:8px; border-radius:50%; background:#06d6a0;"></div>
+                <p style="font-family:'Noto Sans SC',sans-serif; font-weight:400; font-size:18px; color:#e0e0e0;">首次发现选择性 ZAK 激酶共价抑制剂</p>
+            </div>
+            <div style="display:flex; align-items:center; gap:15px;">
+                <div style="min-width:8px; height:8px; border-radius:50%; background:#06d6a0;"></div>
+                <p style="font-family:'Noto Sans SC',sans-serif; font-weight:400; font-size:18px; color:#e0e0e0;">IC₅₀ = 9.1 nM（化合物 7），11.5 nM（化合物 8）</p>
+            </div>
+            <div style="display:flex; align-items:center; gap:15px;">
+                <div style="min-width:8px; height:8px; border-radius:50%; background:#06d6a0;"></div>
+                <p style="font-family:'Noto Sans SC',sans-serif; font-weight:400; font-size:18px; color:#e0e0e0;">378 个激酶的 KINOMEscan 选择性确认</p>
+            </div>
+            <div style="display:flex; align-items:center; gap:15px;">
+                <div style="min-width:8px; height:8px; border-radius:50%; background:#06d6a0;"></div>
+                <p style="font-family:'Noto Sans SC',sans-serif; font-weight:400; font-size:18px; color:#e0e0e0;">X-ray 晶体结构验证共价结合模式</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Right side - Workflow diagram -->
+    <div style="position:absolute; top:140px; right:80px; width:680px;">
+        <p style="font-family:'Noto Sans SC',sans-serif; font-weight:700; font-size:20px; color:#ffffff; margin-bottom:25px;">Kin-Cov 工作流（5个步骤）</p>
+
+        <div style="display:flex; flex-direction:column; gap:12px;">
+            <div style="display:flex; align-items:center; gap:15px;">
+                <div style="min-width:48px; height:48px; border-radius:10px; background:linear-gradient(135deg, #0077b6, #00b4d8); display:flex; align-items:center; justify-content:center; font-family:'Inter',sans-serif; font-weight:800; font-size:20px; color:#ffffff;">1</div>
+                <div>
+                    <p style="font-family:'Noto Sans SC',sans-serif; font-weight:700; font-size:18px; color:#ffffff;">反应性分析 (CpHMD)</p>
+                    <p style="font-family:'Noto Sans SC',sans-serif; font-weight:300; font-size:14px; color:#a0a0a0;">Cysteine pKa 计算 → 反应性排序</p>
+                </div>
+            </div>
+            <div style="margin-left:23px; width:2px; height:12px; background:rgba(0,180,216,0.3);"></div>
+
+            <div style="display:flex; align-items:center; gap:15px;">
+                <div style="min-width:48px; height:48px; border-radius:10px; background:linear-gradient(135deg, #0077b6, #00b4d8); display:flex; align-items:center; justify-content:center; font-family:'Inter',sans-serif; font-weight:800; font-size:20px; color:#ffffff;">2</div>
+                <div>
+                    <p style="font-family:'Noto Sans SC',sans-serif; font-weight:700; font-size:18px; color:#ffffff;">可及性分析 (REST2)</p>
+                    <p style="font-family:'Noto Sans SC',sans-serif; font-weight:300; font-size:14px; color:#a0a0a0;">Enhanced sampling 评估结构可及性</p>
+                </div>
+            </div>
+            <div style="margin-left:23px; width:2px; height:12px; background:rgba(0,180,216,0.3);"></div>
+
+            <div style="display:flex; align-items:center; gap:15px;">
+                <div style="min-width:48px; height:48px; border-radius:10px; background:linear-gradient(135deg, #06d6a0, #00b4d8); display:flex; align-items:center; justify-content:center; font-family:'Inter',sans-serif; font-weight:800; font-size:20px; color:#ffffff;">3</div>
+                <div>
+                    <p style="font-family:'Noto Sans SC',sans-serif; font-weight:700; font-size:18px; color:#ffffff;">EWF 库</p>
+                    <p style="font-family:'Noto Sans SC',sans-serif; font-weight:300; font-size:14px; color:#a0a0a0;">亲电弹头(warhead)片段收集</p>
+                </div>
+            </div>
+            <div style="margin-left:23px; width:2px; height:12px; background:rgba(6,214,160,0.3);"></div>
+
+            <div style="display:flex; align-items:center; gap:15px;">
+                <div style="min-width:48px; height:48px; border-radius:10px; background:linear-gradient(135deg, #f77f00, #ef476f); display:flex; align-items:center; justify-content:center; font-family:'Inter',sans-serif; font-weight:800; font-size:20px; color:#ffffff;">4</div>
+                <div>
+                    <p style="font-family:'Noto Sans SC',sans-serif; font-weight:700; font-size:18px; color:#ffffff;">候选物生成 (d_est 过滤)</p>
+                    <p style="font-family:'Noto Sans SC',sans-serif; font-weight:300; font-size:14px; color:#a0a0a0;">基于 d_est = d_site − L_EWF 的长度匹配</p>
+                </div>
+            </div>
+            <div style="margin-left:23px; width:2px; height:12px; background:rgba(247,127,0,0.3);"></div>
+
+            <div style="display:flex; align-items:center; gap:15px;">
+                <div style="min-width:48px; height:48px; border-radius:10px; background:linear-gradient(135deg, #7209b7, #ef476f); display:flex; align-items:center; justify-content:center; font-family:'Inter',sans-serif; font-weight:800; font-size:20px; color:#ffffff;">5</div>
+                <div>
+                    <p style="font-family:'Noto Sans SC',sans-serif; font-weight:700; font-size:18px; color:#ffffff;">共价对接</p>
+                    <p style="font-family:'Noto Sans SC',sans-serif; font-weight:300; font-size:14px; color:#a0a0a0;">AutoDock/Vina 预测结合模式并排序</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SLIDE 4: DATABASES INTEGRATED -->
+<!-- ============================================================ -->
+<div class="slide" data-canvas-width="1920" data-canvas-height="1080" style="background: linear-gradient(160deg, #0d1b2a 0%, #162032 100%);">
+    <div style="position:absolute; top:50px; right:80px; font-family:'JetBrains Mono',monospace; font-size:16px; color:#00b4d8; opacity:0.6;">04 / 10</div>
+    <div style="position:absolute; top:80px; left:120px;">
+        <span style="font-family:'JetBrains Mono',monospace; font-size:14px; color:#06d6a0; letter-spacing:3px;">数据库 · Databases</span>
+    </div>
+
+    <div style="position:absolute; top:140px; left:120px; width:1000px;">
+        <h2 style="font-family:'Noto Sans SC',sans-serif; font-weight:900; font-size:52px; color:#ffffff;">
+            <span style="color:#06d6a0;">47,000+</span> 化合物整合
+        </h2>
+        <p style="font-family:'Noto Sans SC',sans-serif; font-weight:300; font-size:22px; color:#a0a0a0; margin-top:12px;">通过自动下载脚本一键集成 7 个数据库</p>
+    </div>
+
+    <!-- Database cards - Top row -->
+    <div style="position:absolute; top:290px; left:120px; display:flex; gap:20px; flex-wrap:wrap; width:1700px;">
+
+        <div style="width:390px; background:rgba(0,180,216,0.06); border:1px solid rgba(0,180,216,0.2); border-radius:14px; padding:28px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+                <span style="font-family:'Inter',sans-serif; font-weight:800; font-size:20px; color:#00b4d8;">Enamine</span>
+                <span style="font-family:'JetBrains Mono',monospace; font-size:14px; color:#06d6a0; background:rgba(6,214,160,0.12); padding:4px 10px; border-radius:6px;">~36,000</span>
+            </div>
+            <div style="display:flex; flex-direction:column; gap:6px;">
+                <p style="font-family:'Noto Sans SC',sans-serif; font-size:14px; color:#e0e0e0;">CYS-3200 · Cysteine 特异性（6种弹头）</p>
+                <p style="font-family:'Noto Sans SC',sans-serif; font-size:14px; color:#e0e0e0;">SER-1600 · Serine 特异性（5种弹头）</p>
+                <p style="font-family:'Noto Sans SC',sans-serif; font-size:14px; color:#e0e0e0;">CFL-8480 · 通用共价片段</p>
+                <p style="font-family:'Noto Sans SC',sans-serif; font-size:14px; color:#a0a0a0;">+ CSL, CSHL, LYS, ECPL, CMF, CSPL 等</p>
+            </div>
+        </div>
+
+        <div style="width:390px; background:rgba(6,214,160,0.06); border:1px solid rgba(6,214,160,0.2); border-radius:14px; padding:28px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+                <span style="font-family:'Inter',sans-serif; font-weight:800; font-size:20px; color:#06d6a0;">CovalentInDB 2.0</span>
+                <span style="font-family:'JetBrains Mono',monospace; font-size:14px; color:#06d6a0; background:rgba(6,214,160,0.12); padding:4px 10px; border-radius:6px;">8,303</span>
+            </div>
+            <div style="display:flex; flex-direction:column; gap:6px;">
+                <p style="font-family:'Noto Sans SC',sans-serif; font-size:14px; color:#e0e0e0;">368 个靶标蛋白</p>
+                <p style="font-family:'Noto Sans SC',sans-serif; font-size:14px; color:#e0e0e0;">3,445 个共结晶结构</p>
+                <p style="font-family:'Noto Sans SC',sans-serif; font-size:14px; color:#e0e0e0;">按弹头(warhead)类型分类</p>
+                <p style="font-family:'Noto Sans SC',sans-serif; font-size:14px; color:#a0a0a0;">包含自动抓取脚本</p>
+            </div>
+        </div>
+
+        <div style="width:390px; background:rgba(247,127,0,0.06); border:1px solid rgba(247,127,0,0.2); border-radius:14px; padding:28px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+                <span style="font-family:'Inter',sans-serif; font-weight:800; font-size:20px; color:#f77f00;">CovBinderInPDB</span>
+                <span style="font-family:'JetBrains Mono',monospace; font-size:14px; color:#f77f00; background:rgba(247,127,0,0.12); padding:4px 10px; border-radius:6px;">7,375</span>
+            </div>
+            <div style="display:flex; flex-direction:column; gap:6px;">
+                <p style="font-family:'Noto Sans SC',sans-serif; font-size:14px; color:#e0e0e0;">2,189 个独特结合物</p>
+                <p style="font-family:'Noto Sans SC',sans-serif; font-size:14px; color:#e0e0e0;">9 种氨基酸靶标（Cys, Ser, Lys...）</p>
+                <p style="font-family:'Noto Sans SC',sans-serif; font-size:14px; color:#e0e0e0;">基于结构的共价结合物</p>
+                <p style="font-family:'Noto Sans SC',sans-serif; font-size:14px; color:#a0a0a0;">含 SMILES 下载</p>
+            </div>
+        </div>
+
+        <div style="width:390px; background:rgba(114,9,183,0.06); border:1px solid rgba(114,9,183,0.2); border-radius:14px; padding:28px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+                <span style="font-family:'Inter',sans-serif; font-weight:800; font-size:20px; color:#7209b7;">SyntaLinker</span>
+                <span style="font-family:'JetBrains Mono',monospace; font-size:14px; color:#7209b7; background:rgba(114,9,183,0.12); padding:4px 10px; border-radius:6px;">AI</span>
+            </div>
+            <div style="display:flex; flex-direction:column; gap:6px;">
+                <p style="font-family:'Noto Sans SC',sans-serif; font-size:14px; color:#e0e0e0;">深度学习片段连接器生成</p>
+                <p style="font-family:'Noto Sans SC',sans-serif; font-size:14px; color:#e0e0e0;">基于 Conditional Transformer</p>
+                <p style="font-family:'Noto Sans SC',sans-serif; font-size:14px; color:#e0e0e0;">GitHub 自动克隆</p>
+            </div>
+        </div>
+
+        <div style="width:390px; background:rgba(239,71,111,0.06); border:1px solid rgba(239,71,111,0.2); border-radius:14px; padding:28px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+                <span style="font-family:'Inter',sans-serif; font-weight:800; font-size:20px; color:#ef476f;">内置弹头 SMILES</span>
+                <span style="font-family:'JetBrains Mono',monospace; font-size:14px; color:#ef476f; background:rgba(239,71,111,0.12); padding:4px 10px; border-radius:6px;">47</span>
+            </div>
+            <div style="display:flex; flex-direction:column; gap:6px;">
+                <p style="font-family:'Noto Sans SC',sans-serif; font-size:14px; color:#e0e0e0;">24 个 Cysteine 反应性弹头</p>
+                <p style="font-family:'Noto Sans SC',sans-serif; font-size:14px; color:#e0e0e0;">19 个 Serine 反应性弹头</p>
+                <p style="font-family:'Noto Sans SC',sans-serif; font-size:14px; color:#e0e0e0;">4 个双重（Cys+Ser）反应性</p>
+            </div>
+        </div>
+
+        <div style="width:390px; background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.1); border-radius:14px; padding:28px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+                <span style="font-family:'Inter',sans-serif; font-weight:800; font-size:20px; color:#a0a0a0;">KinCov EWF + Life Chemicals</span>
+                <span style="font-family:'JetBrains Mono',monospace; font-size:14px; color:#a0a0a0; background:rgba(255,255,255,0.06); padding:4px 10px; border-radius:6px;">7,100+</span>
+            </div>
+            <div style="display:flex; flex-direction:column; gap:6px;">
+                <p style="font-family:'Noto Sans SC',sans-serif; font-size:14px; color:#e0e0e0;">KinCov EWF: 1,028 种（按激酶区域分类）</p>
+                <p style="font-family:'Noto Sans SC',sans-serif; font-size:14px; color:#e0e0e0;">Life Chemicals: 6,100 个片段</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SLIDE 5: PIPELINE ARCHITECTURE -->
+<!-- ============================================================ -->
+<div class="slide" data-canvas-width="1920" data-canvas-height="1080" style="background: linear-gradient(160deg, #0d1b2a 0%, #162032 100%);">
+    <div style="position:absolute; top:50px; right:80px; font-family:'JetBrains Mono',monospace; font-size:16px; color:#00b4d8; opacity:0.6;">05 / 10</div>
+    <div style="position:absolute; top:80px; left:120px;">
+        <span style="font-family:'JetBrains Mono',monospace; font-size:14px; color:#f77f00; letter-spacing:3px;">架构 · Architecture</span>
+    </div>
+
+    <div style="position:absolute; top:140px; left:120px; width:1700px;">
+        <h2 style="font-family:'Noto Sans SC',sans-serif; font-weight:900; font-size:52px; color:#ffffff;">
+            CovLib 流水线结构
+        </h2>
+    </div>
+
+    <!-- Flow diagram -->
+    <div style="position:absolute; top:260px; left:80px; width:1760px; display:flex; align-items:center; justify-content:center; gap:8px;">
+        <!-- Step 1 -->
+        <div style="width:280px; background:linear-gradient(180deg, rgba(0,119,182,0.15), rgba(0,119,182,0.05)); border:2px solid rgba(0,119,182,0.4); border-radius:16px; padding:24px; text-align:center;">
+            <div style="width:50px; height:50px; border-radius:12px; background:#0077b6; display:flex; align-items:center; justify-content:center; margin:0 auto 12px; font-family:'Inter',sans-serif; font-weight:900; font-size:22px; color:#fff;">1</div>
+            <p style="font-family:'Noto Sans SC',sans-serif; font-weight:700; font-size:18px; color:#00b4d8;">反应性分析</p>
+            <p style="font-family:'JetBrains Mono',monospace; font-size:13px; color:#a0a0a0; margin-top:6px;">reactivity.py</p>
+            <p style="font-family:'Noto Sans SC',sans-serif; font-size:13px; color:#e0e0e0; margin-top:8px;">CpHMD / PROPKA3<br/>pKa 计算</p>
+        </div>
+        <div style="font-size:28px; color:#00b4d8;">→</div>
+        <!-- Step 2 -->
+        <div style="width:280px; background:linear-gradient(180deg, rgba(0,180,216,0.15), rgba(0,180,216,0.05)); border:2px solid rgba(0,180,216,0.4); border-radius:16px; padding:24px; text-align:center;">
+            <div style="width:50px; height:50px; border-radius:12px; background:#00b4d8; display:flex; align-items:center; justify-content:center; margin:0 auto 12px; font-family:'Inter',sans-serif; font-weight:900; font-size:22px; color:#fff;">2</div>
+            <p style="font-family:'Noto Sans SC',sans-serif; font-weight:700; font-size:18px; color:#00b4d8;">可及性分析</p>
+            <p style="font-family:'JetBrains Mono',monospace; font-size:13px; color:#a0a0a0; margin-top:6px;">accessibility.py</p>
+            <p style="font-family:'Noto Sans SC',sans-serif; font-size:13px; color:#e0e0e0; margin-top:8px;">REST2 / MD<br/>d_site 测量</p>
+        </div>
+        <div style="font-size:28px; color:#06d6a0;">→</div>
+        <!-- Step 3 -->
+        <div style="width:280px; background:linear-gradient(180deg, rgba(6,214,160,0.15), rgba(6,214,160,0.05)); border:2px solid rgba(6,214,160,0.4); border-radius:16px; padding:24px; text-align:center;">
+            <div style="width:50px; height:50px; border-radius:12px; background:#06d6a0; display:flex; align-items:center; justify-content:center; margin:0 auto 12px; font-family:'Inter',sans-serif; font-weight:900; font-size:22px; color:#0d1b2a;">3</div>
+            <p style="font-family:'Noto Sans SC',sans-serif; font-weight:700; font-size:18px; color:#06d6a0;">EWF 库</p>
+            <p style="font-family:'JetBrains Mono',monospace; font-size:13px; color:#a0a0a0; margin-top:6px;">ewf_library.py</p>
+            <p style="font-family:'Noto Sans SC',sans-serif; font-size:13px; color:#e0e0e0; margin-top:8px;">弹头(warhead)收集<br/>SMARTS 分类</p>
+        </div>
+        <div style="font-size:28px; color:#f77f00;">→</div>
+        <!-- Step 4 -->
+        <div style="width:280px; background:linear-gradient(180deg, rgba(247,127,0,0.15), rgba(247,127,0,0.05)); border:2px solid rgba(247,127,0,0.4); border-radius:16px; padding:24px; text-align:center;">
+            <div style="width:50px; height:50px; border-radius:12px; background:#f77f00; display:flex; align-items:center; justify-content:center; margin:0 auto 12px; font-family:'Inter',sans-serif; font-weight:900; font-size:22px; color:#fff;">4</div>
+            <p style="font-family:'Noto Sans SC',sans-serif; font-weight:700; font-size:18px; color:#f77f00;">候选物生成</p>
+            <p style="font-family:'JetBrains Mono',monospace; font-size:13px; color:#a0a0a0; margin-top:6px;">candidate_gen.py</p>
+            <p style="font-family:'Noto Sans SC',sans-serif; font-size:13px; color:#e0e0e0; margin-top:8px;">d_est 过滤<br/>类药性验证</p>
+        </div>
+        <div style="font-size:28px; color:#ef476f;">→</div>
+        <!-- Step 5 -->
+        <div style="width:280px; background:linear-gradient(180deg, rgba(239,71,111,0.15), rgba(239,71,111,0.05)); border:2px solid rgba(239,71,111,0.4); border-radius:16px; padding:24px; text-align:center;">
+            <div style="width:50px; height:50px; border-radius:12px; background:#ef476f; display:flex; align-items:center; justify-content:center; margin:0 auto 12px; font-family:'Inter',sans-serif; font-weight:900; font-size:22px; color:#fff;">5</div>
+            <p style="font-family:'Noto Sans SC',sans-serif; font-weight:700; font-size:18px; color:#ef476f;">共价对接</p>
+            <p style="font-family:'JetBrains Mono',monospace; font-size:13px; color:#a0a0a0; margin-top:6px;">covalent_dock.py</p>
+            <p style="font-family:'Noto Sans SC',sans-serif; font-size:13px; color:#e0e0e0; margin-top:8px;">Vina / AutoDock<br/>结合能计算</p>
+        </div>
+    </div>
+
+    <!-- Module files list -->
+    <div style="position:absolute; top:600px; left:120px; width:1700px;">
+        <p style="font-family:'Noto Sans SC',sans-serif; font-weight:700; font-size:20px; color:#ffffff; margin-bottom:20px;">生成的代码结构</p>
+        <div style="display:flex; gap:25px;">
+            <div style="flex:1; background:#0a1628; border:1px solid rgba(0,180,216,0.12); border-radius:12px; padding:20px;">
+                <p style="font-family:'JetBrains Mono',monospace; font-size:14px; color:#00b4d8; margin-bottom:10px;">modules/</p>
+                <pre style="font-family:'JetBrains Mono',monospace; font-size:13px; color:#e0e0e0; line-height:1.6;">├── pipeline.py        <span style="color:#a0a0a0;"># 主编排器</span>
+├── reactivity.py      <span style="color:#a0a0a0;"># CpHMD/pKa 分析</span>
+├── accessibility.py   <span style="color:#a0a0a0;"># REST2/MD 分析</span>
+├── ewf_library.py     <span style="color:#a0a0a0;"># EWF 库</span>
+├── candidate_gen.py   <span style="color:#a0a0a0;"># 候选物生成</span>
+└── covalent_dock.py   <span style="color:#a0a0a0;"># 共价对接</span></pre>
+            </div>
+            <div style="flex:1; background:#0a1628; border:1px solid rgba(6,214,160,0.12); border-radius:12px; padding:20px;">
+                <p style="font-family:'JetBrains Mono',monospace; font-size:14px; color:#06d6a0; margin-bottom:10px;">scripts/</p>
+                <pre style="font-family:'JetBrains Mono',monospace; font-size:13px; color:#e0e0e0; line-height:1.6;">├── download_databases.py  <span style="color:#a0a0a0;"># DB 下载器</span>
+├── run_example.py         <span style="color:#a0a0a0;"># ZAK 示例</span>
+├── cphmd_run/             <span style="color:#a0a0a0;"># AMBER 脚本</span>
+└── rest2_run/             <span style="color:#a0a0a0;"># GROMACS 脚本</span></pre>
+            </div>
+            <div style="flex:1; background:#0a1628; border:1px solid rgba(247,127,0,0.12); border-radius:12px; padding:20px;">
+                <p style="font-family:'JetBrains Mono',monospace; font-size:14px; color:#f77f00; margin-bottom:10px;">config/</p>
+                <pre style="font-family:'JetBrains Mono',monospace; font-size:13px; color:#e0e0e0; line-height:1.6;">└── pipeline_config.yaml
+    <span style="color:#a0a0a0;">  # 靶标设置</span>
+    <span style="color:#a0a0a0;">  # DB 路径</span>
+    <span style="color:#a0a0a0;">  # 模拟参数</span>
+    <span style="color:#a0a0a0;">  # 对接设置</span>
+    <span style="color:#a0a0a0;">  # ADMET 过滤</span></pre>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SLIDE 6: WARHEAD CHEMISTRY -->
+<!-- ============================================================ -->
+<div class="slide" data-canvas-width="1920" data-canvas-height="1080" style="background: linear-gradient(160deg, #0d1b2a 0%, #162032 100%);">
+    <div style="position:absolute; top:50px; right:80px; font-family:'JetBrains Mono',monospace; font-size:16px; color:#00b4d8; opacity:0.6;">06 / 10</div>
+    <div style="position:absolute; top:80px; left:120px;">
+        <span style="font-family:'JetBrains Mono',monospace; font-size:14px; color:#ef476f; letter-spacing:3px;">化学 · Warhead Chemistry</span>
+    </div>
+
+    <div style="position:absolute; top:140px; left:120px; width:1000px;">
+        <h2 style="font-family:'Noto Sans SC',sans-serif; font-weight:900; font-size:52px; color:#ffffff;">
+            Cys / Ser 反应性弹头(Warhead)
+        </h2>
+    </div>
+
+    <!-- Cysteine warheads -->
+    <div style="position:absolute; top:260px; left:120px; width:800px;">
+        <div style="display:flex; align-items:center; gap:12px; margin-bottom:20px;">
+            <div style="width:14px; height:14px; border-radius:3px; background:#00b4d8;"></div>
+            <p style="font-family:'Noto Sans SC',sans-serif; font-weight:700; font-size:24px; color:#00b4d8;">Cysteine 靶向弹头（24种）</p>
+        </div>
+        <div style="display:flex; flex-wrap:wrap; gap:10px;">
+            <span style="font-family:'JetBrains Mono',monospace; font-size:14px; color:#e0e0e0; background:rgba(0,180,216,0.1); border:1px solid rgba(0,180,216,0.25); border-radius:8px; padding:8px 14px;">丙烯酰胺</span>
+            <span style="font-family:'JetBrains Mono',monospace; font-size:14px; color:#e0e0e0; background:rgba(0,180,216,0.1); border:1px solid rgba(0,180,216,0.25); border-radius:8px; padding:8px 14px;">氯乙酰胺</span>
+            <span style="font-family:'JetBrains Mono',monospace; font-size:14px; color:#e0e0e0; background:rgba(0,180,216,0.1); border:1px solid rgba(0,180,216,0.25); border-radius:8px; padding:8px 14px;">丙炔酰胺</span>
+            <span style="font-family:'JetBrains Mono',monospace; font-size:14px; color:#e0e0e0; background:rgba(0,180,216,0.1); border:1px solid rgba(0,180,216,0.25); border-radius:8px; padding:8px 14px;">乙烯基磺酰胺</span>
+            <span style="font-family:'JetBrains Mono',monospace; font-size:14px; color:#e0e0e0; background:rgba(0,180,216,0.1); border:1px solid rgba(0,180,216,0.25); border-radius:8px; padding:8px 14px;">氰基丙烯酰胺</span>
+            <span style="font-family:'JetBrains Mono',monospace; font-size:14px; color:#e0e0e0; background:rgba(0,180,216,0.1); border:1px solid rgba(0,180,216,0.25); border-radius:8px; padding:8px 14px;">马来酰亚胺</span>
+            <span style="font-family:'JetBrains Mono',monospace; font-size:14px; color:#e0e0e0; background:rgba(0,180,216,0.1); border:1px solid rgba(0,180,216,0.25); border-radius:8px; padding:8px 14px;">丁炔酰胺</span>
+            <span style="font-family:'JetBrains Mono',monospace; font-size:14px; color:#e0e0e0; background:rgba(0,180,216,0.1); border:1px solid rgba(0,180,216,0.25); border-radius:8px; padding:8px 14px;">卤代乙酰胺</span>
+        </div>
+    </div>
+
+    <!-- Serine warheads -->
+    <div style="position:absolute; top:510px; left:120px; width:800px;">
+        <div style="display:flex; align-items:center; gap:12px; margin-bottom:20px;">
+            <div style="width:14px; height:14px; border-radius:3px; background:#06d6a0;"></div>
+            <p style="font-family:'Noto Sans SC',sans-serif; font-weight:700; font-size:24px; color:#06d6a0;">Serine 靶向弹头（19种）</p>
+        </div>
+        <div style="display:flex; flex-wrap:wrap; gap:10px;">
+            <span style="font-family:'JetBrains Mono',monospace; font-size:14px; color:#e0e0e0; background:rgba(6,214,160,0.1); border:1px solid rgba(6,214,160,0.25); border-radius:8px; padding:8px 14px;">磺酰氟</span>
+            <span style="font-family:'JetBrains Mono',monospace; font-size:14px; color:#e0e0e0; background:rgba(6,214,160,0.1); border:1px solid rgba(6,214,160,0.25); border-radius:8px; padding:8px 14px;">环氧化物</span>
+            <span style="font-family:'JetBrains Mono',monospace; font-size:14px; color:#e0e0e0; background:rgba(6,214,160,0.1); border:1px solid rgba(6,214,160,0.25); border-radius:8px; padding:8px 14px;">β-内酰胺</span>
+            <span style="font-family:'JetBrains Mono',monospace; font-size:14px; color:#e0e0e0; background:rgba(6,214,160,0.1); border:1px solid rgba(6,214,160,0.25); border-radius:8px; padding:8px 14px;">硼酸</span>
+            <span style="font-family:'JetBrains Mono',monospace; font-size:14px; color:#e0e0e0; background:rgba(6,214,160,0.1); border:1px solid rgba(6,214,160,0.25); border-radius:8px; padding:8px 14px;">醛</span>
+            <span style="font-family:'JetBrains Mono',monospace; font-size:14px; color:#e0e0e0; background:rgba(6,214,160,0.1); border:1px solid rgba(6,214,160,0.25); border-radius:8px; padding:8px 14px;">腈</span>
+            <span style="font-family:'JetBrains Mono',monospace; font-size:14px; color:#e0e0e0; background:rgba(6,214,160,0.1); border:1px solid rgba(6,214,160,0.25); border-radius:8px; padding:8px 14px;">活性酯</span>
+            <span style="font-family:'JetBrains Mono',monospace; font-size:14px; color:#e0e0e0; background:rgba(6,214,160,0.1); border:1px solid rgba(6,214,160,0.25); border-radius:8px; padding:8px 14px;">膦酰氟</span>
+        </div>
+    </div>
+
+    <!-- Right side: SMARTS detection -->
+    <div style="position:absolute; top:260px; right:80px; width:680px; background:#0a1628; border:1px solid rgba(239,71,111,0.15); border-radius:16px; padding:30px;">
+        <p style="font-family:'Noto Sans SC',sans-serif; font-weight:700; font-size:20px; color:#ef476f; margin-bottom:18px;">自动弹头识别 (SMARTS)</p>
+        <pre style="font-family:'JetBrains Mono',monospace; font-size:14px; color:#e0e0e0; line-height:2;">
+<span style="color:#a0a0a0;"># Cysteine 反应性</span>
+<span style="color:#00b4d8;">丙烯酰胺:</span>      [CH2]=[CH]-[C](=O)-[N]
+<span style="color:#00b4d8;">氯乙酰:</span>        [Cl]-[CH2]-[C](=O)-[N]
+<span style="color:#00b4d8;">乙烯基砜:</span>      [CH2]=[CH]-[S](=O)(=O)
+
+<span style="color:#a0a0a0;"># Serine 反应性</span>
+<span style="color:#06d6a0;">磺酰 F:</span>       [S](=O)(=O)-[F]
+<span style="color:#06d6a0;">环氧化物:</span>      [C]1-[O]-[C]1
+<span style="color:#06d6a0;">硼酸:</span>          [B](-[OH])-[OH]</pre>
+    </div>
+
+    <!-- Key equation -->
+    <div style="position:absolute; bottom:80px; left:120px; width:1680px; background:rgba(247,127,0,0.06); border:1px solid rgba(247,127,0,0.2); border-radius:14px; padding:24px 35px; display:flex; align-items:center; gap:40px;">
+        <div>
+            <p style="font-family:'Noto Sans SC',sans-serif; font-weight:700; font-size:20px; color:#f77f00;">核心公式</p>
+        </div>
+        <div style="font-family:'JetBrains Mono',monospace; font-size:26px; color:#ffffff;">
+            d<sub>est</sub> = d<sub>site</sub> − L<sub>EWF</sub>
+        </div>
+        <div style="height:40px; width:1px; background:rgba(247,127,0,0.3);"></div>
+        <p style="font-family:'Noto Sans SC',sans-serif; font-size:16px; color:#a0a0a0;">
+            d_est 越接近 0 越理想 · 阈值: −5Å &lt; d_est &lt; 5Å（宽松）/ −3Å &lt; d_est &lt; 3Å（严格）
+        </p>
+    </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SLIDE 7: ZAK KINASE VALIDATION -->
+<!-- ============================================================ -->
+<div class="slide" data-canvas-width="1920" data-canvas-height="1080" style="background: linear-gradient(160deg, #0d1b2a 0%, #162032 100%);">
+    <div style="position:absolute; top:50px; right:80px; font-family:'JetBrains Mono',monospace; font-size:16px; color:#00b4d8; opacity:0.6;">07 / 10</div>
+    <div style="position:absolute; top:80px; left:120px;">
+        <span style="font-family:'JetBrains Mono',monospace; font-size:14px; color:#06d6a0; letter-spacing:3px;">验证 · Validation</span>
+    </div>
+
+    <div style="position:absolute; top:140px; left:120px; width:1200px;">
+        <h2 style="font-family:'Noto Sans SC',sans-serif; font-weight:900; font-size:52px; color:#ffffff;">
+            ZAK 激酶验证结果
+        </h2>
+        <p style="font-family:'Noto Sans SC',sans-serif; font-weight:300; font-size:22px; color:#a0a0a0; margin-top:10px;">PDB: 6JUT · Cys22 (P-loop), Cys150 (xDFG)</p>
+    </div>
+
+    <!-- Results cards -->
+    <div style="position:absolute; top:300px; left:120px; display:flex; gap:25px;">
+
+        <!-- Reactivity results -->
+        <div style="width:400px; background:rgba(0,180,216,0.06); border:1px solid rgba(0,180,216,0.2); border-radius:14px; padding:30px;">
+            <p style="font-family:'Noto Sans SC',sans-serif; font-weight:700; font-size:22px; color:#00b4d8; margin-bottom:18px;">Step 1: 反应性分析</p>
+            <div style="background:#0a1628; border-radius:10px; padding:18px; margin-bottom:15px;">
+                <table style="width:100%; font-family:'JetBrains Mono',monospace; font-size:15px; color:#e0e0e0; border-collapse:collapse;">
+                    <tr style="color:#a0a0a0; border-bottom:1px solid rgba(255,255,255,0.1);">
+                        <td style="padding:6px 0;">残基</td><td>pKa</td><td>评分</td><td>等级</td>
+                    </tr>
+                    <tr><td style="padding:6px 0; color:#06d6a0;">CYS22</td><td>8.4</td><td>6.6</td><td style="color:#06d6a0;">活性</td></tr>
+                    <tr><td style="padding:6px 0; color:#06d6a0;">CYS150</td><td>8.4</td><td>6.6</td><td style="color:#06d6a0;">活性</td></tr>
+                </table>
+            </div>
+            <p style="font-family:'Noto Sans SC',sans-serif; font-size:14px; color:#a0a0a0;">两个残基均可作为靶标（中等反应性）</p>
+        </div>
+
+        <!-- Accessibility results -->
+        <div style="width:400px; background:rgba(6,214,160,0.06); border:1px solid rgba(6,214,160,0.2); border-radius:14px; padding:30px;">
+            <p style="font-family:'Noto Sans SC',sans-serif; font-weight:700; font-size:22px; color:#06d6a0; margin-bottom:18px;">Step 2: 可及性分析</p>
+            <div style="background:#0a1628; border-radius:10px; padding:18px; margin-bottom:15px;">
+                <table style="width:100%; font-family:'JetBrains Mono',monospace; font-size:15px; color:#e0e0e0; border-collapse:collapse;">
+                    <tr style="color:#a0a0a0; border-bottom:1px solid rgba(255,255,255,0.1);">
+                        <td style="padding:6px 0;">残基</td><td>d_site</td><td>反应原子</td>
+                    </tr>
+                    <tr><td style="padding:6px 0;">CYS22</td><td style="color:#f77f00;">4.1 Å</td><td>SG（巯基）</td></tr>
+                    <tr><td style="padding:6px 0;">CYS150</td><td style="color:#f77f00;">3.6 Å</td><td>SG（巯基）</td></tr>
+                </table>
+            </div>
+            <p style="font-family:'Noto Sans SC',sans-serif; font-size:14px; color:#a0a0a0;">基于晶体结构的静态分析</p>
+        </div>
+
+        <!-- Candidate results -->
+        <div style="width:400px; background:rgba(239,71,111,0.06); border:1px solid rgba(239,71,111,0.2); border-radius:14px; padding:30px;">
+            <p style="font-family:'Noto Sans SC',sans-serif; font-weight:700; font-size:22px; color:#ef476f; margin-bottom:18px;">Step 4: 候选物生成结果</p>
+            <div style="background:#0a1628; border-radius:10px; padding:18px; margin-bottom:15px;">
+                <div style="display:flex; flex-direction:column; gap:10px; font-family:'JetBrains Mono',monospace; font-size:14px; color:#e0e0e0;">
+                    <div style="display:flex; justify-content:space-between;"><span>EWF 通过:</span><span style="color:#06d6a0;">23 个</span></div>
+                    <div style="display:flex; justify-content:space-between;"><span>候选物生成:</span><span style="color:#06d6a0;">207 个</span></div>
+                    <div style="display:flex; justify-content:space-between;"><span>过滤通过:</span><span style="color:#06d6a0;">207 个</span></div>
+                    <div style="display:flex; justify-content:space-between;"><span>独特候选物:</span><span style="color:#f77f00; font-weight:700;">5 个</span></div>
+                </div>
+            </div>
+            <p style="font-family:'Noto Sans SC',sans-serif; font-size:14px; color:#a0a0a0;">丙烯酰胺、氯乙酰胺等</p>
+        </div>
+    </div>
+
+    <!-- Top candidates -->
+    <div style="position:absolute; top:740px; left:120px; width:1680px; background:#0a1628; border:1px solid rgba(0,180,216,0.12); border-radius:14px; padding:25px 30px;">
+        <p style="font-family:'Noto Sans SC',sans-serif; font-weight:700; font-size:18px; color:#ffffff; margin-bottom:15px;">生成的 Top 候选化合物</p>
+        <table style="width:100%; font-family:'JetBrains Mono',monospace; font-size:14px; color:#e0e0e0; border-collapse:collapse;">
+            <tr style="color:#a0a0a0; border-bottom:1px solid rgba(255,255,255,0.1);">
+                <td style="padding:8px 0; width:5%;">#</td><td style="width:10%;">Score</td><td style="width:10%;">d_est</td><td style="width:8%;">MW</td><td style="width:25%;">弹头(Warhead)</td><td>连接方式</td>
+            </tr>
+            <tr style="border-bottom:1px solid rgba(255,255,255,0.05);">
+                <td style="padding:8px 0; color:#f77f00;">1</td><td style="color:#06d6a0;">10.8</td><td>0.5Å</td><td>588</td><td>哌嗪 N-酰化</td><td>piperazine_N_acyl</td>
+            </tr>
+            <tr style="border-bottom:1px solid rgba(255,255,255,0.05);">
+                <td style="padding:8px 0; color:#f77f00;">2</td><td style="color:#06d6a0;">10.6</td><td>0.5Å</td><td>678</td><td>氯乙酰胺</td><td>amine_C(=O)CCCl</td>
+            </tr>
+            <tr>
+                <td style="padding:8px 0; color:#f77f00;">3</td><td style="color:#06d6a0;">10.6</td><td>0.5Å</td><td>642</td><td>丙烯酰胺</td><td>amine_C(=O)C=C</td>
+            </tr>
+        </table>
+    </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SLIDE 8: TOOLS ECOSYSTEM -->
+<!-- ============================================================ -->
+<div class="slide" data-canvas-width="1920" data-canvas-height="1080" style="background: linear-gradient(160deg, #0d1b2a 0%, #162032 100%);">
+    <div style="position:absolute; top:50px; right:80px; font-family:'JetBrains Mono',monospace; font-size:16px; color:#00b4d8; opacity:0.6;">08 / 10</div>
+    <div style="position:absolute; top:80px; left:120px;">
+        <span style="font-family:'JetBrains Mono',monospace; font-size:14px; color:#7209b7; letter-spacing:3px;">工具生态 · Tools</span>
+    </div>
+
+    <div style="position:absolute; top:140px; left:120px; width:1200px;">
+        <h2 style="font-family:'Noto Sans SC',sans-serif; font-weight:900; font-size:52px; color:#ffffff;">
+            集成的工具及库
+        </h2>
+    </div>
+
+    <!-- Tools grid -->
+    <div style="position:absolute; top:280px; left:120px; display:flex; gap:25px; flex-wrap:wrap; width:1700px;">
+        <!-- Available tools -->
+        <div style="width:380px; background:rgba(6,214,160,0.06); border:1px solid rgba(6,214,160,0.2); border-radius:14px; padding:25px;">
+            <p style="font-family:'Noto Sans SC',sans-serif; font-weight:700; font-size:20px; color:#06d6a0; margin-bottom:15px;">可用工具</p>
+            <div style="display:flex; flex-direction:column; gap:10px;">
+                <div style="display:flex; align-items:center; gap:10px;"><span style="color:#06d6a0; font-size:16px;">●</span><span style="font-family:'JetBrains Mono',monospace; font-size:15px; color:#e0e0e0;">GROMACS</span><span style="font-family:'Noto Sans SC',sans-serif; font-size:13px; color:#a0a0a0;">— MD 模拟</span></div>
+                <div style="display:flex; align-items:center; gap:10px;"><span style="color:#06d6a0; font-size:16px;">●</span><span style="font-family:'JetBrains Mono',monospace; font-size:15px; color:#e0e0e0;">AutoDock Vina</span><span style="font-family:'Noto Sans SC',sans-serif; font-size:13px; color:#a0a0a0;">— 对接</span></div>
+                <div style="display:flex; align-items:center; gap:10px;"><span style="color:#06d6a0; font-size:16px;">●</span><span style="font-family:'JetBrains Mono',monospace; font-size:15px; color:#e0e0e0;">Open Babel</span><span style="font-family:'Noto Sans SC',sans-serif; font-size:13px; color:#a0a0a0;">— 分子转换</span></div>
+                <div style="display:flex; align-items:center; gap:10px;"><span style="color:#06d6a0; font-size:16px;">●</span><span style="font-family:'JetBrains Mono',monospace; font-size:15px; color:#e0e0e0;">PyMOL</span><span style="font-family:'Noto Sans SC',sans-serif; font-size:13px; color:#a0a0a0;">— 可视化</span></div>
+                <div style="display:flex; align-items:center; gap:10px;"><span style="color:#06d6a0; font-size:16px;">●</span><span style="font-family:'JetBrains Mono',monospace; font-size:15px; color:#e0e0e0;">PROPKA3</span><span style="font-family:'Noto Sans SC',sans-serif; font-size:13px; color:#a0a0a0;">— pKa 预测</span></div>
+            </div>
+        </div>
+
+        <!-- Python libraries -->
+        <div style="width:380px; background:rgba(0,180,216,0.06); border:1px solid rgba(0,180,216,0.2); border-radius:14px; padding:25px;">
+            <p style="font-family:'Noto Sans SC',sans-serif; font-weight:700; font-size:20px; color:#00b4d8; margin-bottom:15px;">Python 库</p>
+            <div style="display:flex; flex-direction:column; gap:10px;">
+                <div style="display:flex; align-items:center; gap:10px;"><span style="color:#00b4d8; font-size:16px;">●</span><span style="font-family:'JetBrains Mono',monospace; font-size:15px; color:#e0e0e0;">RDKit</span><span style="font-family:'Noto Sans SC',sans-serif; font-size:13px; color:#a0a0a0;">— 化学信息学</span></div>
+                <div style="display:flex; align-items:center; gap:10px;"><span style="color:#00b4d8; font-size:16px;">●</span><span style="font-family:'JetBrains Mono',monospace; font-size:15px; color:#e0e0e0;">MDAnalysis</span><span style="font-family:'Noto Sans SC',sans-serif; font-size:13px; color:#a0a0a0;">— 轨迹分析</span></div>
+                <div style="display:flex; align-items:center; gap:10px;"><span style="color:#00b4d8; font-size:16px;">●</span><span style="font-family:'JetBrains Mono',monospace; font-size:15px; color:#e0e0e0;">BioPython</span><span style="font-family:'Noto Sans SC',sans-serif; font-size:13px; color:#a0a0a0;">— PDB 处理</span></div>
+                <div style="display:flex; align-items:center; gap:10px;"><span style="color:#00b4d8; font-size:16px;">●</span><span style="font-family:'JetBrains Mono',monospace; font-size:15px; color:#e0e0e0;">ProDy</span><span style="font-family:'Noto Sans SC',sans-serif; font-size:13px; color:#a0a0a0;">— 蛋白质动力学</span></div>
+                <div style="display:flex; align-items:center; gap:10px;"><span style="color:#00b4d8; font-size:16px;">●</span><span style="font-family:'JetBrains Mono',monospace; font-size:15px; color:#e0e0e0;">NumPy/SciPy</span><span style="font-family:'Noto Sans SC',sans-serif; font-size:13px; color:#a0a0a0;">— 数值计算</span></div>
+            </div>
+        </div>
+
+        <!-- AI/ML tools -->
+        <div style="width:380px; background:rgba(114,9,183,0.06); border:1px solid rgba(114,9,183,0.2); border-radius:14px; padding:25px;">
+            <p style="font-family:'Noto Sans SC',sans-serif; font-weight:700; font-size:20px; color:#7209b7; margin-bottom:15px;">AI / 深度学习</p>
+            <div style="display:flex; flex-direction:column; gap:10px;">
+                <div style="display:flex; align-items:center; gap:10px;"><span style="color:#7209b7; font-size:16px;">●</span><span style="font-family:'JetBrains Mono',monospace; font-size:15px; color:#e0e0e0;">Claude Code</span><span style="font-family:'Noto Sans SC',sans-serif; font-size:13px; color:#a0a0a0;">— 代码生成</span></div>
+                <div style="display:flex; align-items:center; gap:10px;"><span style="color:#7209b7; font-size:16px;">●</span><span style="font-family:'JetBrains Mono',monospace; font-size:15px; color:#e0e0e0;">SyntaLinker</span><span style="font-family:'Noto Sans SC',sans-serif; font-size:13px; color:#a0a0a0;">— 片段连接器</span></div>
+                <div style="display:flex; align-items:center; gap:10px;"><span style="color:#7209b7; font-size:16px;">●</span><span style="font-family:'JetBrains Mono',monospace; font-size:15px; color:#e0e0e0;">SMARTS 模式</span><span style="font-family:'Noto Sans SC',sans-serif; font-size:13px; color:#a0a0a0;">— 自动弹头识别</span></div>
+            </div>
+        </div>
+
+        <!-- Simulation scripts -->
+        <div style="width:380px; background:rgba(247,127,0,0.06); border:1px solid rgba(247,127,0,0.2); border-radius:14px; padding:25px;">
+            <p style="font-family:'Noto Sans SC',sans-serif; font-weight:700; font-size:20px; color:#f77f00; margin-bottom:15px;">自动生成的脚本</p>
+            <div style="display:flex; flex-direction:column; gap:10px;">
+                <div style="display:flex; align-items:center; gap:10px;"><span style="color:#f77f00; font-size:16px;">●</span><span style="font-family:'Noto Sans SC',sans-serif; font-size:15px; color:#e0e0e0;">CpHMD AMBER 脚本 (pH 6-18)</span></div>
+                <div style="display:flex; align-items:center; gap:10px;"><span style="color:#f77f00; font-size:16px;">●</span><span style="font-family:'Noto Sans SC',sans-serif; font-size:15px; color:#e0e0e0;">REST2 GROMACS 脚本 (8 副本)</span></div>
+                <div style="display:flex; align-items:center; gap:10px;"><span style="color:#f77f00; font-size:16px;">●</span><span style="font-family:'Noto Sans SC',sans-serif; font-size:15px; color:#e0e0e0;">MDP 参数文件自动生成</span></div>
+                <div style="display:flex; align-items:center; gap:10px;"><span style="color:#f77f00; font-size:16px;">●</span><span style="font-family:'Noto Sans SC',sans-serif; font-size:15px; color:#e0e0e0;">对接输入文件自动生成</span></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SLIDE 9: KEY LEARNINGS -->
+<!-- ============================================================ -->
+<div class="slide" data-canvas-width="1920" data-canvas-height="1080" style="background: linear-gradient(160deg, #0d1b2a 0%, #162032 100%);">
+    <div style="position:absolute; top:50px; right:80px; font-family:'JetBrains Mono',monospace; font-size:16px; color:#00b4d8; opacity:0.6;">09 / 10</div>
+    <div style="position:absolute; top:80px; left:120px;">
+        <span style="font-family:'JetBrains Mono',monospace; font-size:14px; color:#f77f00; letter-spacing:3px;">洞察 · Insights</span>
+    </div>
+
+    <div style="position:absolute; top:140px; left:120px; width:1200px;">
+        <h2 style="font-family:'Noto Sans SC',sans-serif; font-weight:900; font-size:52px; color:#ffffff;">
+            Vibe Coding 核心经验
+        </h2>
+    </div>
+
+    <!-- Insight cards -->
+    <div style="position:absolute; top:290px; left:120px; display:flex; gap:30px; width:1700px;">
+
+        <div style="flex:1; background:linear-gradient(180deg, rgba(0,180,216,0.08), rgba(0,180,216,0.02)); border:1px solid rgba(0,180,216,0.2); border-radius:16px; padding:35px;">
+            <div style="font-size:44px; margin-bottom:15px;">📄</div>
+            <p style="font-family:'Noto Sans SC',sans-serif; font-weight:700; font-size:22px; color:#00b4d8; margin-bottom:12px;">论文即提示词</p>
+            <p style="font-family:'Noto Sans SC',sans-serif; font-weight:300; font-size:17px; color:#e0e0e0; line-height:1.7;">
+                将论文 PDF 提供给 AI，<br/>
+                它能理解整个工作流<br/>
+                并转化为可执行代码。<br/>
+                <span style="color:#a0a0a0;">关键：方法论清晰的论文</span>
+            </p>
+        </div>
+
+        <div style="flex:1; background:linear-gradient(180deg, rgba(6,214,160,0.08), rgba(6,214,160,0.02)); border:1px solid rgba(6,214,160,0.2); border-radius:16px; padding:35px;">
+            <div style="font-size:44px; margin-bottom:15px;">🔄</div>
+            <p style="font-family:'Noto Sans SC',sans-serif; font-weight:700; font-size:22px; color:#06d6a0; margin-bottom:12px;">迭代式调试</p>
+            <p style="font-family:'Noto Sans SC',sans-serif; font-weight:300; font-size:17px; color:#e0e0e0; line-height:1.7;">
+                初次生成的代码并非完美。<br/>
+                根据错误信息自动<br/>
+                修正的过程才是关键。<br/>
+                <span style="color:#a0a0a0;">3 轮迭代完成验证</span>
+            </p>
+        </div>
+
+        <div style="flex:1; background:linear-gradient(180deg, rgba(247,127,0,0.08), rgba(247,127,0,0.02)); border:1px solid rgba(247,127,0,0.2); border-radius:16px; padding:35px;">
+            <div style="font-size:44px; margin-bottom:15px;">🧪</div>
+            <p style="font-family:'Noto Sans SC',sans-serif; font-weight:700; font-size:22px; color:#f77f00; margin-bottom:12px;">领域知识 = 质量</p>
+            <p style="font-family:'Noto Sans SC',sans-serif; font-weight:300; font-size:17px; color:#e0e0e0; line-height:1.7;">
+                AI 负责生成代码，<br/>
+                但科学合理性的判断<br/>
+                仍是研究者的职责。<br/>
+                <span style="color:#a0a0a0;">SMARTS 模式、pKa 解读等</span>
+            </p>
+        </div>
+
+        <div style="flex:1; background:linear-gradient(180deg, rgba(239,71,111,0.08), rgba(239,71,111,0.02)); border:1px solid rgba(239,71,111,0.2); border-radius:16px; padding:35px;">
+            <div style="font-size:44px; margin-bottom:15px;">⚡</div>
+            <p style="font-family:'Noto Sans SC',sans-serif; font-weight:700; font-size:22px; color:#ef476f; margin-bottom:12px;">速度革命</p>
+            <p style="font-family:'Noto Sans SC',sans-serif; font-weight:300; font-size:17px; color:#e0e0e0; line-height:1.7;">
+                原本需要数周至数月的流水线，<br/>
+                数小时内即可完成<br/>
+                原型构建。<br/>
+                <span style="color:#a0a0a0;">6 个模块 + 12 个 DB 集成</span>
+            </p>
+        </div>
+    </div>
+
+    <!-- Stats bar -->
+    <div style="position:absolute; bottom:100px; left:120px; display:flex; gap:80px;">
+        <div>
+            <p style="font-family:'Inter',sans-serif; font-weight:900; font-size:52px; color:#00b4d8;">~2,500</p>
+            <p style="font-family:'Noto Sans SC',sans-serif; font-weight:400; font-size:16px; color:#a0a0a0;">生成的代码行数</p>
+        </div>
+        <div>
+            <p style="font-family:'Inter',sans-serif; font-weight:900; font-size:52px; color:#06d6a0;">7</p>
+            <p style="font-family:'Noto Sans SC',sans-serif; font-weight:400; font-size:16px; color:#a0a0a0;">核心任务</p>
+        </div>
+        <div>
+            <p style="font-family:'Inter',sans-serif; font-weight:900; font-size:52px; color:#f77f00;">12</p>
+            <p style="font-family:'Noto Sans SC',sans-serif; font-weight:400; font-size:16px; color:#a0a0a0;">数据库来源</p>
+        </div>
+        <div>
+            <p style="font-family:'Inter',sans-serif; font-weight:900; font-size:52px; color:#ef476f;">47</p>
+            <p style="font-family:'Noto Sans SC',sans-serif; font-weight:400; font-size:16px; color:#a0a0a0;">内置弹头 SMILES</p>
+        </div>
+        <div>
+            <p style="font-family:'Inter',sans-serif; font-weight:900; font-size:52px; color:#7209b7;">3</p>
+            <p style="font-family:'Noto Sans SC',sans-serif; font-weight:400; font-size:16px; color:#a0a0a0;">调试迭代次数</p>
+        </div>
+    </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SLIDE 10: NEXT STEPS & CLOSING -->
+<!-- ============================================================ -->
+<div class="slide" data-canvas-width="1920" data-canvas-height="1080" style="background: linear-gradient(135deg, #0d1b2a 0%, #1b2838 40%, #0a2342 100%);">
+    <div style="position:absolute; top:50px; right:80px; font-family:'JetBrains Mono',monospace; font-size:16px; color:#00b4d8; opacity:0.6;">10 / 10</div>
+
+    <!-- Decorative -->
+    <svg style="position:absolute; bottom:0; right:0; width:500px; height:500px; opacity:0.06;" viewBox="0 0 500 500">
+        <circle cx="250" cy="250" r="200" stroke="#00b4d8" stroke-width="2" fill="none"/>
+        <circle cx="250" cy="250" r="150" stroke="#06d6a0" stroke-width="1.5" fill="none"/>
+        <circle cx="250" cy="250" r="100" stroke="#f77f00" stroke-width="1" fill="none"/>
+        <circle cx="250" cy="250" r="50" stroke="#ef476f" stroke-width="0.8" fill="none"/>
+    </svg>
+
+    <div style="position:absolute; top:120px; left:120px; width:900px;">
+        <h2 style="font-family:'Noto Sans SC',sans-serif; font-weight:900; font-size:56px; color:#ffffff; line-height:1.2;">
+            下一步 &<br/><span style="color:#06d6a0;">未来规划</span>
+        </h2>
+    </div>
+
+    <!-- Next steps -->
+    <div style="position:absolute; top:330px; left:120px; width:800px; display:flex; flex-direction:column; gap:18px;">
+        <div style="display:flex; align-items:center; gap:18px; background:rgba(0,180,216,0.06); border:1px solid rgba(0,180,216,0.15); border-radius:12px; padding:20px 25px;">
+            <div style="min-width:36px; height:36px; border-radius:8px; background:#0077b6; display:flex; align-items:center; justify-content:center; font-family:'Inter',sans-serif; font-weight:800; font-size:16px; color:#fff;">1</div>
+            <div>
+                <p style="font-family:'Noto Sans SC',sans-serif; font-weight:700; font-size:19px; color:#ffffff;">下载 Enamine SDF 并扩展库</p>
+                <p style="font-family:'Noto Sans SC',sans-serif; font-weight:300; font-size:14px; color:#a0a0a0;">CYS-3200 + SER-1600 → 47,000+ 化合物全面整合</p>
+            </div>
+        </div>
+
+        <div style="display:flex; align-items:center; gap:18px; background:rgba(6,214,160,0.06); border:1px solid rgba(6,214,160,0.15); border-radius:12px; padding:20px 25px;">
+            <div style="min-width:36px; height:36px; border-radius:8px; background:#06d6a0; display:flex; align-items:center; justify-content:center; font-family:'Inter',sans-serif; font-weight:800; font-size:16px; color:#0d1b2a;">2</div>
+            <div>
+                <p style="font-family:'Noto Sans SC',sans-serif; font-weight:700; font-size:19px; color:#ffffff;">在 HPC 集群上运行 REST2 / CpHMD</p>
+                <p style="font-family:'Noto Sans SC',sans-serif; font-weight:300; font-size:14px; color:#a0a0a0;">利用自动生成的 GROMACS/AMBER 脚本</p>
+            </div>
+        </div>
+
+        <div style="display:flex; align-items:center; gap:18px; background:rgba(247,127,0,0.06); border:1px solid rgba(247,127,0,0.15); border-radius:12px; padding:20px 25px;">
+            <div style="min-width:36px; height:36px; border-radius:8px; background:#f77f00; display:flex; align-items:center; justify-content:center; font-family:'Inter',sans-serif; font-weight:800; font-size:16px; color:#fff;">3</div>
+            <div>
+                <p style="font-family:'Noto Sans SC',sans-serif; font-weight:700; font-size:19px; color:#ffffff;">将流水线应用于实际 Cys/Ser 靶标</p>
+                <p style="font-family:'Noto Sans SC',sans-serif; font-weight:300; font-size:14px; color:#a0a0a0;">输入项目靶标蛋白 → 生成候选物 → 合成</p>
+            </div>
+        </div>
+
+        <div style="display:flex; align-items:center; gap:18px; background:rgba(114,9,183,0.06); border:1px solid rgba(114,9,183,0.15); border-radius:12px; padding:20px 25px;">
+            <div style="min-width:36px; height:36px; border-radius:8px; background:#7209b7; display:flex; align-items:center; justify-content:center; font-family:'Inter',sans-serif; font-weight:800; font-size:16px; color:#fff;">4</div>
+            <div>
+                <p style="font-family:'Noto Sans SC',sans-serif; font-weight:700; font-size:19px; color:#ffffff;">集成 SyntaLinker 深度学习模型</p>
+                <p style="font-family:'Noto Sans SC',sans-serif; font-weight:300; font-size:14px; color:#a0a0a0;">添加基于 AI 的片段连接器自动生成功能</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Closing message -->
+    <div style="position:absolute; top:350px; right:100px; width:650px; text-align:center;">
+        <div style="background:rgba(0,180,216,0.05); border:1px solid rgba(0,180,216,0.15); border-radius:20px; padding:50px 40px;">
+            <p style="font-family:'Noto Sans SC',sans-serif; font-weight:900; font-size:30px; color:#ffffff; line-height:1.5;">
+                以 Vibe Coding<br/>
+                加速<span style="color:#00b4d8;">药物发现</span>
+            </p>
+            <div style="width:80px; height:3px; background:linear-gradient(90deg, #00b4d8, #06d6a0); border-radius:2px; margin:25px auto;"></div>
+            <p style="font-family:'Noto Sans SC',sans-serif; font-weight:300; font-size:18px; color:#a0a0a0; line-height:1.7;">
+                AI 与研究者的协作<br/>
+                开启共价抑制剂设计的<br/>
+                全新范式
+            </p>
+        </div>
+
+        <div style="margin-top:30px;">
+            <p style="font-family:'JetBrains Mono',monospace; font-size:16px; color:#00b4d8;">CovLib v1.0.0</p>
+            <p style="font-family:'JetBrains Mono',monospace; font-size:14px; color:#a0a0a0; margin-top:6px;">Claude Code × AIDD System</p>
+            <p style="font-family:'Noto Sans SC',sans-serif; font-weight:300; font-size:15px; color:#a0a0a0; margin-top:10px;">谢谢</p>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

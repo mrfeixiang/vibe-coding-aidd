@@ -1,0 +1,1511 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vibe Coding Lecture 4 — Final: The Complete AIDD Vibe Coder</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700;900&family=JetBrains+Mono:wght@400;700&family=Inter:wght@300;400;600;700;900&display=swap');
+
+  :root {
+    --bg-dark: #06060e;
+    --bg-card: #10101c;
+    --bg-code: #161628;
+    --accent: #7c6cf7;
+    --accent2: #00e5c0;
+    --accent3: #ff6b9d;
+    --accent4: #ffc857;
+    --accent5: #4da6ff;
+    --text: #eaeaf4;
+    --text-dim: #7878a0;
+    --gradient1: linear-gradient(135deg, #7c6cf7, #b06cf7);
+    --gradient2: linear-gradient(135deg, #00e5c0, #0099ff);
+    --gradient3: linear-gradient(135deg, #ff6b9d, #ff4757);
+    --gradient4: linear-gradient(135deg, #ffc857, #ff6b6b);
+    --gradient-finale: linear-gradient(135deg, #7c6cf7 0%, #00e5c0 50%, #ff6b9d 100%);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Noto Sans SC', 'Inter', sans-serif;
+    background: var(--bg-dark);
+    color: var(--text);
+    overflow: hidden;
+    height: 100vh;
+  }
+
+  .slides-container {
+    width: 100vw;
+    height: 100vh;
+    position: relative;
+  }
+
+  .slide {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 60px 80px;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+  }
+
+  .slide.active {
+    display: flex;
+    opacity: 1;
+  }
+
+  /* Navigation */
+  .nav-bar {
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    height: 50px;
+    background: rgba(6,6,14,0.92);
+    border-top: 1px solid rgba(124,108,247,0.25);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 30px;
+    z-index: 100;
+    backdrop-filter: blur(12px);
+  }
+
+  .nav-bar button {
+    background: var(--gradient1);
+    border: none;
+    color: white;
+    padding: 8px 22px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-family: 'Noto Sans SC', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    transition: transform 0.15s;
+  }
+
+  .nav-bar button:hover { transform: scale(1.05); }
+  .nav-bar button:disabled { opacity: 0.25; cursor: default; transform: none; }
+
+  .slide-counter {
+    color: var(--text-dim);
+    font-size: 14px;
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  /* Progress bar */
+  .progress-bar {
+    position: fixed;
+    top: 0; left: 0;
+    height: 3px;
+    background: var(--gradient-finale);
+    transition: width 0.3s ease;
+    z-index: 100;
+  }
+
+  /* Typography */
+  h1 {
+    font-size: 3.4em;
+    font-weight: 900;
+    line-height: 1.15;
+    margin-bottom: 20px;
+    letter-spacing: -1.5px;
+  }
+
+  h2 {
+    font-size: 2.3em;
+    font-weight: 700;
+    margin-bottom: 28px;
+    line-height: 1.3;
+  }
+
+  h3 {
+    font-size: 1.5em;
+    font-weight: 600;
+    margin-bottom: 16px;
+    color: var(--accent2);
+  }
+
+  p, li {
+    font-size: 1.2em;
+    line-height: 1.75;
+    color: var(--text);
+  }
+
+  .subtitle {
+    font-size: 1.35em;
+    color: var(--text-dim);
+    font-weight: 300;
+    margin-bottom: 35px;
+  }
+
+  .highlight { color: var(--accent); font-weight: 700; }
+  .highlight2 { color: var(--accent2); font-weight: 700; }
+  .highlight3 { color: var(--accent3); font-weight: 700; }
+  .highlight4 { color: var(--accent4); font-weight: 700; }
+  .highlight5 { color: var(--accent5); font-weight: 700; }
+
+  .gradient-text {
+    background: var(--gradient1);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .gradient-text2 {
+    background: var(--gradient2);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .gradient-text3 {
+    background: var(--gradient3);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .gradient-finale {
+    background: var(--gradient-finale);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* Cards */
+  .card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 22px;
+    width: 100%;
+    max-width: 1200px;
+  }
+
+  .card {
+    background: var(--bg-card);
+    border: 1px solid rgba(124,108,247,0.15);
+    border-radius: 16px;
+    padding: 28px;
+    transition: transform 0.3s, border-color 0.3s, box-shadow 0.3s;
+  }
+
+  .card:hover {
+    transform: translateY(-4px);
+    border-color: var(--accent);
+    box-shadow: 0 8px 30px rgba(124,108,247,0.12);
+  }
+
+  .card-icon { font-size: 2.2em; margin-bottom: 12px; }
+  .card h3 { font-size: 1.2em; margin-bottom: 8px; }
+  .card p { font-size: 0.95em; color: var(--text-dim); line-height: 1.6; }
+
+  /* Code blocks */
+  .code-block {
+    background: var(--bg-code);
+    border: 1px solid rgba(124,108,247,0.15);
+    border-radius: 12px;
+    padding: 22px 28px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.92em;
+    line-height: 1.7;
+    overflow-x: auto;
+    max-width: 1100px;
+    width: 100%;
+    white-space: pre;
+    color: #c0c0e0;
+  }
+
+  .code-block .comment { color: #555570; }
+  .code-block .keyword { color: #c792ea; }
+  .code-block .string { color: #c3e88d; }
+  .code-block .function { color: #82aaff; }
+  .code-block .number { color: #f78c6c; }
+  .code-block .arrow { color: var(--accent2); font-weight: 700; }
+
+  /* Tables */
+  .table-wrap {
+    width: 100%;
+    max-width: 1100px;
+    overflow-x: auto;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.95em;
+  }
+
+  th {
+    background: rgba(124,108,247,0.12);
+    color: var(--accent);
+    padding: 13px 18px;
+    text-align: left;
+    font-weight: 700;
+    border-bottom: 2px solid var(--accent);
+    white-space: nowrap;
+  }
+
+  td {
+    padding: 11px 18px;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+    color: var(--text);
+    font-size: 0.93em;
+  }
+
+  tr:hover td { background: rgba(124,108,247,0.04); }
+
+  /* Pipeline */
+  .pipeline {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    flex-wrap: wrap;
+    justify-content: center;
+    max-width: 1200px;
+  }
+
+  .pipeline-step {
+    background: var(--bg-card);
+    border: 2px solid var(--accent);
+    border-radius: 12px;
+    padding: 14px 22px;
+    text-align: center;
+    min-width: 140px;
+  }
+
+  .pipeline-step .step-name {
+    font-weight: 700;
+    font-size: 1.05em;
+    color: var(--accent2);
+  }
+
+  .pipeline-step .step-tool {
+    font-size: 0.82em;
+    color: var(--text-dim);
+    margin-top: 3px;
+  }
+
+  .pipeline-arrow {
+    font-size: 1.8em;
+    color: var(--accent);
+    padding: 0 6px;
+  }
+
+  /* Quote block */
+  .quote-block {
+    border-left: 4px solid var(--accent);
+    padding: 18px 28px;
+    background: rgba(124,108,247,0.06);
+    border-radius: 0 12px 12px 0;
+    max-width: 900px;
+    margin: 16px 0;
+  }
+
+  .quote-block p {
+    font-size: 1.15em;
+    font-style: italic;
+    color: var(--text);
+  }
+
+  .quote-block .author {
+    font-style: normal;
+    color: var(--text-dim);
+    margin-top: 8px;
+    font-size: 0.95em;
+  }
+
+  /* Stats row */
+  .stats-row {
+    display: flex;
+    gap: 40px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin: 28px 0;
+  }
+
+  .stat-item { text-align: center; }
+
+  .stat-number {
+    font-size: 2.8em;
+    font-weight: 900;
+    line-height: 1;
+  }
+
+  .stat-label {
+    font-size: 0.9em;
+    color: var(--text-dim);
+    margin-top: 6px;
+  }
+
+  /* Tags */
+  .tags { display: flex; gap: 10px; flex-wrap: wrap; margin: 12px 0; }
+  .tag {
+    padding: 5px 14px;
+    border-radius: 20px;
+    font-size: 0.82em;
+    font-weight: 500;
+  }
+  .tag-purple { background: rgba(124,108,247,0.18); color: var(--accent); border: 1px solid rgba(124,108,247,0.3); }
+  .tag-teal { background: rgba(0,229,192,0.15); color: var(--accent2); border: 1px solid rgba(0,229,192,0.3); }
+  .tag-pink { background: rgba(255,107,157,0.15); color: var(--accent3); border: 1px solid rgba(255,107,157,0.3); }
+  .tag-yellow { background: rgba(255,200,87,0.15); color: var(--accent4); border: 1px solid rgba(255,200,87,0.3); }
+  .tag-blue { background: rgba(77,166,255,0.15); color: var(--accent5); border: 1px solid rgba(77,166,255,0.3); }
+
+  /* Two column layout */
+  .two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 36px;
+    width: 100%;
+    max-width: 1200px;
+    align-items: start;
+  }
+
+  /* Three column layout */
+  .three-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 24px;
+    width: 100%;
+    max-width: 1200px;
+    align-items: start;
+  }
+
+  /* Bullet list */
+  ul.clean-list {
+    list-style: none;
+    padding: 0;
+  }
+
+  ul.clean-list li {
+    padding: 7px 0;
+    padding-left: 26px;
+    position: relative;
+    font-size: 1.1em;
+  }
+
+  ul.clean-list li::before {
+    content: '>';
+    position: absolute;
+    left: 0;
+    color: var(--accent);
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 700;
+  }
+
+  /* Section label */
+  .section-label {
+    font-size: 0.82em;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    color: var(--accent);
+    margin-bottom: 8px;
+    font-weight: 500;
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  /* Slide backgrounds */
+  .slide-title {
+    background: radial-gradient(ellipse at center, rgba(124,108,247,0.1) 0%, transparent 70%);
+  }
+
+  .slide-finale {
+    background: radial-gradient(ellipse at 30% 50%, rgba(124,108,247,0.08) 0%, transparent 50%),
+                radial-gradient(ellipse at 70% 50%, rgba(0,229,192,0.06) 0%, transparent 50%);
+  }
+
+  /* Animated glow */
+  @keyframes glow {
+    0%, 100% { box-shadow: 0 0 20px rgba(124,108,247,0.25); }
+    50% { box-shadow: 0 0 40px rgba(124,108,247,0.45); }
+  }
+
+  @keyframes glowFinale {
+    0% { box-shadow: 0 0 20px rgba(124,108,247,0.3); }
+    33% { box-shadow: 0 0 30px rgba(0,229,192,0.3); }
+    66% { box-shadow: 0 0 30px rgba(255,107,157,0.3); }
+    100% { box-shadow: 0 0 20px rgba(124,108,247,0.3); }
+  }
+
+  .glow { animation: glow 3s infinite; }
+  .glow-finale { animation: glowFinale 4s infinite; }
+
+  /* Timeline */
+  .timeline {
+    display: flex;
+    gap: 0;
+    align-items: flex-start;
+    max-width: 1150px;
+    width: 100%;
+  }
+
+  .timeline-item {
+    flex: 1;
+    text-align: center;
+    position: relative;
+    padding: 0 8px;
+  }
+
+  .timeline-dot {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    margin: 0 auto 12px;
+    position: relative;
+    z-index: 2;
+  }
+
+  .timeline-item::after {
+    content: '';
+    position: absolute;
+    top: 9px;
+    left: 55%;
+    right: -45%;
+    height: 2px;
+    background: rgba(124,108,247,0.2);
+    z-index: 1;
+  }
+
+  .timeline-item:last-child::after { display: none; }
+
+  .timeline-label {
+    font-size: 0.78em;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 6px;
+  }
+
+  .timeline-title {
+    font-size: 1em;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 4px;
+  }
+
+  .timeline-desc {
+    font-size: 0.82em;
+    color: var(--text-dim);
+    line-height: 1.4;
+  }
+
+  /* Checklist */
+  .checklist { list-style: none; padding: 0; }
+  .checklist li {
+    padding: 6px 0;
+    padding-left: 28px;
+    position: relative;
+    font-size: 1.05em;
+  }
+  .checklist li::before {
+    content: '\2713';
+    position: absolute;
+    left: 0;
+    color: var(--accent2);
+    font-weight: 700;
+  }
+
+  /* Responsive */
+  @media (max-width: 900px) {
+    .slide { padding: 30px 40px; }
+    h1 { font-size: 2.2em; }
+    h2 { font-size: 1.7em; }
+    .two-col, .three-col { grid-template-columns: 1fr; }
+    .pipeline { flex-direction: column; }
+    .pipeline-arrow { transform: rotate(90deg); }
+    .timeline { flex-direction: column; gap: 20px; }
+    .timeline-item::after { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="progress-bar" id="progressBar"></div>
+
+<div class="slides-container" id="slidesContainer">
+
+<!-- ==================== SLIDE 1: TITLE ==================== -->
+<div class="slide slide-title active" id="slide-1">
+  <div class="section-label">Lecture 4 of 4 &mdash; Final</div>
+  <h1><span class="gradient-finale">The Complete<br>AIDD Vibe Coder</span></h1>
+  <p class="subtitle">Vibe Coding 系列终极讲座：整合、高级工作流、未来展望</p>
+  <div class="tags">
+    <span class="tag tag-purple">Final Lecture</span>
+    <span class="tag tag-teal">Claude Science</span>
+    <span class="tag tag-pink">Advanced Workflows</span>
+    <span class="tag tag-yellow">Career & Future</span>
+    <span class="tag tag-blue">AIDD 2026</span>
+  </div>
+  <p style="margin-top:35px; color: var(--text-dim); font-size:0.95em;">
+    AIDD SYStem Lab &mdash; 面向生物信息学学生 &mdash; July 2026
+  </p>
+</div>
+
+<!-- ==================== SLIDE 2: OUR JOURNEY ==================== -->
+<div class="slide" id="slide-2">
+  <div class="section-label">Our Journey</div>
+  <h2>我们一起走过的<span class="gradient-text">四周旅程</span></h2>
+  <div class="timeline" style="margin-top:30px;">
+    <div class="timeline-item">
+      <div class="timeline-dot" style="background:var(--accent);"></div>
+      <div class="timeline-label">Lecture 1</div>
+      <div class="timeline-title">概念 & 原则</div>
+      <div class="timeline-desc">什么是 Vibe Coding？<br>4大核心原则<br>工具生态</div>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-dot" style="background:var(--accent2);"></div>
+      <div class="timeline-label">Lecture 2</div>
+      <div class="timeline-title">实战项目</div>
+      <div class="timeline-desc">Drug Target Analyzer<br>UniProt API 对接<br>从零到一</div>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-dot" style="background:var(--accent3);"></div>
+      <div class="timeline-label">Lecture 3</div>
+      <div class="timeline-title">AIDD 流水线</div>
+      <div class="timeline-desc">REINVENT4 + Vina<br>Boltz-2 验证<br>共价设计</div>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-dot glow-finale" style="background:var(--accent4);"></div>
+      <div class="timeline-label">Lecture 4</div>
+      <div class="timeline-title" style="color:var(--accent4);">整合 & 未来</div>
+      <div class="timeline-desc">全面整合<br>高级工作流<br>职业 & 展望</div>
+    </div>
+  </div>
+  <p style="margin-top:35px; font-size:1.15em;">
+    <span class="highlight4">四周前的你们</span>和<span class="highlight2">现在的你们</span>已经完全不同。
+  </p>
+</div>
+
+<!-- ==================== SLIDE 3: RECAP CORE PRINCIPLES ==================== -->
+<div class="slide" id="slide-3">
+  <div class="section-label">Recap</div>
+  <h2>4大原则已经<span class="gradient-text">内化</span>了吗？</h2>
+  <div class="card-grid" style="grid-template-columns: 1fr 1fr;">
+    <div class="card" style="border-color:rgba(124,108,247,0.3);">
+      <h3><span class="highlight">1.</span> Intent over Syntax</h3>
+      <p>"帮我提取GC含量60%以上的序列"<br>
+         <strong>在Lecture 1中学习，在Lecture 3中实战应用</strong></p>
+    </div>
+    <div class="card" style="border-color:rgba(0,229,192,0.3);">
+      <h3><span class="highlight2">2.</span> Small Steps</h3>
+      <p>REINVENT4 → RDKit → Vina → Boltz-2<br>
+         <strong>每一步单独验证后再连接</strong></p>
+    </div>
+    <div class="card" style="border-color:rgba(255,107,157,0.3);">
+      <h3><span class="highlight3">3.</span> Context is King</h3>
+      <p>box center、exhaustiveness、蛋白质序列等<br>
+         <strong>具体的上下文产生准确的代码</strong></p>
+    </div>
+    <div class="card" style="border-color:rgba(255,200,87,0.3);">
+      <h3><span class="highlight4">4.</span> You = Reviewer</h3>
+      <p>EGFR 评分验证、Meeko 错误修复、生物学合理性<br>
+         <strong>发现AI的错误就是你的价值所在</strong></p>
+    </div>
+  </div>
+  <p style="margin-top:20px; font-size:1.1em; color:var(--text-dim);">
+    这4大原则在今天学习的<span class="highlight">高级工作流</span>中同样适用。
+  </p>
+</div>
+
+<!-- ==================== SLIDE 4: THE COMPLETE AIDD STACK ==================== -->
+<div class="slide" id="slide-4">
+  <div class="section-label">The Big Picture</div>
+  <h2>2026年完整的 <span class="gradient-text2">AIDD 技术栈</span></h2>
+  <div class="code-block" style="font-size:0.95em; text-align:center; line-height:2;">
+<span class="keyword">Claude Science</span>  <span class="comment">← 文献调研、靶点分析、数据查询</span>
+      <span class="arrow">↓</span>
+<span class="keyword">REINVENT4</span>      <span class="comment">← 强化学习分子生成（Lead Optimization）</span>
+<span class="keyword">DiffSBDD</span>       <span class="comment">← 扩散模型3D分子生成（Hit Finding）</span>
+      <span class="arrow">↓</span>
+<span class="keyword">RDKit</span>          <span class="comment">← 理化性质过滤（QED、Lipinski、ADMET）</span>
+      <span class="arrow">↓</span>
+<span class="keyword">AutoDock Vina</span>  <span class="comment">← 基于物理的分子对接</span>
+<span class="keyword">GNINA</span>          <span class="comment">← 基于CNN的对接 + 评分</span>
+      <span class="arrow">↓</span>
+<span class="keyword">Boltz-2</span>        <span class="comment">← AI结合亲和力 + 结构预测</span>
+      <span class="arrow">↓</span>
+<span class="keyword">PyMOL / 3Dmol</span> <span class="comment">← 3D可视化 + 分析</span>
+      <span class="arrow">↓</span>
+<span class="keyword">Claude Code</span>    <span class="comment">← 全流水线构建 & 自动化（Vibe Coding）</span></div>
+  <p style="margin-top:15px; font-size:1.05em;">
+    <span class="highlight2">全部开源</span>。<span class="highlight4">一张 RTX 5080</span>。<span class="highlight3">软件费用 $0</span>。
+  </p>
+</div>
+
+<!-- ==================== SLIDE 5: CLAUDE SCIENCE ==================== -->
+<div class="slide" id="slide-5">
+  <div class="section-label">New Tool</div>
+  <h2>Claude Science：<span class="gradient-text2">AI 研究工作站</span></h2>
+  <div class="two-col">
+    <div>
+      <h3>什么是 Claude Science？</h3>
+      <ul class="clean-list">
+        <li>Anthropic 的<strong>生命科学专用 AI 分析平台</strong></li>
+        <li><span class="highlight2">24+ 个 MCP 连接器</span>内置</li>
+        <li>本地运行 — 数据不离开服务器</li>
+        <li>自动 Conda 环境管理</li>
+        <li>PubMed、ChEMBL、ClinicalTrials 直接查询</li>
+        <li>Python/R 代码生成与执行</li>
+      </ul>
+    </div>
+    <div>
+      <h3>内置数据连接器</h3>
+      <div class="code-block" style="font-size:0.82em; padding:16px;">
+<span class="keyword">文献</span>     PubMed, bioRxiv, Clinical Trials
+<span class="keyword">基因组</span>   BioMart, Variants, Expression
+<span class="keyword">蛋白质</span>   Protein Annotation, Structures
+<span class="keyword">药物</span>     ChEMBL, Drug Regulatory (FDA)
+<span class="keyword">化学</span>     ZINC, Ketcher Chemistry
+<span class="keyword">其他</span>     CellGuide, Cancer Models, RNA</div>
+    </div>
+  </div>
+  <div class="quote-block" style="margin-top:15px;">
+    <p>在一个对话窗口中同时查询6个数据库 — 不再需要在多个标签页之间来回复制粘贴</p>
+  </div>
+</div>
+
+<!-- ==================== SLIDE 6: CLAUDE SCIENCE IN ACTION ==================== -->
+<div class="slide" id="slide-6">
+  <div class="section-label">Claude Science Demo</div>
+  <h2>Claude Science <span class="gradient-text">实战示例</span></h2>
+  <div class="two-col">
+    <div>
+      <h3 style="color:var(--accent);">A. 靶点调研</h3>
+      <div class="code-block" style="font-size:0.82em; padding:14px;">
+<span class="string">"帮我调研TEAD4作为抗癌靶点的最新动态。
+1) 在PubMed搜索2024-2025年的综述
+2) 在ChEMBL查询TEAD抑制剂的IC50数据
+3) 在ClinicalTrials检索相关临床试验
+4) 整理PDB共结晶结构ID"</span>
+
+<span class="arrow">→ 自动调用3个连接器 + 生成表格</span></div>
+    </div>
+    <div>
+      <h3 style="color:var(--accent2);">B. 结果交叉验证</h3>
+      <div class="code-block" style="font-size:0.82em; padding:14px;">
+<span class="string">"帮我交叉验证Boltz-2预测的5个分子
+对EGFR的结合亲和力。
+1) 该骨架的文献活性报告
+2) ChEMBL中相似结构的IC50数据
+3) hERG等脱靶风险检查"</span>
+
+<span class="arrow">→ 基于文献 + 数据库的自动验证报告</span></div>
+    </div>
+  </div>
+  <div class="two-col" style="margin-top:15px;">
+    <div>
+      <h3 style="color:var(--accent3);">C. SAR 分析</h3>
+      <div class="code-block" style="font-size:0.82em; padding:14px;">
+<span class="string">"从ChEMBL获取JAK2 IC50 < 1μM的化合物，
+按Murcko骨架聚类。
+识别2023年以后的新骨架。"</span>
+
+<span class="arrow">→ 免费的构效关系分析工具</span></div>
+    </div>
+    <div>
+      <h3 style="color:var(--accent4);">D. 竞争情报</h3>
+      <div class="code-block" style="font-size:0.82em; padding:14px;">
+<span class="string">"整理PPI抑制剂2024-2025年的临床管线。
+哪些公司在推进？
+最热门的靶点是什么？生成管线热力图。"</span>
+
+<span class="arrow">→ ClinicalTrials + PubMed 整合分析</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== SLIDE 7: THE POWER DUO ==================== -->
+<div class="slide" id="slide-7">
+  <div class="section-label">Integration</div>
+  <h2>Claude Science + Claude Code = <span class="gradient-finale">最强组合</span></h2>
+  <div class="code-block" style="font-size:1em; text-align:center; line-height:2.4; max-width:950px;">
+<span class="keyword">Claude Science</span>  <span class="comment">"研究大脑" — 文献、数据库、分析</span>
+        <span class="arrow">↕</span>  <span class="comment" style="font-size:0.8em;">insights & data exchange</span>
+<span class="keyword">Claude Code</span>     <span class="comment">"工程之手" — 代码、流水线、自动化</span></div>
+
+  <div class="three-col" style="margin-top:25px;">
+    <div class="card" style="border-color:rgba(124,108,247,0.3);">
+      <h3 style="color:var(--accent);">Step 1：研究</h3>
+      <p><strong>Claude Science</strong>中：<br>
+         "调研KRAS G12D共价策略"<br>
+         → 文献 + ChEMBL + 结构信息</p>
+    </div>
+    <div class="card" style="border-color:rgba(0,229,192,0.3);">
+      <h3 style="color:var(--accent2);">Step 2：实现</h3>
+      <p><strong>Claude Code</strong>中：<br>
+         "配置DiffSBDD输入文件"<br>
+         "编写Boltz-2批处理脚本"</p>
+    </div>
+    <div class="card" style="border-color:rgba(255,107,157,0.3);">
+      <h3 style="color:var(--accent3);">Step 3：验证</h3>
+      <p>回到<strong>Claude Science</strong>：<br>
+         "将Boltz-2结果与ChEMBL<br>
+         进行交叉验证"</p>
+    </div>
+  </div>
+  <p style="margin-top:18px; font-size:1.1em;">
+    研究 → 实现 → 验证的循环，<span class="highlight2">一个人</span>在<span class="highlight">一小时内</span>即可完成的时代
+  </p>
+</div>
+
+<!-- ==================== SLIDE 8: COVLIB CASE STUDY ==================== -->
+<div class="slide" id="slide-8">
+  <div class="section-label">Advanced Case Study</div>
+  <h2>CovLib：<span class="gradient-text3">共价抑制剂设计流水线</span></h2>
+  <div class="two-col">
+    <div>
+      <h3>什么是 CovLib？</h3>
+      <ul class="clean-list">
+        <li>Cys/Ser 靶向共价抑制剂自动设计</li>
+        <li>通过 Vibe Coding <strong>构建完整流水线</strong></li>
+        <li>内置反应性弹头(warhead)库</li>
+        <li>自动 Linker 生成 & 优化</li>
+        <li>Vina + Boltz-2 双重验证内置</li>
+      </ul>
+      <div class="tags" style="margin-top:12px;">
+        <span class="tag tag-purple">Covalent</span>
+        <span class="tag tag-teal">Automated</span>
+        <span class="tag tag-pink">Open Source</span>
+      </div>
+    </div>
+    <div>
+      <h3>流水线流程</h3>
+      <div class="code-block" style="font-size:0.85em; padding:16px;">
+<span class="keyword">输入</span>：蛋白质 PDB + 靶标残基（Cys/Ser）
+        <span class="arrow">↓</span>
+<span class="function">1.</span> 结合位点分析（fpocket）
+<span class="function">2.</span> 配体骨架选择/生成
+<span class="function">3.</span> 弹头(warhead)连接（氯乙酰胺、
+   丙烯酰胺、乙烯基砜等）
+<span class="function">4.</span> 3D 结构生成（ETKDG）
+<span class="function">5.</span> AutoDock Vina 对接
+<span class="function">6.</span> Boltz-2 亲和力验证
+<span class="function">7.</span> 结果排序 & 可视化
+        <span class="arrow">↓</span>
+<span class="keyword">输出</span>：排名候选物 + 3D 构象 + 报告</div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== SLIDE 9: COVLIB RESULTS ==================== -->
+<div class="slide" id="slide-9">
+  <div class="section-label">CovLib Results</div>
+  <h2>CovLib 实战结果：<span class="gradient-text">数据说话</span></h2>
+  <div class="stats-row">
+    <div class="stat-item">
+      <div class="stat-number gradient-text">19</div>
+      <div class="stat-label">共价<br>设计分子</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-number gradient-text2">10</div>
+      <div class="stat-label">超越非共价<br>最优候选</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-number" style="color:var(--accent3);">-10.62</div>
+      <div class="stat-label">最高 Vina Score<br>(kcal/mol)</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-number" style="color:var(--accent4);">~3x</div>
+      <div class="stat-label">亲和力提升<br>(vs 非共价)</div>
+    </div>
+  </div>
+  <div class="table-wrap" style="margin-top:10px;">
+    <table>
+      <thead>
+        <tr><th>弹头(warhead)类型</th><th>Boltz-2 Affinity</th><th>Vina Score</th><th>机制</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>氯乙酰胺</td><td style="color:var(--accent2);"><strong>0.27</strong></td><td>-8.31</td><td>烷基化（SN2）</td></tr>
+        <tr><td>丙烯酰胺 + 吡啶</td><td style="color:var(--accent2);"><strong>0.29</strong></td><td>-8.70</td><td>Michael 加成</td></tr>
+        <tr><td>丙炔酰胺</td><td>0.41</td><td>-8.61</td><td>Michael 加成</td></tr>
+        <tr style="background:rgba(255,107,157,0.06);"><td><strong>&alpha;-氰基丙烯酰胺</strong></td><td>0.51</td><td style="color:var(--accent3);"><strong>-10.62</strong></td><td>可逆共价</td></tr>
+        <tr><td>乙烯基磺酰胺</td><td>0.71</td><td>-8.43</td><td>Michael 加成</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p style="margin-top:12px; font-size:1em; color:var(--text-dim);">
+    Vina 与 Boltz-2 的<span class="highlight">交叉验证</span>结果一致 → 结果可信度大幅提升
+  </p>
+</div>
+
+<!-- ==================== SLIDE 10: HOW COVLIB WAS BUILT ==================== -->
+<div class="slide" id="slide-10">
+  <div class="section-label">Behind the Scenes</div>
+  <h2>用 <span class="gradient-text">Vibe Coding</span> 构建 CovLib 的过程</h2>
+  <div class="code-block" style="font-size:0.9em;">
+<span class="comment"># Prompt 1：库设计</span>
+<span class="string">"帮我创建一个用于共价抑制剂设计的Python库。
+ 弹头(warhead)类型：氯乙酰胺、丙烯酰胺、乙烯基砜、丙炔酰胺
+ 需要能将每种弹头自动连接到配体骨架的函数。"</span>
+
+<span class="comment"># Prompt 2：对接连接</span>
+<span class="string">"将生成的共价分子通过AutoDock Vina进行对接的流水线。
+ receptor.pdbqt已准备好。在靶标Cys367附近设置box。"</span>
+
+<span class="comment"># Prompt 3：Boltz-2 整合</span>
+<span class="string">"将Vina Top 10转换为Boltz-2 YAML。蛋白质序列从FASTA读取，
+ 配体SMILES从对接结果CSV读取。2-space indent, no tabs。"</span>
+
+<span class="comment"># Prompt 4：整合可视化</span>
+<span class="string">"将Vina score + Boltz-2 affinity + QED合并，
+ 生成radar chart、heatmap、scatter plot三种可视化。论文级质量。"</span></div>
+  <p style="margin-top:15px; font-size:1.05em;">
+    <span class="highlight2">4个 Prompt</span> 构建完整库 — 比传统方法快<span class="highlight3">10倍以上</span>
+  </p>
+</div>
+
+<!-- ==================== SLIDE 11: ADVANCED PROMPT MASTERY ==================== -->
+<div class="slide" id="slide-11">
+  <div class="section-label">Advanced Prompting</div>
+  <h2>Prompt 进阶：<span class="gradient-text">Level 2</span></h2>
+  <div class="two-col">
+    <div>
+      <h3 style="color:var(--accent3);">初级 Prompt（Lecture 1-2）</h3>
+      <div class="code-block" style="font-size:0.82em; padding:14px; border-color:rgba(255,107,157,0.2);">
+<span class="string">"帮我计算这个FASTA文件的
+ GC含量。"</span>
+
+<span class="comment">→ 单一任务，单一输出</span>
+<span class="comment">→ 上下文最少</span>
+<span class="comment">→ 一次完成</span></div>
+    </div>
+    <div>
+      <h3 style="color:var(--accent2);">高级 Prompt（Lecture 4）</h3>
+      <div class="code-block" style="font-size:0.82em; padding:14px; border-color:rgba(0,229,192,0.2);">
+<span class="string">"将REINVENT4 CSV + Vina结果 + Boltz-2
+ 输出整合为一个分析仪表盘。
+ 遵循CLAUDE.md中定义的规范。
+ 失败的分子记录到日志中并跳过。
+ 最终输出：interactive HTML报告。"</span>
+
+<span class="comment">→ 多工具连接</span>
+<span class="comment">→ 错误处理指令</span>
+<span class="comment">→ 输出格式规范</span></div>
+    </div>
+  </div>
+  <div style="margin-top:25px; max-width:900px;">
+    <h3 style="color:var(--accent4);">高级 Prompt 技巧</h3>
+    <div class="card-grid" style="grid-template-columns: 1fr 1fr 1fr;">
+      <div class="card" style="padding:16px;">
+        <p style="font-size:0.9em;"><strong style="color:var(--accent);">CLAUDE.md</strong><br>将项目上下文持久化到文件中</p>
+      </div>
+      <div class="card" style="padding:16px;">
+        <p style="font-size:0.9em;"><strong style="color:var(--accent2);">链式调用</strong><br>将前一步的输出作为下一步 Prompt 的输入</p>
+      </div>
+      <div class="card" style="padding:16px;">
+        <p style="font-size:0.9em;"><strong style="color:var(--accent3);">错误传递</strong><br>将错误信息原样复制给AI</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== SLIDE 12: DEBUGGING PATTERNS ==================== -->
+<div class="slide" id="slide-12">
+  <div class="section-label">Debugging</div>
+  <h2>实战调试<span class="gradient-text3">模式</span></h2>
+  <div class="card-grid" style="grid-template-columns: 1fr 1fr;">
+    <div class="card">
+      <h3 style="color:var(--accent);">模式 1：直接传递错误</h3>
+      <div class="code-block" style="font-size:0.8em; padding:12px;">
+<span class="string">"出现了这个错误：
+Cannot kekulize mol
+在含有芳香氮的SMILES中发生。
+帮我修复。"</span>
+
+<span class="comment">→ AI添加RDKit标准化代码</span></div>
+    </div>
+    <div class="card">
+      <h3 style="color:var(--accent2);">模式 2：版本冲突</h3>
+      <div class="code-block" style="font-size:0.8em; padding:12px;">
+<span class="string">"我用的是Meeko 0.7.1，
+但AI按0.6版API写的代码。
+请按当前版本API修改。"</span>
+
+<span class="comment">→ 务必在Prompt中注明版本</span></div>
+    </div>
+    <div class="card">
+      <h3 style="color:var(--accent3);">模式 3：YAML/格式问题</h3>
+      <div class="code-block" style="font-size:0.8em; padding:12px;">
+<span class="string">"Boltz-2 YAML解析报错。
+请用2-space indent, no tabs
+重新生成。"</span>
+
+<span class="comment">→ 明确指定格式约束</span></div>
+    </div>
+    <div class="card">
+      <h3 style="color:var(--accent4);">模式 4：结果验证失败</h3>
+      <div class="code-block" style="font-size:0.8em; padding:12px;">
+<span class="string">"TP53的druggability得了90分，
+但实际上它被认为是undruggable。
+请重新审查评分逻辑。"</span>
+
+<span class="comment">→ 用领域知识发现AI的错误</span></div>
+    </div>
+  </div>
+  <p style="margin-top:15px; font-size:1.05em;">
+    <span class="highlight4">关键：</span>不要害怕错误，培养<span class="highlight2">将错误传递给AI的习惯</span>
+  </p>
+</div>
+
+<!-- ==================== SLIDE 13: REPRODUCIBILITY ==================== -->
+<div class="slide" id="slide-13">
+  <div class="section-label">Best Practices</div>
+  <h2>可复现性 & 最佳实践：<span class="gradient-text2">专业 Vibe Coder 的习惯</span></h2>
+  <div class="card-grid" style="grid-template-columns: 1fr 1fr 1fr;">
+    <div class="card">
+      <div class="card-icon">&#x1F4E6;</div>
+      <h3 style="color:var(--accent);">环境锁定</h3>
+      <ul class="checklist">
+        <li><code>requirements.txt</code> 必备</li>
+        <li><code>environment.yml</code> 推荐</li>
+        <li>明确 Python 版本</li>
+        <li>记录 GPU 驱动版本</li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="card-icon">&#x1F4DD;</div>
+      <h3 style="color:var(--accent2);">Prompt 归档</h3>
+      <ul class="checklist">
+        <li>创建 <code>prompts/</code> 目录</li>
+        <li>保存使用过的 Prompt</li>
+        <li>记录 AI 模型版本</li>
+        <li>同时记录修改过程</li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="card-icon">&#x1F50D;</div>
+      <h3 style="color:var(--accent3);">验证清单</h3>
+      <ul class="checklist">
+        <li>import 是否真实存在</li>
+        <li>阳性对照组（known active）测试</li>
+        <li>阴性对照组（known inactive）测试</li>
+        <li>结果的生物学合理性</li>
+      </ul>
+    </div>
+  </div>
+  <div class="quote-block" style="margin-top:18px;">
+    <p>如果不保存 Prompt，6个月后你将无法重现相同的代码。<br>
+       <strong>Prompt 是一种新形态的源代码。</strong></p>
+  </div>
+</div>
+
+<!-- ==================== SLIDE 14: COMMON MISTAKES ==================== -->
+<div class="slide" id="slide-14">
+  <div class="section-label">Lessons Learned</div>
+  <h2>四周学到的<span class="gradient-text3">教训</span></h2>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr><th>错误</th><th>为什么是问题</th><th>解决方法</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>"帮我做完整个流水线"</strong></td>
+          <td>AI一次生成200行以上代码 → 无法追踪错误</td>
+          <td><span class="highlight2">分成5-6个步骤</span></td>
+        </tr>
+        <tr>
+          <td><strong>不检查 import</strong></td>
+          <td>AI使用不存在的库</td>
+          <td><span class="highlight2">手动确认所有 import</span></td>
+        </tr>
+        <tr>
+          <td><strong>让AI决定对接 box 位置</strong></td>
+          <td>AI无法"看到"3D结构</td>
+          <td><span class="highlight2">用PyMOL确认后传入坐标</span></td>
+        </tr>
+        <tr>
+          <td><strong>没有阳性/阴性对照组就分析</strong></td>
+          <td>无法判断结果对错</td>
+          <td><span class="highlight2">先用已知化合物测试</span></td>
+        </tr>
+        <tr>
+          <td><strong>无条件信任结果</strong></td>
+          <td>如果EGFR被判为undruggable？</td>
+          <td><span class="highlight2">用领域知识进行常识检验</span></td>
+        </tr>
+        <tr>
+          <td><strong>不保存 Prompt</strong></td>
+          <td>无法复现，重复犯同样的错误</td>
+          <td><span class="highlight2">prompts/ 目录 + CLAUDE.md</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ==================== SLIDE 15: TEAD INHIBITOR HOMEWORK ==================== -->
+<div class="slide" id="slide-15">
+  <div class="section-label">Practice</div>
+  <h2>作业案例：<span class="gradient-text">TEAD 抑制剂设计</span></h2>
+  <div class="two-col">
+    <div>
+      <h3>为什么选 TEAD？</h3>
+      <ul class="clean-list">
+        <li>Hippo 信号通路核心转录因子</li>
+        <li>与肝癌、肺癌、胃癌密切相关</li>
+        <li>IK-930、VT3989 等<span class="highlight2">已进入临床的抑制剂</span>存在</li>
+        <li>保守的<span class="highlight">脂质口袋（Lipid Pocket）</span></li>
+        <li>Cys367 → <span class="highlight3">可应用共价策略</span></li>
+        <li>PDB 结构丰富：7CNL、7CMM、8P0M</li>
+      </ul>
+    </div>
+    <div>
+      <h3>完整工作流</h3>
+      <div class="code-block" style="font-size:0.82em; padding:14px;">
+<span class="function">Phase 1</span> 靶点调研（Claude Science）
+  UniProt、PDB、ChEMBL 查询
+        <span class="arrow">↓</span>
+<span class="function">Phase 2</span> 分子生成（REINVENT4）
+  种子分子 → 30+ 候选物生成
+        <span class="arrow">↓</span>
+<span class="function">Phase 3</span> 亲和力评估
+  Boltz-2 或 AutoDock Vina
+        <span class="arrow">↓</span>
+<span class="function">Phase 4</span> 分析 & 报告撰写
+  Top 5 + 对照组比较 + 可视化</div>
+    </div>
+  </div>
+  <p style="margin-top:15px; font-size:1em; color:var(--text-dim);">
+    整个过程可以通过 Vibe Coding 在<span class="highlight2">一天之内</span>完成
+  </p>
+</div>
+
+<!-- ==================== SLIDE 16: YOUR COMPLETE TOOLBOX ==================== -->
+<div class="slide" id="slide-16">
+  <div class="section-label">Toolbox</div>
+  <h2>你们的完整<span class="gradient-text2">工具箱</span></h2>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr><th>阶段</th><th>工具</th><th>Vibe Coding 的角色</th><th>人的角色</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>文献调研</strong></td><td>Claude Science</td><td>数据库查询、摘要、生成表格</td><td><span class="highlight4">设计研究问题</span></td></tr>
+        <tr><td><strong>靶点选定</strong></td><td>UniProt, PDB, ChEMBL</td><td>数据收集自动化</td><td><span class="highlight4">druggability 判断</span></td></tr>
+        <tr><td><strong>分子生成</strong></td><td>REINVENT4, DiffSBDD</td><td>配置文件编写、执行自动化</td><td><span class="highlight4">种子分子 & 评分函数设计</span></td></tr>
+        <tr><td><strong>性质过滤</strong></td><td>RDKit</td><td>生成过滤脚本</td><td><span class="highlight4">确定过滤标准</span></td></tr>
+        <tr><td><strong>对接验证</strong></td><td>Vina, GNINA</td><td>构建对接流水线</td><td><span class="highlight4">Box 位置 & 结合模式解读</span></td></tr>
+        <tr><td><strong>AI 验证</strong></td><td>Boltz-2</td><td>YAML 生成、结果解析</td><td><span class="highlight4">交叉验证判断</span></td></tr>
+        <tr><td><strong>可视化</strong></td><td>PyMOL, matplotlib</td><td>生成绘图代码</td><td><span class="highlight4">判断什么图有意义</span></td></tr>
+        <tr><td><strong>流水线</strong></td><td>Claude Code</td><td>连接、自动化、错误处理</td><td><span class="highlight4">整体策略设计</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p style="margin-top:10px; font-size:1em;">
+    <span class="highlight4">黄色 = 你们</span>。这是AI绝对无法替代的部分。
+  </p>
+</div>
+
+<!-- ==================== SLIDE 17: BEFORE & AFTER ==================== -->
+<div class="slide" id="slide-17">
+  <div class="section-label">Transformation</div>
+  <h2><span class="highlight3">四周前</span> vs <span class="highlight2">现在</span></h2>
+  <div class="two-col" style="max-width:1000px;">
+    <div class="card" style="border-color:rgba(255,107,157,0.3);">
+      <h3 style="color:var(--accent3);">四周前的你们</h3>
+      <ul class="clean-list">
+        <li>"Vibe Coding？不知道是什么"</li>
+        <li>"Python只会基础"</li>
+        <li>"REINVENT4是什么？"</li>
+        <li>"分子对接？只在理论课听过"</li>
+        <li>"AI能代替写代码？"</li>
+        <li>"AIDD流水线只有专家才能做"</li>
+      </ul>
+    </div>
+    <div class="card glow" style="border-color:rgba(0,229,192,0.4);">
+      <h3 style="color:var(--accent2);">现在的你们</h3>
+      <ul class="clean-list">
+        <li style="color:var(--accent2);">内化了4大核心原则</li>
+        <li style="color:var(--accent2);">用 Claude Code 从零构建项目</li>
+        <li style="color:var(--accent2);">运行 REINVENT4 → Vina → Boltz-2 流水线</li>
+        <li style="color:var(--accent2);">用 Claude Science 同时查询文献 + 数据库</li>
+        <li style="color:var(--accent2);">能发现并修正AI的错误</li>
+        <li style="color:var(--accent2);">理解共价抑制剂设计流水线</li>
+      </ul>
+    </div>
+  </div>
+  <p style="margin-top:25px; font-size:1.35em; font-weight:700;">
+    <span class="gradient-finale">这就是四周内可以实现的蜕变。</span>
+  </p>
+</div>
+
+<!-- ==================== SLIDE 18: FUTURE VISION ==================== -->
+<div class="slide" id="slide-18">
+  <div class="section-label">Future</div>
+  <h2>2027年以后：<span class="gradient-text">会有什么变化？</span></h2>
+  <div class="card-grid" style="grid-template-columns: 1fr 1fr;">
+    <div class="card">
+      <div class="card-icon">&#x1F9EC;</div>
+      <h3 style="color:var(--accent);">AI 模型的进化</h3>
+      <ul class="clean-list" style="font-size:0.95em;">
+        <li>AlphaFold3 → 更精确的结构预测</li>
+        <li>Boltz-3? → 更快速的亲和力预测</li>
+        <li>多模态 AI → 直接"理解"3D结构</li>
+        <li>Agent 编程（Level 4）→ 普及化</li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="card-icon">&#x1F52C;</div>
+      <h3 style="color:var(--accent2);">工作流的进化</h3>
+      <ul class="clean-list" style="font-size:0.95em;">
+        <li>靶点发现 → 候选物产出<strong>一天完成</strong></li>
+        <li>实验验证反馈自动整合</li>
+        <li>多靶点同时优化</li>
+        <li>实验室机器人与AI联动</li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="card-icon">&#x1F393;</div>
+      <h3 style="color:var(--accent3);">教育的变革</h3>
+      <ul class="clean-list" style="font-size:0.95em;">
+        <li>"编程课" → "AI协作课"</li>
+        <li>Prompt 工程成为必修课</li>
+        <li>领域专业知识 + AI 素养</li>
+        <li>跨学科融合加速</li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="card-icon">&#x1F48A;</div>
+      <h3 style="color:var(--accent4);">产业的变革</h3>
+      <ul class="clean-list" style="font-size:0.95em;">
+        <li>新药研发成本有望大幅降低</li>
+        <li>小型实验室也能开展 AIDD</li>
+        <li>"Computational Chemist"角色扩展</li>
+        <li>AI-native 生物科技公司急剧增长</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== SLIDE 19: CAREER PATHS ==================== -->
+<div class="slide" id="slide-19">
+  <div class="section-label">Career</div>
+  <h2>Vibe Coder 的<span class="gradient-text2">职业路径</span></h2>
+  <div class="card-grid" style="grid-template-columns: 1fr 1fr 1fr;">
+    <div class="card" style="border-color:rgba(124,108,247,0.3);">
+      <div class="card-icon">&#x1F3E2;</div>
+      <h3 style="color:var(--accent);">制药/生物科技</h3>
+      <p>Computational Chemist<br>
+         AIDD Scientist<br>
+         Cheminformatics Engineer<br>
+         <br>
+         <span style="font-size:0.85em; color:var(--text-dim);">AstraZeneca、Novartis、<br>Xaira、Recursion 等</span></p>
+    </div>
+    <div class="card" style="border-color:rgba(0,229,192,0.3);">
+      <div class="card-icon">&#x1F3EB;</div>
+      <h3 style="color:var(--accent2);">学术界/研究所</h3>
+      <p>AI-Enhanced Researcher<br>
+         Bioinformatics Scientist<br>
+         Drug Discovery PI<br>
+         <br>
+         <span style="font-size:0.85em; color:var(--text-dim);">大学实验室、<br>国家研究所等</span></p>
+    </div>
+    <div class="card" style="border-color:rgba(255,107,157,0.3);">
+      <div class="card-icon">&#x1F680;</div>
+      <h3 style="color:var(--accent3);">创业/初创企业</h3>
+      <p>AI-native 生物科技创业<br>
+         CRO / CADD 服务<br>
+         开源工具开发<br>
+         <br>
+         <span style="font-size:0.85em; color:var(--text-dim);">2人团队也能<br>构建AIDD平台</span></p>
+    </div>
+  </div>
+  <div class="quote-block" style="margin-top:18px;">
+    <p>共同关键词：<span class="highlight">领域知识</span> + <span class="highlight2">AI 素养</span> + <span class="highlight4">问题解决能力</span></p>
+  </div>
+</div>
+
+<!-- ==================== SLIDE 20: BUILDING YOUR PORTFOLIO ==================== -->
+<div class="slide" id="slide-20">
+  <div class="section-label">Portfolio</div>
+  <h2>AI 时代的<span class="gradient-text">作品集策略</span></h2>
+  <div class="two-col">
+    <div>
+      <h3>必须具备的内容</h3>
+      <ul class="checklist">
+        <li><strong>GitHub</strong>：项目代码 + README + Prompt 记录</li>
+        <li><strong>可复现的结果</strong>：requirements.txt、seed 固定</li>
+        <li><strong>过程文档化</strong>：如何发现/修复 AI 的错误</li>
+        <li><strong>领域洞察</strong>：解释"为什么选择这个靶点"</li>
+        <li><strong>可视化</strong>：论文级图表 + 3D 渲染</li>
+      </ul>
+    </div>
+    <div>
+      <h3>差异化要点</h3>
+      <div class="card" style="border-color:rgba(255,200,87,0.3);">
+        <p style="font-size:0.95em;">
+          <span class="highlight4">2026年面试官看重什么：</span><br><br>
+          <strong>&times;</strong> "3年Python经验"<br>
+          <strong>&times;</strong> "代码行数"<br><br>
+          <span class="highlight2">&check;</span> "用AI工具解决实际问题的经验"<br>
+          <span class="highlight2">&check;</span> "发现AI错误的过程"<br>
+          <span class="highlight2">&check;</span> "解释为什么选择这种方法"<br>
+          <span class="highlight2">&check;</span> "可复现的项目"
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== SLIDE 21: KEY NUMBERS ==================== -->
+<div class="slide" id="slide-21">
+  <div class="section-label">By the Numbers</div>
+  <h2>四周的<span class="gradient-finale">核心数据</span></h2>
+  <div class="stats-row">
+    <div class="stat-item">
+      <div class="stat-number gradient-text">4</div>
+      <div class="stat-label">核心原则<br>已内化</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-number gradient-text2">72+</div>
+      <div class="stat-label">评估的<br>分子数量</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-number" style="color:var(--accent3);">7</div>
+      <div class="stat-label">掌握的<br>开源工具</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-number" style="color:var(--accent4);">$0</div>
+      <div class="stat-label">软件<br>费用</div>
+    </div>
+  </div>
+  <div class="stats-row" style="margin-top:10px;">
+    <div class="stat-item">
+      <div class="stat-number gradient-text">10x</div>
+      <div class="stat-label">相比传统方法<br>开发速度</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-number gradient-text2">24+</div>
+      <div class="stat-label">Claude Science<br>MCP 连接器</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-number" style="color:var(--accent3);">-10.62</div>
+      <div class="stat-label">最高 Vina Score<br>(kcal/mol)</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-number" style="color:var(--accent4);">~3x</div>
+      <div class="stat-label">共价设计<br>亲和力提升</div>
+    </div>
+  </div>
+  <p style="margin-top:25px; font-size:1.2em; text-align:center;">
+    这是<span class="highlight2">小型实验室</span>用<span class="highlight">一张消费级GPU</span>取得的成果。
+  </p>
+</div>
+
+<!-- ==================== SLIDE 22: WHAT TO USE WHEN ==================== -->
+<div class="slide" id="slide-22">
+  <div class="section-label">Quick Reference</div>
+  <h2>场景化<span class="gradient-text">工具选择指南</span></h2>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr><th>场景</th><th>推荐工具</th><th>备注</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>"文献检索 + 靶点调研"</td><td><span class="highlight5">Claude Science</span></td><td>PubMed + ChEMBL + ClinicalTrials 同时查询</td></tr>
+        <tr><td>"在代码编辑器中直接编码"</td><td><span class="highlight">Cursor</span></td><td>VS Code 环境，内置AI对话</td></tr>
+        <tr><td>"构建复杂流水线"</td><td><span class="highlight2">Claude Code</span></td><td>理解整个代码库，终端原生</td></tr>
+        <tr><td>"优化现有分子"</td><td><span class="highlight3">REINVENT4</span></td><td>强化学习，需要种子分子</td></tr>
+        <tr><td>"发现新骨架"</td><td><span class="highlight4">DiffSBDD</span></td><td>扩散模型，只需3D结构</td></tr>
+        <tr><td>"快速对接验证"</td><td><span class="highlight">AutoDock Vina</span></td><td>CPU即可，基于物理</td></tr>
+        <tr><td>"AI亲和力预测"</td><td><span class="highlight2">Boltz-2</span></td><td>推荐GPU，用于交叉验证</td></tr>
+        <tr><td>"共价抑制剂设计"</td><td><span class="highlight3">CovLib + Vina</span></td><td>弹头(warhead)自动连接 + 对接</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ==================== SLIDE 23: ESSENTIAL RESOURCES ==================== -->
+<div class="slide" id="slide-23">
+  <div class="section-label">Resources</div>
+  <h2>必备<span class="gradient-text2">资源汇总</span></h2>
+  <div class="three-col">
+    <div>
+      <h3 style="color:var(--accent);">核心论文</h3>
+      <ul class="clean-list" style="font-size:0.88em;">
+        <li>How to vibe code in science<br><span style="color:var(--text-dim);">Nature, 2026</span></li>
+        <li>Vibe coding for biomedical software<br><span style="color:var(--text-dim);">BioData Mining, 2025</span></li>
+        <li>REINVENT 4: AI-driven generative design<br><span style="color:var(--text-dim);">J Cheminformatics, 2024</span></li>
+        <li>AutoDock Vina 1.2.0<br><span style="color:var(--text-dim);">J Chem Inf Model, 2021</span></li>
+        <li>Boltz-2: Binding Affinity Prediction<br><span style="color:var(--text-dim);">bioRxiv, 2025</span></li>
+      </ul>
+    </div>
+    <div>
+      <h3 style="color:var(--accent2);">工具 & 安装</h3>
+      <ul class="clean-list" style="font-size:0.88em;">
+        <li><strong>Cursor</strong><br><span style="color:var(--text-dim);">cursor.sh</span></li>
+        <li><strong>Claude Code</strong><br><span style="color:var(--text-dim);">docs.anthropic.com/claude-code</span></li>
+        <li><strong>Claude Science</strong><br><span style="color:var(--text-dim);">Anthropic Science Beta</span></li>
+        <li><strong>REINVENT4</strong><br><span style="color:var(--text-dim);">github.com/MolecularAI/REINVENT4</span></li>
+        <li><strong>Boltz-2</strong><br><span style="color:var(--text-dim);">github.com/jwohlwend/boltz</span></li>
+      </ul>
+    </div>
+    <div>
+      <h3 style="color:var(--accent3);">学习资料</h3>
+      <ul class="clean-list" style="font-size:0.88em;">
+        <li>BCH709 Vibe Coding Course<br><span style="color:var(--text-dim);">bch709.plantgenomicslab.org</span></li>
+        <li>Vibe Coding Best Practices<br><span style="color:var(--text-dim);">QubitTool</span></li>
+        <li>What is Vibe Coding?<br><span style="color:var(--text-dim);">IBM Think</span></li>
+        <li>Not all AI programming is vibe coding<br><span style="color:var(--text-dim);">Simon Willison, 2025</span></li>
+        <li>RDKit Documentation<br><span style="color:var(--text-dim);">rdkit.org</span></li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== SLIDE 24: THE FORMULA ==================== -->
+<div class="slide slide-finale" id="slide-24">
+  <div class="section-label">Core Message</div>
+  <h2>你们的<span class="gradient-finale">核心公式</span></h2>
+  <div style="max-width:850px;">
+    <div class="code-block glow-finale" style="font-size:1.2em; text-align:center; line-height:2.6; padding:35px;">
+  <span class="highlight">领域知识</span>   <span class="comment">← 理解 Drug Discovery           ← 你们</span>
++ <span class="highlight2">意图表达</span>     <span class="comment">← 说明要分析什么               ← 你们</span>
++ <span class="highlight3">AI 工具运用</span>  <span class="comment">← 使用 Claude Code/Science      ← 你们</span>
++ <span class="highlight5">代码生成</span>     <span class="comment">← 流水线、分析、自动化          ← AI</span>
++ <span class="highlight4">结果验证</span>     <span class="comment">← 确认生物学合理性              ← 你们</span>
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+= <span class="gradient-finale" style="font-size:1.3em;">有效的药物候选物</span></div>
+  </div>
+  <p style="margin-top:25px; font-size:1.2em; max-width:800px; text-align:center;">
+    5个环节中有<span class="highlight4">4个</span>取决于你们。<br>
+    AI是工具，<span class="highlight2">你们才是科学家</span>。
+  </p>
+</div>
+
+<!-- ==================== SLIDE 25: FINAL QUOTE ==================== -->
+<div class="slide" id="slide-25">
+  <div class="section-label">Final Thought</div>
+  <h2 style="font-size:2em; margin-bottom:35px;">两种未来</h2>
+  <div class="two-col" style="max-width:900px;">
+    <div class="card" style="border-color:rgba(255,107,157,0.3); opacity:0.6;">
+      <h3 style="color:var(--accent3);">未来 A</h3>
+      <p style="font-size:1.05em;">
+        "AI能写代码，<br>
+        所以我不需要学习了。"<br><br>
+        <span style="color:var(--accent3);">→ AI出错也发现不了<br>
+        → 无法验证结果<br>
+        → 没有领域知识只能漂泊</span>
+      </p>
+    </div>
+    <div class="card glow" style="border-color:rgba(0,229,192,0.4);">
+      <h3 style="color:var(--accent2);">未来 B</h3>
+      <p style="font-size:1.05em;">
+        "AI能写代码，<br>
+        所以我可以专注于科学。"<br><br>
+        <span style="color:var(--accent2);">→ 用领域知识监督AI<br>
+        → 挑战更有雄心的研究课题<br>
+        → 10倍速的科学发现</span>
+      </p>
+    </div>
+  </div>
+  <div class="quote-block" style="margin-top:30px; border-left-color:var(--accent2);">
+    <p>AI不会取代药物化学家。<br>
+       但<span class="highlight2">会用AI的药物化学家</span>将取代不会用AI的药物化学家。</p>
+  </div>
+</div>
+
+<!-- ==================== SLIDE 26: CLOSING ==================== -->
+<div class="slide slide-finale" id="slide-26">
+  <h1 style="font-size:3.8em;"><span class="gradient-finale">Keep Vibing.</span></h1>
+  <p class="subtitle" style="font-size:1.3em; max-width:700px; text-align:center;">
+    不要害怕编程。<br>
+    你们的<span style="color:var(--accent2);">生物学洞察</span>才是最强大的武器。<br>
+    今天不是结束，而是<span style="color:var(--accent4);">开始</span>。
+  </p>
+  <div style="margin-top:35px; max-width:750px;">
+    <ul class="clean-list" style="text-align:left;">
+      <li><strong style="color:var(--accent);">Cursor</strong> &mdash; cursor.sh</li>
+      <li><strong style="color:var(--accent2);">Claude Code</strong> &mdash; docs.anthropic.com/claude-code</li>
+      <li><strong style="color:var(--accent5);">Claude Science</strong> &mdash; claude.ai/science</li>
+      <li><strong style="color:var(--accent3);">REINVENT4</strong> &mdash; github.com/MolecularAI/REINVENT4</li>
+      <li><strong style="color:var(--accent4);">Boltz-2</strong> &mdash; github.com/jwohlwend/boltz</li>
+    </ul>
+  </div>
+  <p style="margin-top:40px; font-size:1.1em; color:var(--text-dim);">
+    AIDD SYStem Lab &mdash; 感谢大家。你们已经是 Vibe Coder 了。
+  </p>
+  <div class="tags" style="margin-top:20px;">
+    <span class="tag tag-purple">#VibeCoding</span>
+    <span class="tag tag-teal">#AIDD</span>
+    <span class="tag tag-pink">#DrugDiscovery</span>
+    <span class="tag tag-yellow">#KeepVibing</span>
+    <span class="tag tag-blue">#2026</span>
+  </div>
+</div>
+
+</div><!-- end slides-container -->
+
+<!-- Navigation -->
+<div class="nav-bar">
+  <button id="prevBtn" onclick="changeSlide(-1)" disabled>&larr; 上一页</button>
+  <span class="slide-counter" id="slideCounter">1 / 26</span>
+  <button id="nextBtn" onclick="changeSlide(1)">下一页 &rarr;</button>
+</div>
+
+<script>
+  let currentSlide = 1;
+  const totalSlides = 26;
+
+  function changeSlide(direction) {
+    const newSlide = currentSlide + direction;
+    if (newSlide < 1 || newSlide > totalSlides) return;
+
+    document.getElementById(`slide-${currentSlide}`).classList.remove('active');
+    currentSlide = newSlide;
+    document.getElementById(`slide-${currentSlide}`).classList.add('active');
+
+    document.getElementById('slideCounter').textContent = `${currentSlide} / ${totalSlides}`;
+    document.getElementById('prevBtn').disabled = currentSlide === 1;
+    document.getElementById('nextBtn').disabled = currentSlide === totalSlides;
+    document.getElementById('progressBar').style.width = `${(currentSlide / totalSlides) * 100}%`;
+  }
+
+  // Keyboard navigation
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'Enter') {
+      e.preventDefault();
+      changeSlide(1);
+    } else if (e.key === 'ArrowLeft' || e.key === 'Backspace') {
+      e.preventDefault();
+      changeSlide(-1);
+    } else if (e.key === 'Home') {
+      e.preventDefault();
+      document.getElementById(`slide-${currentSlide}`).classList.remove('active');
+      currentSlide = 1;
+      document.getElementById(`slide-${currentSlide}`).classList.add('active');
+      document.getElementById('slideCounter').textContent = `${currentSlide} / ${totalSlides}`;
+      document.getElementById('prevBtn').disabled = true;
+      document.getElementById('nextBtn').disabled = false;
+      document.getElementById('progressBar').style.width = `${(1 / totalSlides) * 100}%`;
+    } else if (e.key === 'End') {
+      e.preventDefault();
+      document.getElementById(`slide-${currentSlide}`).classList.remove('active');
+      currentSlide = totalSlides;
+      document.getElementById(`slide-${currentSlide}`).classList.add('active');
+      document.getElementById('slideCounter').textContent = `${currentSlide} / ${totalSlides}`;
+      document.getElementById('prevBtn').disabled = false;
+      document.getElementById('nextBtn').disabled = true;
+      document.getElementById('progressBar').style.width = '100%';
+    }
+  });
+
+  // Touch support for mobile/tablet
+  let touchStartX = 0;
+  document.addEventListener('touchstart', (e) => { touchStartX = e.touches[0].clientX; });
+  document.addEventListener('touchend', (e) => {
+    const diff = touchStartX - e.changedTouches[0].clientX;
+    if (Math.abs(diff) > 50) changeSlide(diff > 0 ? 1 : -1);
+  });
+
+  // Initialize progress bar
+  document.getElementById('progressBar').style.width = `${(1 / totalSlides) * 100}%`;
+</script>
+
+</body>
+</html>

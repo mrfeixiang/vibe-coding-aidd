@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Vibe Coding for AIDD — Lecture Series</title>
+<title>Vibe Coding 药物设计 — 讲座系列</title>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&family=JetBrains+Mono:wght@400;700&family=Inter:wght@300;400;600;700;900&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700;900&family=JetBrains+Mono:wght@400;700&family=Inter:wght@300;400;600;700;900&display=swap');
 
   :root {
     --bg: #06060e;
@@ -22,7 +22,7 @@
   * { margin: 0; padding: 0; box-sizing: border-box; }
 
   body {
-    font-family: 'Noto Sans KR', 'Inter', sans-serif;
+    font-family: 'Noto Sans SC', 'Inter', sans-serif;
     background: var(--bg);
     color: var(--text);
     min-height: 100vh;
@@ -30,6 +30,39 @@
     flex-direction: column;
     align-items: center;
     padding: 60px 20px;
+  }
+
+  .lang-switcher {
+    position: fixed;
+    top: 20px;
+    right: 24px;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.85em;
+    font-family: 'Inter', sans-serif;
+  }
+
+  .lang-switcher a {
+    color: var(--dim);
+    text-decoration: none;
+    padding: 6px 14px;
+    border-radius: 20px;
+    border: 1px solid rgba(255,255,255,0.1);
+    transition: all 0.3s;
+  }
+
+  .lang-switcher a:hover {
+    color: var(--accent);
+    border-color: var(--accent);
+  }
+
+  .lang-switcher .active {
+    color: var(--accent);
+    border-color: var(--accent);
+    background: rgba(124,108,247,0.12);
+    pointer-events: none;
   }
 
   .hero {
@@ -218,39 +251,6 @@
     z-index: -1;
   }
 
-  .lang-switcher {
-    position: fixed;
-    top: 20px;
-    right: 24px;
-    z-index: 100;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-size: 0.85em;
-    font-family: 'Inter', sans-serif;
-  }
-
-  .lang-switcher a {
-    color: var(--dim);
-    text-decoration: none;
-    padding: 6px 14px;
-    border-radius: 20px;
-    border: 1px solid rgba(255,255,255,0.1);
-    transition: all 0.3s;
-  }
-
-  .lang-switcher a:hover {
-    color: var(--accent);
-    border-color: var(--accent);
-  }
-
-  .lang-switcher .active {
-    color: var(--accent);
-    border-color: var(--accent);
-    background: rgba(124,108,247,0.12);
-    pointer-events: none;
-  }
-
   @media (max-width: 700px) {
     .hero h1 { font-size: 2.2em; }
     .lectures-grid { grid-template-columns: 1fr; }
@@ -264,92 +264,92 @@
 <div class="bg-glow"></div>
 
 <div class="lang-switcher">
-  <a class="active">한국어</a>
-  <a href="cn/index.html">中文</a>
+  <a href="../index.html">한국어</a>
+  <a class="active">中文</a>
 </div>
 
 <div class="hero">
   <div class="hero-label">AIDD SYStem Lab</div>
-  <h1>Vibe Coding<br>for AIDD</h1>
+  <h1>Vibe Coding<br>药物设计</h1>
   <p>
-    생물정보학 학생을 위한 AI 코딩 강의 시리즈.<br>
-    자연어로 의도를 전달하고, AI가 코드를 생성하는 새로운 패러다임.
+    面向生物信息学学生的AI编程讲座系列。<br>
+    用自然语言传达意图，让AI生成代码的新范式。
   </p>
   <div class="tags">
-    <span class="tag tag-purple">Bioinformatics</span>
-    <span class="tag tag-teal">Drug Discovery</span>
-    <span class="tag tag-pink">AI-Assisted Coding</span>
-    <span class="tag tag-yellow">Open Source</span>
+    <span class="tag tag-purple">生物信息学</span>
+    <span class="tag tag-teal">药物发现</span>
+    <span class="tag tag-pink">AI辅助编程</span>
+    <span class="tag tag-yellow">开源</span>
   </div>
 </div>
 
 <div class="lectures-grid">
 
-  <!-- Lecture 1 & 2 -->
+  <!-- 讲座 1 & 2 -->
   <a href="lecture1_2.html" class="lecture-card l12">
-    <div class="card-number">Lectures 1 & 2</div>
+    <div class="card-number">讲座 1 & 2</div>
     <h2>Vibe Coding 0 &rarr; 1</h2>
     <p>
-      Vibe Coding의 개념, 4가지 핵심 원칙, 도구 생태계부터<br>
-      REINVENT4 + AutoDock Vina 실제 파이프라인 사례까지.
+      从Vibe Coding的概念、四大核心原则、工具生态系统，<br>
+      到REINVENT4 + AutoDock Vina 实际流水线案例。
     </p>
     <div class="card-topics">
-      <span class="card-topic">Karpathy 정의</span>
-      <span class="card-topic">4가지 원칙</span>
-      <span class="card-topic">프롬프트 엔지니어링</span>
+      <span class="card-topic">Karpathy 定义</span>
+      <span class="card-topic">四大原则</span>
+      <span class="card-topic">提示工程</span>
       <span class="card-topic">REINVENT4</span>
       <span class="card-topic">AutoDock Vina</span>
       <span class="card-topic">Boltz-2</span>
-      <span class="card-topic">실전 사례</span>
+      <span class="card-topic">实战案例</span>
     </div>
     <div class="card-meta">
-      <span>24 slides</span>
-      <span class="card-cta">발표 보기 &rarr;</span>
+      <span>24 张幻灯片</span>
+      <span class="card-cta">查看演示 &rarr;</span>
     </div>
   </a>
 
-  <!-- CovLib: Lecture 3 -->
+  <!-- CovLib: 讲座 3 -->
   <a href="covlib.html" class="lecture-card l3">
-    <div class="card-number">Lecture 3 — CovLib</div>
-    <h2>CovLib 바이브 코딩 여정</h2>
+    <div class="card-number">讲座 3 — CovLib</div>
+    <h2>CovLib Vibe Coding 之旅</h2>
     <p>
-      공유결합 억제제 설계 파이프라인 구축기.<br>
-      Cys/Ser 타겟 워헤드 라이브러리 & 자동 도킹.
+      共价抑制剂设计流水线构建记录。<br>
+      Cys/Ser 靶标弹头库 & 自动对接。
     </p>
     <div class="card-topics">
-      <span class="card-topic">공유결합 억제제</span>
-      <span class="card-topic">워헤드 설계</span>
+      <span class="card-topic">共价抑制剂</span>
+      <span class="card-topic">弹头设计</span>
       <span class="card-topic">AutoDock Vina</span>
       <span class="card-topic">Boltz-2</span>
       <span class="card-topic">RDKit</span>
-      <span class="card-topic">파이프라인 자동화</span>
+      <span class="card-topic">流水线自动化</span>
     </div>
     <div class="card-meta">
-      <span>Full slide deck</span>
-      <span class="card-cta">발표 보기 &rarr;</span>
+      <span>完整幻灯片</span>
+      <span class="card-cta">查看演示 &rarr;</span>
     </div>
   </a>
 
-  <!-- Lecture 4: Final -->
+  <!-- 讲座 4: 终章 -->
   <a href="Lecture4_Final_Presentation.html" class="lecture-card l4">
-    <div class="card-number">Lecture 4 — Final</div>
-    <h2>The Complete AIDD Vibe Coder</h2>
+    <div class="card-number">讲座 4 — 终章</div>
+    <h2>完整的AIDD Vibe Coder</h2>
     <p>
-      전체 통합, Claude Science, CovLib 파이프라인,<br>
-      고급 워크플로우, 미래 비전, 커리어 전략.
+      全面整合、Claude Science、CovLib 流水线、<br>
+      高级工作流、未来展望、职业策略。
     </p>
     <div class="card-topics">
       <span class="card-topic">Claude Science</span>
       <span class="card-topic">CovLib</span>
-      <span class="card-topic">고급 프롬프팅</span>
-      <span class="card-topic">디버깅 패턴</span>
-      <span class="card-topic">재현성</span>
-      <span class="card-topic">커리어</span>
-      <span class="card-topic">미래 비전</span>
+      <span class="card-topic">高级提示</span>
+      <span class="card-topic">调试模式</span>
+      <span class="card-topic">可重现性</span>
+      <span class="card-topic">职业发展</span>
+      <span class="card-topic">未来展望</span>
     </div>
     <div class="card-meta">
-      <span>26 slides</span>
-      <span class="card-cta">발표 보기 &rarr;</span>
+      <span>26 张幻灯片</span>
+      <span class="card-cta">查看演示 &rarr;</span>
     </div>
   </a>
 
@@ -357,8 +357,8 @@
 
 <div class="footer">
   <p>
-    AIDD SYStem Lab &mdash; July 2026<br>
-    모든 도구는 오픈소스. 소프트웨어 비용 $0.<br>
+    AIDD SYStem Lab &mdash; 2026年7月<br>
+    所有工具均为开源，软件成本 $0。<br>
     <a href="https://github.com/MolecularAI/REINVENT4">REINVENT4</a> &middot;
     <a href="https://github.com/jwohlwend/boltz">Boltz-2</a> &middot;
     <a href="https://docs.anthropic.com/en/docs/claude-code">Claude Code</a> &middot;
