@@ -1,370 +1,96 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Vibe Coding for AIDD — Lecture Series</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="description" content="Vibe Researching: a trilingual four-lecture course on AI-assisted scientific research, AIDD, nanobody design, validation, reproducibility, and human responsibility." />
+<title>Vibe Researching | Four Lectures for AI-Native Science</title>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&family=JetBrains+Mono:wght@400;700&family=Inter:wght@300;400;600;700;900&display=swap');
-
-  :root {
-    --bg: #06060e;
-    --bg-card: #10101c;
-    --accent: #7c6cf7;
-    --accent2: #00e5c0;
-    --accent3: #ff6b9d;
-    --accent4: #ffc857;
-    --accent5: #4da6ff;
-    --text: #eaeaf4;
-    --dim: #7878a0;
-  }
-
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-
-  body {
-    font-family: 'Noto Sans KR', 'Inter', sans-serif;
-    background: var(--bg);
-    color: var(--text);
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 60px 20px;
-  }
-
-  .hero {
-    text-align: center;
-    max-width: 900px;
-    margin-bottom: 60px;
-  }
-
-  .hero-label {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.85em;
-    text-transform: uppercase;
-    letter-spacing: 4px;
-    color: var(--accent);
-    margin-bottom: 20px;
-  }
-
-  .hero h1 {
-    font-size: 3.5em;
-    font-weight: 900;
-    line-height: 1.15;
-    letter-spacing: -2px;
-    margin-bottom: 20px;
-    background: linear-gradient(135deg, #7c6cf7 0%, #00e5c0 50%, #ff6b9d 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-  }
-
-  .hero p {
-    font-size: 1.25em;
-    color: var(--dim);
-    line-height: 1.7;
-    max-width: 700px;
-    margin: 0 auto;
-  }
-
-  .tags {
-    display: flex;
-    gap: 10px;
-    justify-content: center;
-    flex-wrap: wrap;
-    margin-top: 25px;
-  }
-
-  .tag {
-    padding: 6px 16px;
-    border-radius: 20px;
-    font-size: 0.82em;
-    font-weight: 500;
-  }
-
-  .tag-purple { background: rgba(124,108,247,0.18); color: var(--accent); border: 1px solid rgba(124,108,247,0.3); }
-  .tag-teal { background: rgba(0,229,192,0.15); color: var(--accent2); border: 1px solid rgba(0,229,192,0.3); }
-  .tag-pink { background: rgba(255,107,157,0.15); color: var(--accent3); border: 1px solid rgba(255,107,157,0.3); }
-  .tag-yellow { background: rgba(255,200,87,0.15); color: var(--accent4); border: 1px solid rgba(255,200,87,0.3); }
-
-  .lectures-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-    gap: 28px;
-    max-width: 1200px;
-    width: 100%;
-  }
-
-  .lecture-card {
-    background: var(--bg-card);
-    border: 1px solid rgba(124,108,247,0.15);
-    border-radius: 20px;
-    padding: 36px;
-    transition: transform 0.3s, border-color 0.3s, box-shadow 0.3s;
-    text-decoration: none;
-    color: inherit;
-    display: block;
-    position: relative;
-    overflow: hidden;
-  }
-
-  .lecture-card:hover {
-    transform: translateY(-6px);
-    box-shadow: 0 12px 40px rgba(124,108,247,0.15);
-  }
-
-  .lecture-card.l12:hover { border-color: var(--accent); }
-  .lecture-card.l3:hover { border-color: var(--accent3); }
-  .lecture-card.l4:hover { border-color: var(--accent4); }
-
-  .card-number {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.78em;
-    text-transform: uppercase;
-    letter-spacing: 2px;
-    margin-bottom: 14px;
-  }
-
-  .lecture-card.l12 .card-number { color: var(--accent); }
-  .lecture-card.l3 .card-number { color: var(--accent3); }
-  .lecture-card.l4 .card-number { color: var(--accent4); }
-
-  .lecture-card h2 {
-    font-size: 1.7em;
-    font-weight: 800;
-    margin-bottom: 14px;
-    line-height: 1.25;
-  }
-
-  .lecture-card.l12 h2 { color: var(--accent); }
-  .lecture-card.l3 h2 { color: var(--accent3); }
-  .lecture-card.l4 h2 { color: var(--accent4); }
-
-  .lecture-card p {
-    font-size: 1em;
-    color: var(--dim);
-    line-height: 1.7;
-    margin-bottom: 18px;
-  }
-
-  .card-topics {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-  }
-
-  .card-topic {
-    font-size: 0.78em;
-    padding: 4px 12px;
-    border-radius: 12px;
-    background: rgba(255,255,255,0.04);
-    color: var(--dim);
-    border: 1px solid rgba(255,255,255,0.06);
-  }
-
-  .card-meta {
-    margin-top: 20px;
-    padding-top: 16px;
-    border-top: 1px solid rgba(255,255,255,0.06);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    font-size: 0.85em;
-    color: var(--dim);
-  }
-
-  .card-cta {
-    font-weight: 600;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-  }
-
-  .lecture-card.l12 .card-cta { color: var(--accent); }
-  .lecture-card.l3 .card-cta { color: var(--accent3); }
-  .lecture-card.l4 .card-cta { color: var(--accent4); }
-
-  .footer {
-    margin-top: 80px;
-    text-align: center;
-    color: var(--dim);
-    font-size: 0.9em;
-    line-height: 1.8;
-    max-width: 700px;
-  }
-
-  .footer a {
-    color: var(--accent2);
-    text-decoration: none;
-  }
-
-  .footer a:hover { text-decoration: underline; }
-
-  @keyframes glowPulse {
-    0%, 100% { opacity: 0.05; }
-    50% { opacity: 0.12; }
-  }
-
-  .bg-glow {
-    position: fixed;
-    top: -200px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 800px;
-    height: 800px;
-    background: radial-gradient(circle, rgba(124,108,247,0.08) 0%, transparent 70%);
-    animation: glowPulse 6s infinite;
-    pointer-events: none;
-    z-index: -1;
-  }
-
-  .lang-switcher {
-    position: fixed;
-    top: 20px;
-    right: 24px;
-    z-index: 100;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-size: 0.85em;
-    font-family: 'Inter', sans-serif;
-  }
-
-  .lang-switcher a {
-    color: var(--dim);
-    text-decoration: none;
-    padding: 6px 14px;
-    border-radius: 20px;
-    border: 1px solid rgba(255,255,255,0.1);
-    transition: all 0.3s;
-  }
-
-  .lang-switcher a:hover {
-    color: var(--accent);
-    border-color: var(--accent);
-  }
-
-  .lang-switcher .active {
-    color: var(--accent);
-    border-color: var(--accent);
-    background: rgba(124,108,247,0.12);
-    pointer-events: none;
-  }
-
-  @media (max-width: 700px) {
-    .hero h1 { font-size: 2.2em; }
-    .lectures-grid { grid-template-columns: 1fr; }
-    body { padding: 30px 16px; }
-    .lang-switcher { top: 10px; right: 12px; }
-  }
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600&family=Noto+Sans+KR:wght@300;400;500;700&family=Noto+Sans+SC:wght@300;400;500;700&display=swap');
+:root{--bg:#080b10;--panel:#0f141c;--panel2:#121a24;--line:#253040;--text:#f4f7fb;--muted:#98a7b8;--cyan:#68e0d4;--violet:#a78bfa;--gold:#f6c667;--rose:#f28ca8;--blue:#74b7ff;--green:#7ce2a8;--shadow:0 22px 70px rgba(0,0,0,.35)}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:radial-gradient(circle at 85% 5%,rgba(116,183,255,.10),transparent 30%),radial-gradient(circle at 15% 10%,rgba(167,139,250,.08),transparent 30%),var(--bg);color:var(--text);font-family:Inter,'Noto Sans KR','Noto Sans SC',sans-serif;line-height:1.65}a{color:inherit}.wrap{max-width:1180px;margin:auto;padding:0 24px}.mono{font-family:'JetBrains Mono',monospace}.nav{position:sticky;top:0;z-index:30;background:rgba(8,11,16,.82);backdrop-filter:blur(18px);border-bottom:1px solid rgba(255,255,255,.06)}.navin{display:flex;align-items:center;justify-content:space-between;padding:14px 0;gap:14px}.brand{font-weight:800;letter-spacing:-.02em}.brand span{color:var(--cyan)}.links{display:flex;gap:18px;align-items:center}.links a{text-decoration:none;color:var(--muted);font-size:.9rem}.langs{display:flex;gap:6px}.langs button{background:transparent;color:var(--muted);border:1px solid var(--line);border-radius:999px;padding:6px 10px;cursor:pointer}.langs button.active{color:var(--text);border-color:var(--cyan);background:rgba(104,224,212,.08)}
+.hero{padding:108px 0 76px}.eyebrow{font-family:'JetBrains Mono',monospace;font-size:.8rem;letter-spacing:.14em;text-transform:uppercase;color:var(--cyan);margin-bottom:18px}.hero h1{font-size:clamp(3rem,8vw,7.3rem);line-height:.94;letter-spacing:-.065em;margin:0 0 28px;max-width:1050px}.hero .gradient{background:linear-gradient(90deg,var(--cyan),var(--blue),var(--violet),var(--rose));-webkit-background-clip:text;color:transparent}.hero p{max-width:820px;font-size:clamp(1.08rem,2vw,1.4rem);color:#c4cfda;margin:0}.heroquote{margin-top:34px;border-left:3px solid var(--gold);padding:12px 18px;color:#e8edf4;font-size:1.06rem;max-width:800px;background:rgba(246,198,103,.05)}
+.section{padding:70px 0}.section h2{font-size:clamp(2rem,4vw,3.4rem);letter-spacing:-.045em;line-height:1.05;margin:0 0 18px}.sectionlead{color:var(--muted);font-size:1.08rem;max-width:820px;margin-bottom:36px}.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}.principle,.card,.case,.prompt,.check,.lecture{background:linear-gradient(180deg,rgba(255,255,255,.025),rgba(255,255,255,.01));border:1px solid var(--line);border-radius:20px;box-shadow:var(--shadow)}.principle{padding:22px;min-height:210px}.num{font-family:'JetBrains Mono';color:var(--cyan);font-size:.8rem}.principle h3{margin:9px 0 8px;font-size:1.12rem}.principle p{color:var(--muted);margin:0;font-size:.95rem}
+.manifesto{display:grid;grid-template-columns:1.2fr .8fr;gap:22px}.manifesto .big{padding:34px;background:linear-gradient(135deg,rgba(104,224,212,.09),rgba(167,139,250,.06));border:1px solid #2b3b46;border-radius:22px}.manifesto .big p{font-size:clamp(1.35rem,2.3vw,2rem);line-height:1.35;margin:0;color:#f0f5fa}.manifesto .side{padding:28px;border:1px solid var(--line);border-radius:22px;background:var(--panel)}.manifesto .side p{margin:0 0 16px;color:var(--muted)}
+.timeline{display:grid;gap:18px}.lecture{padding:28px;display:grid;grid-template-columns:130px 1fr;gap:24px;position:relative;overflow:hidden}.lecture:before{content:'';position:absolute;inset:0 0 0 auto;width:4px;background:var(--accent)}.l1{--accent:var(--cyan)}.l2{--accent:var(--violet)}.l3{--accent:var(--rose)}.l4{--accent:var(--gold)}.lecture .phase{font-family:'JetBrains Mono';color:var(--accent);font-size:.86rem}.lecture h3{margin:0 0 10px;font-size:1.55rem}.lecture p{margin:0;color:var(--muted)}.tags{display:flex;flex-wrap:wrap;gap:8px;margin-top:15px}.tag{font-size:.78rem;padding:5px 10px;border:1px solid var(--line);border-radius:999px;color:#c7d2de;background:rgba(255,255,255,.02)}
+.loop{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:30px}.loop .card{padding:22px}.loop strong{display:block;font-size:1.05rem;margin:7px 0}.loop p{margin:0;color:var(--muted);font-size:.92rem}.arrowline{font-family:'JetBrains Mono';color:var(--cyan);margin-top:18px;font-size:.92rem}.cases{display:grid;grid-template-columns:repeat(2,1fr);gap:18px}.case{padding:26px}.case .kicker{font-family:'JetBrains Mono';font-size:.77rem;color:var(--blue);letter-spacing:.07em}.case h3{margin:8px 0 10px;font-size:1.35rem}.case p{color:var(--muted);margin:0}.case .lesson{margin-top:16px;padding-top:14px;border-top:1px solid var(--line);color:#dde6ef;font-size:.93rem}
+.stack{display:grid;grid-template-columns:repeat(6,1fr);gap:10px}.stack div{border:1px solid var(--line);background:var(--panel);border-radius:14px;padding:16px 10px;text-align:center}.stack b{display:block;color:#eaf0f7;font-size:.9rem}.stack span{color:var(--muted);font-size:.76rem}.prompts{display:grid;grid-template-columns:repeat(2,1fr);gap:18px}.prompt{padding:24px}.prompt h3{margin:0 0 12px;font-size:1.05rem}.code{background:#070a0f;border:1px solid #1c2631;border-radius:14px;padding:16px;font-family:'JetBrains Mono';font-size:.84rem;color:#cfe0ec;white-space:pre-wrap;line-height:1.65}.prompt .why{margin-top:12px;color:var(--muted);font-size:.9rem}.checks{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}.check{padding:22px}.check h3{margin:0 0 10px;font-size:1.04rem}.check ul{margin:0;padding-left:18px;color:var(--muted)}.check li{margin:7px 0}.warning{margin-top:24px;padding:22px;border:1px solid rgba(246,198,103,.35);background:rgba(246,198,103,.05);border-radius:18px;color:#f6e8be}.philosophy{display:grid;grid-template-columns:1fr 1fr;gap:18px}.philo{padding:30px;border-radius:22px;border:1px solid var(--line);background:var(--panel)}.philo h3{font-size:1.35rem;margin:0 0 12px}.philo p{color:var(--muted);margin:0}.philo.good{border-color:rgba(124,226,168,.35);background:rgba(124,226,168,.04)}.philo.bad{border-color:rgba(242,140,168,.28);background:rgba(242,140,168,.035)}
+.final{padding:72px 0 100px;text-align:center}.final h2{font-size:clamp(2.2rem,5vw,4.5rem);margin:0 auto 18px;max-width:1000px;line-height:1.05;letter-spacing:-.05em}.final p{max-width:780px;margin:0 auto;color:var(--muted);font-size:1.08rem}.actions{display:flex;justify-content:center;gap:12px;flex-wrap:wrap;margin-top:28px}.btn{display:inline-block;text-decoration:none;border:1px solid var(--line);border-radius:999px;padding:11px 18px;background:var(--panel);font-size:.9rem}.btn.primary{border-color:var(--cyan);color:var(--cyan)}footer{border-top:1px solid rgba(255,255,255,.07);padding:28px 0 42px;color:var(--muted);font-size:.86rem}.footerrow{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}
+[data-lang]{display:none}body.lang-en [data-lang=en],body.lang-ko [data-lang=ko],body.lang-zh [data-lang=zh]{display:block}.inline[data-lang]{display:none}body.lang-en .inline[data-lang=en],body.lang-ko .inline[data-lang=ko],body.lang-zh .inline[data-lang=zh]{display:inline}
+@media(max-width:900px){.grid4,.loop{grid-template-columns:repeat(2,1fr)}.stack{grid-template-columns:repeat(3,1fr)}.manifesto,.cases,.prompts,.philosophy{grid-template-columns:1fr}.links{display:none}.lecture{grid-template-columns:1fr}.hero{padding-top:76px}}
+@media(max-width:560px){.grid4,.loop,.checks,.stack{grid-template-columns:1fr}.hero h1{font-size:3.5rem}.wrap{padding:0 17px}.section{padding:50px 0}.lecture,.case,.prompt,.principle{padding:20px}.navin{align-items:flex-start}.brand{font-size:.92rem}}
 </style>
 </head>
-<body>
+<body class="lang-en">
+<nav class="nav"><div class="wrap navin"><div class="brand">Vibe <span>Researching</span></div><div class="links"><a href="#course">Course</a><a href="#cases">Cases</a><a href="#practice">Practice</a><a href="#verify">Verify</a><a href="#philosophy">Philosophy</a></div><div class="langs"><button data-setlang="en" class="active">EN</button><button data-setlang="ko">한국어</button><button data-setlang="zh">中文</button></div></div></nav>
+<main>
+<section class="hero"><div class="wrap"><div class="eyebrow">FOUR LECTURES · AIDD SYSTEM LAB · 2026</div>
+<h1><span data-lang="en">From <span class="gradient">Vibe Coding</span><br>to Vibe Researching</span><span data-lang="ko">바이브 코딩에서<br><span class="gradient">바이브 리서칭</span>으로</span><span data-lang="zh">从 <span class="gradient">Vibe Coding</span><br>走向 Vibe Researching</span></h1>
+<p data-lang="en">A four-lecture journey about a deeper change in scientific work: AI can write code, search data, and assemble pipelines, but the researcher must still decide what matters, what is true, and what deserves to become an experiment.</p>
+<p data-lang="ko">네 번의 강의를 관통하는 핵심은 코딩 기술이 아닙니다. AI가 코드와 도구를 다룰수록 연구자는 무엇이 중요한지, 무엇이 맞는지, 무엇을 실제 실험으로 보낼지 더 분명하게 판단해야 합니다.</p>
+<p data-lang="zh">这四堂课真正讲的并不是“让 AI 替你写代码”。越是把代码、检索和流水线交给 AI，研究者越必须自己判断：什么问题值得问，什么结果可信，什么候选值得进入真实实验。</p>
+<div class="heroquote"><span data-lang="en">AI can accelerate the hand, not replace the mind. The central skill is no longer typing every line, but owning every decision.</span><span data-lang="ko">AI는 손을 빠르게 만들 수는 있어도 생각을 대신할 수는 없습니다. 핵심 능력은 모든 줄을 직접 쓰는 것이 아니라 모든 결정을 책임지는 것입니다.</span><span data-lang="zh">AI 可以把“手”变快，却不能替代“脑”。真正重要的能力，不是亲手敲下每一行代码，而是对每一个决定负责。</span></div></div></section>
 
-<div class="bg-glow"></div>
+<section class="section" id="philosophy"><div class="wrap"><div class="eyebrow">THE MANIFESTO</div><h2 data-lang="en">The philosophy of vibe researching</h2><h2 data-lang="ko">바이브 리서칭의 철학</h2><h2 data-lang="zh">Vibe Researching 的哲学</h2>
+<div class="manifesto"><div class="big"><p data-lang="en">The scarce resource in science is shifting. Code is becoming cheaper. Questions, judgment, context, experimental taste, and responsibility are becoming more valuable.</p><p data-lang="ko">과학에서 희소한 자원이 바뀌고 있습니다. 코드는 점점 싸지고 있습니다. 대신 질문, 판단, 맥락, 실험 감각, 책임은 더 비싸집니다.</p><p data-lang="zh">科学中真正稀缺的资源正在变化。代码越来越便宜，问题意识、判断力、上下文、实验品味和责任感反而越来越昂贵。</p></div><div class="side"><p data-lang="en"><b>Vibe coding</b> is a method: describe intent, let AI draft, test, correct, repeat.</p><p data-lang="ko"><b>Vibe coding</b>은 방법입니다. 의도를 말하고, AI가 초안을 만들고, 실행하고, 고치고, 반복합니다.</p><p data-lang="zh"><b>Vibe coding</b> 是方法：表达意图，让 AI 起草，运行，纠错，再迭代。</p><p data-lang="en"><b>Vibe researching</b> is the scientific version: formulate the question, decompose the workflow, supervise tools, confront failure, validate with controls, and decide what the output means.</p><p data-lang="ko"><b>Vibe researching</b>은 그 방법을 과학으로 확장합니다. 질문을 만들고, 워크플로를 나누고, 도구를 감독하고, 실패를 마주하고, 대조군으로 검증하며, 결과의 의미를 결정합니다.</p><p data-lang="zh"><b>Vibe researching</b> 则把它提升到科研层面：提出问题，拆分工作流，监督工具，正视失败，用对照验证，并最终解释结果意味着什么。</p></div></div>
+<div class="grid4" style="margin-top:18px"><div class="principle"><div class="num">01</div><h3 data-lang="en">Intent over syntax</h3><h3 data-lang="ko">문법보다 의도</h3><h3 data-lang="zh">意图高于语法</h3><p data-lang="en">You do not win by memorizing every API. You win by specifying the scientific task precisely enough that both human and machine can test it.</p><p data-lang="ko">모든 API를 외우는 것이 아니라 과학적 과제를 검증 가능하게 기술하는 능력이 중요합니다.</p><p data-lang="zh">优势不再来自背下每个 API，而来自把科学任务描述到人和机器都能检验的程度。</p></div><div class="principle"><div class="num">02</div><h3 data-lang="en">Small steps, visible failures</h3><h3 data-lang="ko">작게 나누고 실패를 보이게</h3><h3 data-lang="zh">小步拆解，让失败可见</h3><p data-lang="en">A pipeline should fail locally, not mysteriously. Data, filtering, modeling, docking, and reporting each need their own checkpoints.</p><p data-lang="ko">파이프라인은 모호하게 무너지면 안 됩니다. 데이터, 필터, 모델, 도킹, 보고서가 각각 검증되어야 합니다.</p><p data-lang="zh">流水线应该局部失败，而不是整体神秘崩溃。数据、筛选、建模、对接和报告都要有独立检查点。</p></div><div class="principle"><div class="num">03</div><h3 data-lang="en">Context is the real prompt</h3><h3 data-lang="ko">진짜 프롬프트는 맥락</h3><h3 data-lang="zh">真正的提示词是上下文</h3><p data-lang="en">Protein identity, assay definitions, data provenance, units, versions, constraints, negative cases, and biological purpose matter more than fancy wording.</p><p data-lang="ko">단백질, assay 정의, 데이터 출처, 단위, 버전, 제약, 음성 사례, 생물학적 목적이 화려한 문구보다 중요합니다.</p><p data-lang="zh">蛋白身份、实验定义、数据来源、单位、版本、约束、阴性案例和生物学目的，比漂亮的提示词更重要。</p></div><div class="principle"><div class="num">04</div><h3 data-lang="en">You are the reviewer</h3><h3 data-lang="ko">당신이 리뷰어다</h3><h3 data-lang="zh">你才是审稿人</h3><p data-lang="en">AI produces drafts. Scientific meaning, controls, plausibility, and the decision to trust or reject remain human responsibilities.</p><p data-lang="ko">AI는 초안을 만듭니다. 의미, 대조군, 타당성, 신뢰 여부 판단은 사람의 책임입니다.</p><p data-lang="zh">AI 产出的是草稿。科学意义、对照、合理性，以及信不信，仍然由人负责。</p></div></div></div></section>
 
-<div class="lang-switcher">
-  <a class="active">한국어</a>
-  <a href="cn/index.html">中文</a>
-</div>
+<section class="section" id="course"><div class="wrap"><div class="eyebrow">THE FOUR-LECTURE ARC</div><h2 data-lang="en">Four lectures, one transformation</h2><h2 data-lang="ko">네 강의, 하나의 변화</h2><h2 data-lang="zh">四堂课，一次真正的转变</h2><p class="sectionlead" data-lang="en">The lectures move from tool use to scientific judgment: build a drug-discovery pipeline, cross domains into immunology and nanobody design, learn to fail without outsourcing understanding, then integrate research, implementation, validation, and career thinking.</p><p class="sectionlead" data-lang="ko">도구 사용에서 과학적 판단으로 이동합니다. 신약 파이프라인을 만들고, 면역학과 나노바디로 도메인을 넘고, 이해를 외주 주지 않는 실패를 배우고, 마지막에 연구·구현·검증을 통합합니다.</p><p class="sectionlead" data-lang="zh">课程从“会用工具”走向“会做判断”：先搭建药物发现流水线，再跨到免疫学与纳米抗体，接着学习如何失败但不把理解外包，最后把研究、实现、验证和职业思维整合起来。</p>
+<div class="timeline"><div class="lecture l1"><div class="phase">LECTURE 01<br>FOUNDATION</div><div><h3 data-lang="en">Build a drug-discovery pipeline with AI</h3><h3 data-lang="ko">AI로 신약개발 파이프라인 만들기</h3><h3 data-lang="zh">用 AI 搭建药物发现流水线</h3><p data-lang="en">ChEMBL → RDKit → DeepChem → AlphaFold → AutoDock Vina. The central lesson is not the tool list, but modularization: give one module to AI, verify it, then connect it.</p><p data-lang="ko">ChEMBL → RDKit → DeepChem → AlphaFold → AutoDock Vina. 핵심은 도구 목록이 아니라 모듈화입니다. 하나씩 AI에게 맡기고 검증한 뒤 연결합니다.</p><p data-lang="zh">ChEMBL → RDKit → DeepChem → AlphaFold → AutoDock Vina。重点不是工具清单，而是模块化：一次只交给 AI 一个模块，验证后再连接。</p><div class="tags"><span class="tag">ChEMBL</span><span class="tag">RDKit</span><span class="tag">DeepChem</span><span class="tag">AlphaFold</span><span class="tag">Vina</span><span class="tag">Validation</span></div></div></div>
+<div class="lecture l2"><div class="phase">LECTURE 02<br>CROSS-DOMAIN</div><div><h3 data-lang="en">Genome → immune repertoire → de novo nanobody</h3><h3 data-lang="ko">지놈 → 면역 레퍼토리 → de novo 나노바디</h3><h3 data-lang="zh">基因组 → 免疫组库 → de novo 纳米抗体</h3><p data-lang="en">A Bactrian camel germline database, IgBLAST annotation, Boltz-based nanobody design, and a RhoA small-molecule case show a powerful pattern: domain knowledge can transfer when you translate concepts instead of memorizing vocabulary.</p><p data-lang="ko">쌍봉낙타 germline DB, IgBLAST, Boltz 기반 나노바디 설계, RhoA 소분자 사례를 통해 도메인 지식은 용어를 외우는 대신 개념을 번역할 때 이동할 수 있음을 보여줍니다.</p><p data-lang="zh">双峰骆驼 germline 数据库、IgBLAST、Boltz 纳米抗体设计和 RhoA 小分子案例说明：真正可迁移的是概念，而不是术语记忆。</p><div class="tags"><span class="tag">PacBio</span><span class="tag">IgBLAST</span><span class="tag">VHH</span><span class="tag">Boltz</span><span class="tag">RhoA</span><span class="tag">SAR thinking</span></div></div></div>
+<div class="lecture l3"><div class="phase">LECTURE 03<br>OWN IT</div><div><h3 data-lang="en">Try. Fail. Be brave. Own it.</h3><h3 data-lang="ko">도전하고 실패하고 책임진다</h3><h3 data-lang="zh">去做，去失败，勇敢承担</h3><p data-lang="en">Build agents, remote GPU workflows, de novo AIDD systems, and then study for an exam without AI. This lecture adds the missing human layer: if you cannot explain the output from memory and rebuild it from a blank screen, the understanding is not yet yours.</p><p data-lang="ko">에이전트, 원격 GPU, de novo AIDD를 만들고 마지막에는 AI 없이 시험을 준비합니다. 설명하고, 빈 화면에서 재구성하고, 직접 버그를 고칠 수 있어야 이해가 내 것이 됩니다.</p><p data-lang="zh">做专家 agent、远程 GPU 和 de novo AIDD，最后却回到“无 AI 考试”。如果你不能用自己的话解释，也不能从空白屏幕重建，那么理解还不真正属于你。</p><div class="tags"><span class="tag">Agents</span><span class="tag">Remote GPU</span><span class="tag">Rebuild from memory</span><span class="tag">Debugging</span><span class="tag">Responsibility</span></div></div></div>
+<div class="lecture l4"><div class="phase">LECTURE 04<br>INTEGRATION</div><div><h3 data-lang="en">Research → build → verify → decide</h3><h3 data-lang="ko">연구 → 구현 → 검증 → 결정</h3><h3 data-lang="zh">研究 → 实现 → 验证 → 决策</h3><p data-lang="en">The final lecture integrates literature and database research, Claude Code-style implementation, REINVENT4, docking, affinity prediction, reproducibility, TEAD/covalent design, portfolio strategy, and a clear future vision: AI lowers the cost of execution, not the need for scientific judgment.</p><p data-lang="ko">문헌·DB 조사, 코드 구현, REINVENT4, 도킹, 친화도 예측, 재현성, TEAD·공유결합 설계, 포트폴리오를 통합합니다. AI는 실행 비용을 낮추지만 과학적 판단의 필요를 없애지 않습니다.</p><p data-lang="zh">把文献与数据库研究、代码实现、REINVENT4、对接、亲和力预测、可重复性、TEAD/共价设计和作品集策略整合成一个闭环。AI 降低的是执行成本，不是判断成本。</p><div class="tags"><span class="tag">Research cycle</span><span class="tag">REINVENT4</span><span class="tag">Boltz-2</span><span class="tag">TEAD</span><span class="tag">Reproducibility</span><span class="tag">Career</span></div></div></div></div></div></section>
 
-<div class="hero">
-  <div class="hero-label">AIDD SYStem Lab</div>
-  <h1>Vibe Coding<br>for AIDD</h1>
-  <p>
-    생물정보학 학생을 위한 AI 코딩 강의 시리즈.<br>
-    자연어로 의도를 전달하고, AI가 코드를 생성하는 새로운 패러다임.
-  </p>
-  <div class="tags">
-    <span class="tag tag-purple">Bioinformatics</span>
-    <span class="tag tag-teal">Drug Discovery</span>
-    <span class="tag tag-pink">AI-Assisted Coding</span>
-    <span class="tag tag-yellow">Open Source</span>
-  </div>
-</div>
+<section class="section"><div class="wrap"><div class="eyebrow">THE RESEARCH LOOP</div><h2 data-lang="en">A practical loop you can reuse in any scientific domain</h2><h2 data-lang="ko">어떤 과학 분야에도 재사용할 수 있는 루프</h2><h2 data-lang="zh">一个可以迁移到任何科研领域的循环</h2><div class="loop"><div class="card"><div class="num">01</div><strong data-lang="en">Context</strong><strong data-lang="ko">맥락</strong><strong data-lang="zh">上下文</strong><p data-lang="en">Define target, data source, assay meaning, constraints, units, software versions, controls, and the scientific decision you want to make.</p><p data-lang="ko">표적, 데이터 출처, assay 의미, 제약, 단위, 버전, 대조군, 최종 의사결정을 정의합니다.</p><p data-lang="zh">定义靶点、数据来源、实验含义、约束、单位、软件版本、对照，以及最终要做的科学决策。</p></div><div class="card"><div class="num">02</div><strong data-lang="en">Prompt one module</strong><strong data-lang="ko">한 모듈만 지시</strong><strong data-lang="zh">一次只交代一个模块</strong><p data-lang="en">Ask for one explicit transformation with a specified input, output, and logging behavior.</p><p data-lang="ko">입력·출력·로그가 분명한 하나의 변환만 요청합니다.</p><p data-lang="zh">只要求一个明确变换，并规定输入、输出和日志。</p></div><div class="card"><div class="num">03</div><strong data-lang="en">Run and inspect</strong><strong data-lang="ko">실행하고 확인</strong><strong data-lang="zh">运行并检查</strong><p data-lang="en">Use small data first. Compare with known positives, negatives, hand calculations, or trusted reference outputs.</p><p data-lang="ko">작은 데이터로 먼저 돌리고 알려진 양성·음성·수작업 결과와 비교합니다.</p><p data-lang="zh">先用小数据，和已知阳性、阴性、手算或可信参考结果比较。</p></div><div class="card"><div class="num">04</div><strong data-lang="en">Re-prompt with evidence</strong><strong data-lang="ko">증거를 들고 재지시</strong><strong data-lang="zh">带着证据重新提示</strong><p data-lang="en">Give the actual error, failed molecule, inconsistent unit, or implausible biological result back to the model. Iterate from evidence, not vibes.</p><p data-lang="ko">실제 에러, 실패 분자, 단위 불일치, 생물학적으로 이상한 결과를 그대로 돌려주고 수정합니다.</p><p data-lang="zh">把真实报错、失败分子、单位不一致或不合理的生物学结果原样交回模型，基于证据迭代。</p></div></div><div class="arrowline">CONTEXT → PROMPT → RUN → REVIEW → RE-PROMPT → VALIDATE → CONNECT</div></div></section>
 
-<div class="lectures-grid">
+<section class="section" id="cases"><div class="wrap"><div class="eyebrow">REAL CASES FROM THE LECTURES</div><h2 data-lang="en">The ideas become real when they touch real projects</h2><h2 data-lang="ko">실제 프로젝트에 닿을 때 철학이 방법이 된다</h2><h2 data-lang="zh">当它进入真实项目，哲学才会变成方法</h2><div class="cases">
+<div class="case"><div class="kicker">CASE A · DRUG DISCOVERY</div><h3 data-lang="en">ChEMBL → RDKit → toxicity → docking</h3><h3 data-lang="ko">ChEMBL → RDKit → 독성 → 도킹</h3><h3 data-lang="zh">ChEMBL → RDKit → 毒性 → 对接</h3><p data-lang="en">Collect bioactivity, calculate descriptors, apply drug-likeness filters, score toxicity, then narrow candidates before structural evaluation. The lesson is to make each step independently testable.</p><p data-lang="ko">활성 데이터를 모으고 descriptor를 계산하고 drug-likeness와 독성 필터를 거쳐 구조 평가 전에 후보를 줄입니다. 각 단계가 독립적으로 검증 가능해야 합니다.</p><p data-lang="zh">收集活性数据，计算描述符，进行成药性与毒性筛选，再进入结构层面的评估。关键是每一步都能独立验证。</p><div class="lesson" data-lang="en"><b>Research lesson:</b> automation is only valuable when every module has a failure boundary.</div><div class="lesson" data-lang="ko"><b>연구 교훈:</b> 자동화는 각 모듈의 실패 지점이 보일 때만 가치가 있습니다.</div><div class="lesson" data-lang="zh"><b>研究教训：</b> 只有当每个模块的失败边界清晰时，自动化才有价值。</div></div>
+<div class="case"><div class="kicker">CASE B · IMMUNOGENOMICS</div><h3 data-lang="en">Build the Bactrian camel VHH germline reference yourself</h3><h3 data-lang="ko">쌍봉낙타 VHH germline reference를 직접 구축</h3><h3 data-lang="zh">自己搭建双峰骆驼 VHH germline 参考库</h3><p data-lang="en">When the standard database lacks your species, the research problem becomes infrastructure. Mine V/D/J genes from a reference genome, create an IgBLAST-compatible database, then use it to interpret repertoire data.</p><p data-lang="ko">표준 DB에 종이 없으면 연구 문제 자체가 인프라 구축 문제가 됩니다. reference genome에서 V/D/J를 채굴하고 IgBLAST DB를 만든 뒤 repertoire를 해석합니다.</p><p data-lang="zh">当标准数据库里没有你的物种，科研问题就变成了基础设施问题：从参考基因组挖掘 V/D/J，建立 IgBLAST 兼容库，再去解释免疫组库。</p><div class="lesson" data-lang="en"><b>Research lesson:</b> “no database” is not the end of the project; sometimes it is the beginning of a better one.</div><div class="lesson" data-lang="ko"><b>연구 교훈:</b> “DB가 없다”는 프로젝트의 끝이 아니라 더 좋은 프로젝트의 시작일 수 있습니다.</div><div class="lesson" data-lang="zh"><b>研究教训：</b> “没有数据库”不一定是项目终点，它可能正是更好课题的起点。</div></div>
+<div class="case"><div class="kicker">CASE C · PROTEIN DESIGN</div><h3 data-lang="en">De novo nanobodies for EGFRvIII and RhoA</h3><h3 data-lang="ko">EGFRvIII·RhoA de novo 나노바디</h3><h3 data-lang="zh">EGFRvIII 与 RhoA 的 de novo 纳米抗体设计</h3><p data-lang="en">Design backbones and sequences, refold them, rank predicted binding, then apply developability constraints. The important scientific move is not “generate more,” but deciding which candidates are worth experimental synthesis and SPR/BLI.</p><p data-lang="ko">백본과 서열을 설계하고 refolding, 결합 예측, 개발성 기준을 거칩니다. 핵심은 더 많이 만드는 것이 아니라 어떤 후보를 합성·SPR/BLI로 보낼지 판단하는 것입니다.</p><p data-lang="zh">生成骨架和序列，做 refolding、结合预测和可开发性筛选。真正重要的不是“生成更多”，而是决定哪些候选值得进入合成与 SPR/BLI。</p><div class="lesson" data-lang="en"><b>Research lesson:</b> prediction is a ranking device, not a biological fact.</div><div class="lesson" data-lang="ko"><b>연구 교훈:</b> 예측은 우선순위 도구이지 생물학적 사실이 아닙니다.</div><div class="lesson" data-lang="zh"><b>研究教训：</b> 预测是排序工具，不是生物学事实。</div></div>
+<div class="case"><div class="kicker">CASE D · SMALL MOLECULE DESIGN</div><h3 data-lang="en">RhoA allosteric small molecules and covalent thinking</h3><h3 data-lang="ko">RhoA 알로스테릭 소분자와 공유결합 사고</h3><h3 data-lang="zh">RhoA 变构小分子与共价设计思维</h3><p data-lang="en">Generate candidate molecules, dock, inspect ADMET, consider an exposed cysteine and warhead strategy, then escalate top compounds to MD, free-energy methods, synthesis, and cellular PPI assays.</p><p data-lang="ko">후보 분자를 생성하고 도킹·ADMET를 보고, 노출된 cysteine과 warhead 전략을 고려한 뒤 상위 후보를 MD, 자유에너지, 합성, 세포 PPI assay로 올립니다.</p><p data-lang="zh">生成候选，做对接与 ADMET，考虑暴露半胱氨酸与 warhead 策略，再把顶级候选升级到 MD、自由能、合成和细胞 PPI assay。</p><div class="lesson" data-lang="en"><b>Research lesson:</b> the chemistry strategy comes from the scientist; AI helps explore its consequences.</div><div class="lesson" data-lang="ko"><b>연구 교훈:</b> 약화학 전략은 사람이 세우고 AI는 그 결과 공간을 탐색합니다.</div><div class="lesson" data-lang="zh"><b>研究教训：</b> 药化策略来自科学家，AI 帮你探索这个策略可能带来的结果空间。</div></div>
+<div class="case"><div class="kicker">CASE E · LEARNING</div><h3 data-lang="en">The exam without AI</h3><h3 data-lang="ko">AI 없는 시험</h3><h3 data-lang="zh">没有 AI 的考试</h3><p data-lang="en">Recall from memory, rebuild from a blank screen, intentionally break code, fix it, and explain it aloud. This is the counterweight to effortless generation.</p><p data-lang="ko">기억으로 쓰고, 빈 화면에서 다시 만들고, 일부러 버그를 내고, 고치고, 소리 내어 설명합니다. 쉬운 생성에 대한 균형 장치입니다.</p><p data-lang="zh">凭记忆写、从空白屏幕重建、故意制造 bug、修复并大声解释。这是对“生成太容易”的必要制衡。</p><div class="lesson" data-lang="en"><b>Research lesson:</b> thinking can be delegated temporarily; understanding cannot be outsourced.</div><div class="lesson" data-lang="ko"><b>연구 교훈:</b> 생각의 일부는 잠시 위임할 수 있어도 이해는 외주 줄 수 없습니다.</div><div class="lesson" data-lang="zh"><b>研究教训：</b> 思考的一部分可以临时委托，但理解不能外包。</div></div>
+<div class="case"><div class="kicker">CASE F · INTEGRATED RESEARCH</div><h3 data-lang="en">Research → implementation → verification</h3><h3 data-lang="ko">조사 → 구현 → 검증</h3><h3 data-lang="zh">调研 → 实现 → 验证</h3><p data-lang="en">Use literature/database tools to understand a target, coding agents to implement the workflow, and then return to data and references to cross-check the outputs. The cycle closes when the result changes your next experiment.</p><p data-lang="ko">문헌·DB로 표적을 이해하고, 코딩 에이전트로 구현하고, 다시 데이터와 문헌으로 돌아가 교차검증합니다. 결과가 다음 실험을 바꿀 때 루프가 닫힙니다.</p><p data-lang="zh">先用文献与数据库理解靶点，再用 coding agent 实现工作流，然后回到数据和文献交叉验证。只有当结果真正改变下一个实验，循环才算闭合。</p><div class="lesson" data-lang="en"><b>Research lesson:</b> AI-native science is not one model. It is an orchestration of evidence, computation, and human judgment.</div><div class="lesson" data-lang="ko"><b>연구 교훈:</b> AI-native science는 하나의 모델이 아니라 증거, 계산, 인간 판단의 오케스트레이션입니다.</div><div class="lesson" data-lang="zh"><b>研究教训：</b> AI-native science 不是某一个模型，而是证据、计算与人类判断的协同编排。</div></div>
+</div></div></section>
 
-  <!-- Lecture 1 & 2 -->
-  <a href="lecture1_2.html" class="lecture-card l12">
-    <div class="card-number">Lectures 1 & 2</div>
-    <h2>Vibe Coding 0 &rarr; 1</h2>
-    <p>
-      Vibe Coding의 개념, 4가지 핵심 원칙, 도구 생태계부터<br>
-      REINVENT4 + AutoDock Vina 실제 파이프라인 사례까지.
-    </p>
-    <div class="card-topics">
-      <span class="card-topic">Karpathy 정의</span>
-      <span class="card-topic">4가지 원칙</span>
-      <span class="card-topic">프롬프트 엔지니어링</span>
-      <span class="card-topic">REINVENT4</span>
-      <span class="card-topic">AutoDock Vina</span>
-      <span class="card-topic">Boltz-2</span>
-      <span class="card-topic">실전 사례</span>
-    </div>
-    <div class="card-meta">
-      <span>24 slides</span>
-      <span class="card-cta">발표 보기 &rarr;</span>
-    </div>
-  </a>
+<section class="section"><div class="wrap"><div class="eyebrow">THE STACK</div><h2 data-lang="en">Tools are replaceable; the architecture is durable</h2><h2 data-lang="ko">도구는 바뀌어도 구조는 남는다</h2><h2 data-lang="zh">工具会换，架构不会</h2><p class="sectionlead" data-lang="en">The exact models will change. What lasts is the separation between evidence gathering, representation, generation, scoring, structural validation, and human decision-making.</p><p class="sectionlead" data-lang="ko">정확한 모델 이름은 바뀝니다. 하지만 증거 수집, 표현, 생성, 스코어링, 구조 검증, 인간 의사결정의 분리는 남습니다.</p><p class="sectionlead" data-lang="zh">具体模型名字一定会变化，但证据获取、表示、生成、打分、结构验证与人类决策这几层不会消失。</p><div class="stack"><div><b>Evidence</b><span>PubMed · ChEMBL · PDB</span></div><div><b>Cheminformatics</b><span>RDKit</span></div><div><b>Generation</b><span>REINVENT4 · Diffusion</span></div><div><b>Docking</b><span>Vina · GNINA</span></div><div><b>Structure / Affinity</b><span>AlphaFold · Boltz</span></div><div><b>Human review</b><span>Controls · chemistry · biology</span></div></div></div></section>
 
-  <!-- CovLib: Lecture 3 -->
-  <a href="covlib.html" class="lecture-card l3">
-    <div class="card-number">Lecture 3 — CovLib</div>
-    <h2>CovLib 바이브 코딩 여정</h2>
-    <p>
-      공유결합 억제제 설계 파이프라인 구축기.<br>
-      Cys/Ser 타겟 워헤드 라이브러리 & 자동 도킹.
-    </p>
-    <div class="card-topics">
-      <span class="card-topic">공유결합 억제제</span>
-      <span class="card-topic">워헤드 설계</span>
-      <span class="card-topic">AutoDock Vina</span>
-      <span class="card-topic">Boltz-2</span>
-      <span class="card-topic">RDKit</span>
-      <span class="card-topic">파이프라인 자동화</span>
-    </div>
-    <div class="card-meta">
-      <span>Full slide deck</span>
-      <span class="card-cta">발표 보기 &rarr;</span>
-    </div>
-  </a>
+<section class="section" id="practice"><div class="wrap"><div class="eyebrow">PRACTICE</div><h2 data-lang="en">Prompt templates that produce researchable work, not just code</h2><h2 data-lang="ko">코드가 아니라 연구 가능한 결과를 만드는 프롬프트</h2><h2 data-lang="zh">不是“让 AI 写代码”，而是让工作变得可研究</h2><div class="prompts">
+<div class="prompt"><h3 data-lang="en">1. Data module</h3><h3 data-lang="ko">1. 데이터 모듈</h3><h3 data-lang="zh">1. 数据模块</h3><div class="code">I am studying [TARGET]. Retrieve [ACTIVITY TYPE] from [SOURCE].
+Keep only records with explicit units and assay metadata.
+Return a dataframe with: compound ID, canonical SMILES, value, unit, assay type, source ID.
+Log how many rows are removed at every QC step.
+Do not impute missing values.</div><div class="why" data-lang="en">Why it works: source, columns, quality rules, and exclusions are explicit.</div><div class="why" data-lang="ko">좋은 이유: 출처, 컬럼, QC, 제외 규칙이 명확합니다.</div><div class="why" data-lang="zh">为什么有效：来源、字段、质控和排除规则都明确。</div></div>
+<div class="prompt"><h3 data-lang="en">2. Modeling module</h3><h3 data-lang="ko">2. 모델링 모듈</h3><h3 data-lang="zh">2. 建模模块</h3><div class="code">Build a baseline model for [ENDPOINT].
+First create a leakage-safe split using [GROUPING RULE].
+Report train/validation/test sizes and overlap checks.
+Compare a simple baseline against the more complex model.
+Fix random seeds and save the environment and model parameters.</div><div class="why" data-lang="en">Why it works: validation design comes before model sophistication.</div><div class="why" data-lang="ko">좋은 이유: 복잡한 모델보다 검증 설계를 먼저 둡니다.</div><div class="why" data-lang="zh">为什么有效：先设计验证，再谈复杂模型。</div></div>
+<div class="prompt"><h3 data-lang="en">3. Docking module</h3><h3 data-lang="ko">3. 도킹 모듈</h3><h3 data-lang="zh">3. 对接模块</h3><div class="code">Prepare a docking workflow for [PDB/STRUCTURE].
+I will provide the binding-site coordinates manually.
+Include one known active and one negative/decoy control.
+For every ligand, save the score, pose file, failure reason, and input SMILES.
+Do not rank failed molecules as zero.</div><div class="why" data-lang="en">Why it works: the scientist owns the pocket and controls; the script owns repetition.</div><div class="why" data-lang="ko">좋은 이유: 포켓과 대조군은 사람이, 반복 실행은 코드가 맡습니다.</div><div class="why" data-lang="zh">为什么有效：口袋与对照由科学家负责，重复计算交给脚本。</div></div>
+<div class="prompt"><h3 data-lang="en">4. Research review</h3><h3 data-lang="ko">4. 연구 검토</h3><h3 data-lang="zh">4. 科研复核</h3><div class="code">Review these results as a skeptical domain expert.
+List:
+1) conclusions directly supported by the data,
+2) conclusions that are only predictions,
+3) possible leakage / unit / assay / version problems,
+4) one positive and one negative control I should add,
+5) the cheapest next experiment that could falsify the main claim.</div><div class="why" data-lang="en">Why it works: it turns the model from generator into critic, but final judgment is still yours.</div><div class="why" data-lang="ko">좋은 이유: 모델을 생성기에서 비평가로 바꾸지만 최종 판단은 여전히 사람에게 있습니다.</div><div class="why" data-lang="zh">为什么有效：让模型从“生成者”切换成“批评者”，但最终裁决仍由你完成。</div></div>
+</div></div></section>
 
-  <!-- Lecture 4: Final -->
-  <a href="Lecture4_Final_Presentation.html" class="lecture-card l4">
-    <div class="card-number">Lecture 4 — Final</div>
-    <h2>The Complete AIDD Vibe Coder</h2>
-    <p>
-      전체 통합, Claude Science, CovLib 파이프라인,<br>
-      고급 워크플로우, 미래 비전, 커리어 전략.
-    </p>
-    <div class="card-topics">
-      <span class="card-topic">Claude Science</span>
-      <span class="card-topic">CovLib</span>
-      <span class="card-topic">고급 프롬프팅</span>
-      <span class="card-topic">디버깅 패턴</span>
-      <span class="card-topic">재현성</span>
-      <span class="card-topic">커리어</span>
-      <span class="card-topic">미래 비전</span>
-    </div>
-    <div class="card-meta">
-      <span>26 slides</span>
-      <span class="card-cta">발표 보기 &rarr;</span>
-    </div>
-  </a>
+<section class="section" id="verify"><div class="wrap"><div class="eyebrow">VERIFY EVERYTHING</div><h2 data-lang="en">The verification ladder</h2><h2 data-lang="ko">검증의 사다리</h2><h2 data-lang="zh">验证阶梯</h2><div class="checks"><div class="check"><h3 data-lang="en">Code</h3><h3 data-lang="ko">코드</h3><h3 data-lang="zh">代码</h3><ul><li>Imports actually exist</li><li>Version-compatible API</li><li>Inputs validated</li><li>Failures logged</li><li>Seeds fixed where relevant</li></ul></div><div class="check"><h3 data-lang="en">Science</h3><h3 data-lang="ko">과학</h3><h3 data-lang="zh">科学</h3><ul><li>Units are consistent</li><li>Assay definitions match</li><li>Known active behaves correctly</li><li>Negative control behaves differently</li><li>No data leakage</li></ul></div><div class="check"><h3 data-lang="en">Reality</h3><h3 data-lang="ko">현실</h3><h3 data-lang="zh">现实</h3><ul><li>Prediction ≠ experiment</li><li>Docking score ≠ affinity</li><li>Affinity ≠ cellular efficacy</li><li>Structure confidence ≠ binding truth</li><li>Experiment decides</li></ul></div></div><div class="warning"><span data-lang="en"><b>Golden rule:</b> treat AI-generated code and analysis like the draft of a very fast, very capable intern. Useful enough to accelerate you, fallible enough that you must review it.</span><span data-lang="ko"><b>황금률:</b> AI가 만든 코드와 분석은 매우 빠르고 유능한 인턴의 초안처럼 다루세요. 충분히 유용하지만 반드시 검토해야 합니다.</span><span data-lang="zh"><b>黄金法则：</b> 把 AI 生成的代码和分析当成一个极快、极能干的实习生草稿。它足够有用，可以加速你，也足够会错，所以你必须审核。</span></div></div></section>
 
-</div>
+<section class="section"><div class="wrap"><div class="eyebrow">TWO FUTURES</div><h2 data-lang="en">The decisive difference is not whether you use AI, but how</h2><h2 data-lang="ko">차이는 AI를 쓰느냐가 아니라 어떻게 쓰느냐에 있다</h2><h2 data-lang="zh">真正的差别不是用不用 AI，而是怎么用</h2><div class="philosophy"><div class="philo bad"><h3 data-lang="en">Future A: “AI writes it, so I do not need to learn it.”</h3><h3 data-lang="ko">미래 A: “AI가 써주니까 공부할 필요 없다.”</h3><h3 data-lang="zh">未来 A：“AI 会写，所以我不用学。”</h3><p data-lang="en">You become faster at producing outputs but weaker at detecting mistakes. Eventually you cannot tell a plausible artifact from a scientific result.</p><p data-lang="ko">출력은 빨라지지만 오류를 찾는 힘은 약해집니다. 결국 그럴듯한 산출물과 과학적 결과를 구분하기 어려워집니다.</p><p data-lang="zh">你产出更快，却越来越不擅长发现错误。最后会分不清“看起来像结果的东西”和真正的科学结果。</p></div><div class="philo good"><h3 data-lang="en">Future B: “AI writes it, so I can spend more time on science.”</h3><h3 data-lang="ko">미래 B: “AI가 써주니까 나는 과학에 더 집중한다.”</h3><h3 data-lang="zh">未来 B：“AI 会写，所以我能把更多时间花在科学上。”</h3><p data-lang="en">You use AI to remove mechanical friction, then invest the saved time in better questions, stronger controls, chemical intuition, biological interpretation, and experimental design.</p><p data-lang="ko">기계적 마찰은 AI로 줄이고 절약한 시간을 더 좋은 질문, 대조군, 약화학 직관, 생물학적 해석, 실험 설계에 씁니다.</p><p data-lang="zh">你用 AI 消除机械摩擦，再把节省下来的时间投入更好的问题、更强的对照、药化直觉、生物学解释和实验设计。</p></div></div></div></section>
 
-<div class="footer">
-  <p>
-    AIDD SYStem Lab &mdash; July 2026<br>
-    모든 도구는 오픈소스. 소프트웨어 비용 $0.<br>
-    <a href="https://github.com/MolecularAI/REINVENT4">REINVENT4</a> &middot;
-    <a href="https://github.com/jwohlwend/boltz">Boltz-2</a> &middot;
-    <a href="https://docs.anthropic.com/en/docs/claude-code">Claude Code</a> &middot;
-    <a href="https://cursor.sh">Cursor</a>
-  </p>
-</div>
-
+<section class="final"><div class="wrap"><div class="eyebrow">KEEP VIBING, KEEP VERIFYING</div><h2 data-lang="en">The scientist of the AI era is not the person who writes every line. It is the person who can explain why every line matters.</h2><h2 data-lang="ko">AI 시대의 과학자는 모든 줄을 직접 쓰는 사람이 아니라, 왜 그 줄이 필요한지 설명할 수 있는 사람입니다.</h2><h2 data-lang="zh">AI 时代的科学家，不是亲手写下每一行的人，而是能解释为什么每一行都重要的人。</h2><p data-lang="en">Build boldly. Fail visibly. Validate relentlessly. Keep the understanding yours.</p><p data-lang="ko">과감히 만들고, 실패를 보이게 하고, 끝까지 검증하세요. 이해는 반드시 자신의 것으로 남기세요.</p><p data-lang="zh">大胆去做，让失败可见，持续验证。最重要的是，把理解牢牢留在自己手里。</p><div class="actions"><a class="btn primary" href="lecture1_2.html">Lecture materials</a><a class="btn" href="Lecture4_Final_Presentation.html">Final lecture</a><a class="btn" href="covlib.html">CovLib case</a><a class="btn" href="https://github.com/mrfeixiang/vibe-coding-aidd">GitHub repo</a></div></div></section>
+</main>
+<footer><div class="wrap footerrow"><div>Vibe Researching · AIDD SYStem Lab · Xiang Fei, Ph.D. · Gachon University</div><div>Built from the four-lecture Vibe Coding series. Predictions require experimental validation.</div></div></footer>
+<script>
+const buttons=[...document.querySelectorAll('[data-setlang]')];
+function setLang(lang){document.body.className='lang-'+lang;document.documentElement.lang=lang==='zh'?'zh-CN':lang;buttons.forEach(b=>b.classList.toggle('active',b.dataset.setlang===lang));localStorage.setItem('vibe-lang',lang)}
+buttons.forEach(b=>b.addEventListener('click',()=>setLang(b.dataset.setlang)));
+const saved=localStorage.getItem('vibe-lang'); const browser=(navigator.language||'').toLowerCase(); setLang(saved || (browser.startsWith('ko')?'ko':browser.startsWith('zh')?'zh':'en'));
+</script>
 </body>
 </html>
